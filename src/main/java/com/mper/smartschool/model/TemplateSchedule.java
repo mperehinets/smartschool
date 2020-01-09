@@ -15,7 +15,7 @@ public class TemplateSchedule extends BaseEntity {
     private Integer classNumber;
 
     @Column(name = "lesson_number")
-    private Integer number;
+    private Integer lessonNumber;
 
     @ManyToOne
     @JoinColumn(name = "teachers_subject", referencedColumnName = "id")

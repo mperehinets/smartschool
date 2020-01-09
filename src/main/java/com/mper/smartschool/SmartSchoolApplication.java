@@ -11,5 +11,4 @@ public class SmartSchoolApplication {
     public static void main(String[] args) {
         SpringApplication.run(SmartSchoolApplication.class, args);
     }
-
 }
