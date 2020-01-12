@@ -1,11 +1,16 @@
 package com.mper.smartschool.dto;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode
-public class BaseDto {
+public abstract class BaseDto {
 
     private Long id;
+
+    protected BaseDto() {
+    }
+
+    protected BaseDto(Long id) {
+        this.id = id;
+    }
 }
