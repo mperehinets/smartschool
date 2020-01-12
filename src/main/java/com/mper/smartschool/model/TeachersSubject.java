@@ -1,13 +1,16 @@
 package com.mper.smartschool.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Entity
 @Table(name = "teachers_has_subjects")
 public class TeachersSubject extends BaseEntity {
@@ -25,4 +28,16 @@ public class TeachersSubject extends BaseEntity {
 
     @Column(name = "end_date")
     private LocalDate endDate;
+
+    public TeachersSubject() {
+    }
+
+    @Builder
+    public TeachersSubject(Long id, Teacher teacher, Subject subject, LocalDate startDate, LocalDate endDate) {
+        super(id);
+        this.teacher = teacher;
+        this.subject = subject;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 }

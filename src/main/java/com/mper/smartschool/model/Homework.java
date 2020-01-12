@@ -1,12 +1,15 @@
 package com.mper.smartschool.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Entity
 @Table(name = "homeworks")
 public class Homework extends BaseEntity {
@@ -17,4 +20,14 @@ public class Homework extends BaseEntity {
 
     @Column(name = "homework")
     private String homework;
+
+    public Homework() {
+    }
+
+    @Builder
+    public Homework(Long id, Schedule schedule, String homework) {
+        super(id);
+        this.schedule = schedule;
+        this.homework = homework;
+    }
 }

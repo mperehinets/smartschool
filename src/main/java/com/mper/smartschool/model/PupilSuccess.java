@@ -1,13 +1,16 @@
 package com.mper.smartschool.model;
 
 import com.mper.smartschool.model.modelsEnum.PupilsLessonStatus;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Entity
 @Table(name = "pupils_success")
 public class PupilSuccess extends BaseEntity {
@@ -26,4 +29,20 @@ public class PupilSuccess extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "pupils_lesson_status")
     private PupilsLessonStatus pupilsLessonStatus;
+
+    public PupilSuccess() {
+    }
+
+    @Builder
+    public PupilSuccess(Long id,
+                        Pupil pupil,
+                        Schedule schedule,
+                        Integer rating,
+                        PupilsLessonStatus pupilsLessonStatus) {
+        super(id);
+        this.pupil = pupil;
+        this.schedule = schedule;
+        this.rating = rating;
+        this.pupilsLessonStatus = pupilsLessonStatus;
+    }
 }
