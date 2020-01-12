@@ -18,6 +18,6 @@ public class TemplateSchedule extends BaseEntity {
     private Integer lessonNumber;
 
     @ManyToOne
-    @JoinColumn(name = "teachers_subject", referencedColumnName = "id")
-    private TeachersSubject teachersSubject;
+    @JoinColumn(name = "subject", referencedColumnName = "id")
+    private Subject subject;
 }
