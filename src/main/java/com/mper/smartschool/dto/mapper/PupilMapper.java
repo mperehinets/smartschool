@@ -2,25 +2,12 @@ package com.mper.smartschool.dto.mapper;
 
 import com.mper.smartschool.dto.PupilDto;
 import com.mper.smartschool.model.Pupil;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
 
-@Component
-public class PupilMapper {
+@Mapper
+public interface PupilMapper {
 
-    private final ModelMapper mapper;
+    Pupil toEntity(PupilDto dto);
 
-    @Autowired
-    public PupilMapper(ModelMapper mapper) {
-        this.mapper = mapper;
-    }
-
-    public Pupil toEntity(PupilDto dto) {
-        return mapper.map(dto, Pupil.class);
-    }
-
-    public PupilDto toDto(Pupil entity) {
-        return mapper.map(entity, PupilDto.class);
-    }
+    PupilDto toDto(Pupil entity);
 }
