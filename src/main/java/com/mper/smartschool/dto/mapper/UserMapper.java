@@ -4,7 +4,7 @@ import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.model.User;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UserMapper {
 
     User toEntity(UserDto dto);

@@ -8,7 +8,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -25,7 +26,7 @@ public class UserDto extends BaseDto {
 
     private LocalDate dateBirth;
 
-    private List<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     private EntityStatus status;
 
@@ -39,7 +40,7 @@ public class UserDto extends BaseDto {
                    String email,
                    String password,
                    LocalDate dateBirth,
-                   List<Role> roles,
+                   Set<Role> roles,
                    EntityStatus status) {
         super(id);
         this.firstName = firstName;

@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -17,7 +17,7 @@ public class PupilDto extends UserDto {
 
     private SchoolClassDto schoolClass;
 
-    private List<SignedPersonDto> signedPersons;
+    private Set<SignedPersonDto> signedPersons;
 
     public PupilDto() {
     }
@@ -29,10 +29,10 @@ public class PupilDto extends UserDto {
                     String email,
                     String password,
                     LocalDate dateBirth,
-                    List<Role> roles,
+                    Set<Role> roles,
                     EntityStatus status,
                     SchoolClassDto schoolClass,
-                    List<SignedPersonDto> signedPersons) {
+                    Set<SignedPersonDto> signedPersons) {
         super(id, firstName, secondName, email, password, dateBirth, roles, status);
         this.schoolClass = schoolClass;
         this.signedPersons = signedPersons;

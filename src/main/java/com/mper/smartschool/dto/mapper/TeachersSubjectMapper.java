@@ -4,7 +4,7 @@ import com.mper.smartschool.dto.TeachersSubjectDto;
 import com.mper.smartschool.model.TeachersSubject;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface TeachersSubjectMapper {
 
     TeachersSubject toEntity(TeachersSubjectDto dto);

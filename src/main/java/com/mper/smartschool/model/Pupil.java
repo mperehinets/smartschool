@@ -8,7 +8,8 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -26,7 +27,7 @@ public class Pupil extends User {
     @JoinTable(name = "pupils_has_signed_persons",
             joinColumns = {@JoinColumn(name = "pupil", referencedColumnName = "user")},
             inverseJoinColumns = {@JoinColumn(name = "signed_person", referencedColumnName = "id")})
-    private List<SignedPerson> signedPersons;
+    private Set<SignedPerson> signedPersons = new HashSet<>();
 
     public Pupil() {
     }
@@ -38,10 +39,10 @@ public class Pupil extends User {
                  String email,
                  String password,
                  LocalDate dateBirth,
-                 List<Role> roles,
+                 Set<Role> roles,
                  EntityStatus status,
                  SchoolClass schoolClass,
-                 List<SignedPerson> signedPersons) {
+                 Set<SignedPerson> signedPersons) {
         super(id, firstName, secondName, email, password, dateBirth, roles, status);
         this.schoolClass = schoolClass;
         this.signedPersons = signedPersons;

@@ -8,7 +8,8 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -37,7 +38,7 @@ public class User extends BaseEntity {
     @JoinTable(name = "users_has_roles",
             joinColumns = {@JoinColumn(name = "user", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role", referencedColumnName = "id")})
-    private List<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -53,7 +54,7 @@ public class User extends BaseEntity {
                 String email,
                 String password,
                 LocalDate dateBirth,
-                List<Role> roles,
+                Set<Role> roles,
                 EntityStatus status) {
         super(id);
         this.firstName = firstName;

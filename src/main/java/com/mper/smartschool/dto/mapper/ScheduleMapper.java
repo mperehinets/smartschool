@@ -4,7 +4,7 @@ import com.mper.smartschool.dto.ScheduleDto;
 import com.mper.smartschool.model.Schedule;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ScheduleMapper {
 
     Schedule toEntity(ScheduleDto dto);

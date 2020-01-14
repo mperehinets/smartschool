@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -27,7 +27,7 @@ public class TeacherDto extends UserDto {
                       String email,
                       String password,
                       LocalDate dateBirth,
-                      List<Role> roles,
+                      Set<Role> roles,
                       EntityStatus status,
                       String education) {
         super(id, firstName, secondName, email, password, dateBirth, roles, status);

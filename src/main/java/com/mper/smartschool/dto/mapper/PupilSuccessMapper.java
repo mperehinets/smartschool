@@ -4,7 +4,7 @@ import com.mper.smartschool.dto.PupilSuccessDto;
 import com.mper.smartschool.model.PupilSuccess;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface PupilSuccessMapper {
 
     PupilSuccess toEntity(PupilSuccessDto dto);
