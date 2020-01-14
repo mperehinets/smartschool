@@ -2,7 +2,6 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.SubjectDto;
 import com.mper.smartschool.dto.mapper.SubjectMapper;
-import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.model.Subject;
 import com.mper.smartschool.model.modelsEnum.EntityStatus;
 import com.mper.smartschool.repository.SubjectRepo;
@@ -11,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -56,7 +56,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public SubjectDto findById(Long id) {
         SubjectDto result = subjectMapper.toDto(subjectRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Subject not found by id: " + id)));
+                .orElseThrow(() -> new EntityNotFoundException("Subject not found by id: " + id)));
         log.info("IN findById - subject: {} found by id: {}", result, id);
         return result;
     }

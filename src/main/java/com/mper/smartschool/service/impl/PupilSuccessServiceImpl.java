@@ -2,7 +2,6 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.PupilSuccessDto;
 import com.mper.smartschool.dto.mapper.PupilSuccessMapper;
-import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.model.PupilSuccess;
 import com.mper.smartschool.repository.PupilSuccessRepo;
 import com.mper.smartschool.service.PupilSuccessService;
@@ -10,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -55,7 +55,7 @@ public class PupilSuccessServiceImpl implements PupilSuccessService {
     @Override
     public PupilSuccessDto findById(Long id) {
         PupilSuccessDto result = pupilSuccessMapper.toDto(pupilSuccessRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("PupilSuccess not found by id: " + id)));
+                .orElseThrow(() -> new EntityNotFoundException("PupilSuccess not found by id: " + id)));
         log.info("IN findById - pupilSuccess: {} found by id: {}", result, id);
         return result;
     }

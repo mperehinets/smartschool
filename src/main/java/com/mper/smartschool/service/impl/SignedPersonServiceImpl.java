@@ -2,7 +2,6 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.SignedPersonDto;
 import com.mper.smartschool.dto.mapper.SignedPersonMapper;
-import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.model.SignedPerson;
 import com.mper.smartschool.repository.SignedPersonRepo;
 import com.mper.smartschool.service.SignedPersonService;
@@ -10,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -53,7 +53,7 @@ public class SignedPersonServiceImpl implements SignedPersonService {
     @Override
     public SignedPersonDto findById(Long id) {
         SignedPersonDto result = signedPersonMapper.toDto(signedPersonRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("SignedPerson not found by id: " + id)));
+                .orElseThrow(() -> new EntityNotFoundException("SignedPerson not found by id: " + id)));
         log.info("IN findById - signedPerson: {} found by id: {}", result, id);
         return result;
     }

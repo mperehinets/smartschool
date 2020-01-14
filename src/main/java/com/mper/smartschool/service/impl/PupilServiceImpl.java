@@ -2,7 +2,6 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.PupilDto;
 import com.mper.smartschool.dto.mapper.PupilMapper;
-import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.model.Pupil;
 import com.mper.smartschool.model.Role;
 import com.mper.smartschool.model.modelsEnum.EntityStatus;
@@ -13,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -34,7 +34,7 @@ public class PupilServiceImpl implements PupilService {
     @Override
     public PupilDto create(PupilDto pupilDto) {
         Role rolePupil = roleRepo.findByName("ROLE_PUPIL")
-                .orElseThrow(() -> new NotFoundException("Role not found by name: ROLE_PUPIL"));
+                .orElseThrow(() -> new EntityNotFoundException("Role not found by name: ROLE_PUPIL"));
 
         pupilDto.getRoles().add(rolePupil);
         pupilDto.setStatus(EntityStatus.ACTIVE);
@@ -66,7 +66,7 @@ public class PupilServiceImpl implements PupilService {
     @Override
     public PupilDto findById(Long id) {
         PupilDto result = pupilMapper.toDto(pupilRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Pupil not found by id: " + id)));
+                .orElseThrow(() -> new EntityNotFoundException("Pupil not found by id: " + id)));
         log.info("IN findById - pupil: {} found by id: {}", result, id);
         return result;
     }

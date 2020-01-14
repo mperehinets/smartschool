@@ -2,13 +2,13 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.TemplateScheduleDto;
 import com.mper.smartschool.dto.mapper.TemplateScheduleMapper;
-import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.model.TemplateSchedule;
 import com.mper.smartschool.repository.TemplateScheduleRepo;
 import com.mper.smartschool.service.TemplateScheduleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -54,7 +54,7 @@ public class TemplateScheduleServiceImpl implements TemplateScheduleService {
     @Override
     public TemplateScheduleDto findById(Long id) {
         TemplateScheduleDto result = templateScheduleMapper.toDto(templateScheduleRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("TemplateSchedule not found by id: " + id)));
+                .orElseThrow(() -> new EntityNotFoundException("TemplateSchedule not found by id: " + id)));
         log.info("IN findById - templateSchedule: {} found by id: {}", result, id);
         return result;
     }

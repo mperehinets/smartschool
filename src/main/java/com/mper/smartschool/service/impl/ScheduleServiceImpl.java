@@ -2,7 +2,6 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.ScheduleDto;
 import com.mper.smartschool.dto.mapper.ScheduleMapper;
-import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.model.Schedule;
 import com.mper.smartschool.repository.ScheduleRepo;
 import com.mper.smartschool.service.ScheduleService;
@@ -10,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -53,7 +53,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public ScheduleDto findById(Long id) {
         ScheduleDto result = scheduleMapper.toDto(scheduleRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Schedule not found by id: " + id)));
+                .orElseThrow(() -> new EntityNotFoundException("Schedule not found by id: " + id)));
         log.info("IN findById - schedule: {} found by id: {}", result, id);
         return result;
     }

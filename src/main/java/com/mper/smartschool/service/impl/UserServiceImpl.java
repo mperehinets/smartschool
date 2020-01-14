@@ -2,7 +2,6 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.dto.mapper.UserMapper;
-import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.model.Role;
 import com.mper.smartschool.model.User;
 import com.mper.smartschool.model.modelsEnum.EntityStatus;
@@ -13,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto create(UserDto userDto) {
         Role roleUser = roleRepo.findByName("ROLE_USER")
-                .orElseThrow(() -> new NotFoundException("Role not found by name: ROLE_USER"));
+                .orElseThrow(() -> new EntityNotFoundException("Role not found by name: ROLE_USER"));
 
         userDto.getRoles().add(roleUser);
         userDto.setStatus(EntityStatus.ACTIVE);
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findById(Long id) {
         UserDto result = userMapper.toDto(userRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("User not found by id: " + id)));
+                .orElseThrow(() -> new EntityNotFoundException("User not found by id: " + id)));
         log.info("IN findById - user: {} found by id: {}", result, id);
         return result;
     }

@@ -2,7 +2,6 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.SchoolClassDto;
 import com.mper.smartschool.dto.mapper.SchoolClassMapper;
-import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.model.SchoolClass;
 import com.mper.smartschool.model.modelsEnum.EntityStatus;
 import com.mper.smartschool.repository.SchoolClassRepo;
@@ -11,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -57,7 +57,7 @@ public class SchoolClassServiceImpl implements SchoolClassService {
     @Override
     public SchoolClassDto findById(Long id) {
         SchoolClassDto result = schoolClassMapper.toDto(schoolClassRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("SchoolClass not found by id: " + id)));
+                .orElseThrow(() -> new EntityNotFoundException("SchoolClass not found by id: " + id)));
         log.info("IN findById - schoolClass: {} found by id: {}", result, id);
         return result;
     }

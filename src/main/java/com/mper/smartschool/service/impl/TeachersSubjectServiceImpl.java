@@ -2,7 +2,6 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.TeachersSubjectDto;
 import com.mper.smartschool.dto.mapper.TeachersSubjectMapper;
-import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.model.TeachersSubject;
 import com.mper.smartschool.repository.TeachersSubjectRepo;
 import com.mper.smartschool.service.TeachersSubjectService;
@@ -10,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -59,7 +59,7 @@ public class TeachersSubjectServiceImpl implements TeachersSubjectService {
     @Override
     public TeachersSubjectDto findById(Long id) {
         TeachersSubjectDto result = teachersSubjectMapper.toDto(teachersSubjectRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("TeachersSubject not found by id: " + id)));
+                .orElseThrow(() -> new EntityNotFoundException("TeachersSubject not found by id: " + id)));
         log.info("IN findById - teachersSubject: {} found by id: {}", result, id);
         return result;
     }

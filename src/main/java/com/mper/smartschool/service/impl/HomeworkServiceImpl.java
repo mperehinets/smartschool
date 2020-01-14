@@ -2,7 +2,6 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.HomeworkDto;
 import com.mper.smartschool.dto.mapper.HomeworkMapper;
-import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.model.Homework;
 import com.mper.smartschool.repository.HomeworkRepo;
 import com.mper.smartschool.service.HomeworkService;
@@ -10,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -53,7 +53,7 @@ public class HomeworkServiceImpl implements HomeworkService {
     @Override
     public HomeworkDto findById(Long id) {
         HomeworkDto result = homeworkMapper.toDto(homeworkRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Homework not found by id: " + id)));
+                .orElseThrow(() -> new EntityNotFoundException("Homework not found by id: " + id)));
         log.info("IN findById - homework: {} found by id: {}", result, id);
         return result;
     }
