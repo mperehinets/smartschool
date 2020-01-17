@@ -40,6 +40,7 @@ public class TeachersSubjectServiceImpl implements TeachersSubjectService {
 
     @Override
     public TeachersSubjectDto update(TeachersSubjectDto teachersSubjectDto) {
+        findById(teachersSubjectDto.getId());
         TeachersSubjectDto result = teachersSubjectMapper.toDto(teachersSubjectRepo
                 .save(teachersSubjectMapper.toEntity(teachersSubjectDto)));
         log.info("IN update - teachersSubject: {} successfully updated", result);
@@ -74,7 +75,9 @@ public class TeachersSubjectServiceImpl implements TeachersSubjectService {
     @Override
     public TeachersSubjectDto stopTeachSubjectById(Long id) {
         TeachersSubjectDto teachersSubjectDto = findById(id);
-        teachersSubjectDto.setEndDate(LocalDate.now());
+        if (teachersSubjectDto.getEndDate() == null) {
+            teachersSubjectDto.setEndDate(LocalDate.now());
+        }
 
         TeachersSubjectDto result = teachersSubjectMapper.toDto(teachersSubjectRepo
                 .save(teachersSubjectMapper.toEntity(teachersSubjectDto)));

@@ -36,6 +36,7 @@ public class PupilSuccessServiceImpl implements PupilSuccessService {
 
     @Override
     public PupilSuccessDto update(PupilSuccessDto pupilSuccessDto) {
+        findById(pupilSuccessDto.getId());
         PupilSuccessDto result = pupilSuccessMapper.toDto(pupilSuccessRepo
                 .save(pupilSuccessMapper.toEntity(pupilSuccessDto)));
         log.info("IN update - pupilSuccess: {} successfully updated", result);

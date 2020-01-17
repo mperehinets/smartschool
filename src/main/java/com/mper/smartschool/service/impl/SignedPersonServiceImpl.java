@@ -28,14 +28,17 @@ public class SignedPersonServiceImpl implements SignedPersonService {
 
     @Override
     public SignedPersonDto create(SignedPersonDto signedPersonDto) {
-        SignedPersonDto result = signedPersonMapper.toDto(signedPersonRepo.save(signedPersonMapper.toEntity(signedPersonDto)));
+        SignedPersonDto result = signedPersonMapper.toDto(signedPersonRepo
+                .save(signedPersonMapper.toEntity(signedPersonDto)));
         log.info("IN create - signedPerson: {} successfully created", result);
         return result;
     }
 
     @Override
     public SignedPersonDto update(SignedPersonDto signedPersonDto) {
-        SignedPersonDto result = signedPersonMapper.toDto(signedPersonRepo.save(signedPersonMapper.toEntity(signedPersonDto)));
+        findById(signedPersonDto.getId());
+        SignedPersonDto result = signedPersonMapper.toDto(signedPersonRepo
+                .save(signedPersonMapper.toEntity(signedPersonDto)));
         log.info("IN update - signedPerson: {} successfully updated", result);
         return result;
     }

@@ -35,6 +35,7 @@ public class HomeworkServiceImpl implements HomeworkService {
 
     @Override
     public HomeworkDto update(HomeworkDto homeworkDto) {
+        findById(homeworkDto.getId());
         HomeworkDto result = homeworkMapper.toDto(homeworkRepo.save(homeworkMapper.toEntity(homeworkDto)));
         log.info("IN update - homework: {} successfully updated", result);
         return result;

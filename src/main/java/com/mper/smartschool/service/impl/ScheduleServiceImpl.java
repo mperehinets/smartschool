@@ -35,6 +35,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public ScheduleDto update(ScheduleDto scheduleDto) {
+        findById(scheduleDto.getId());
         ScheduleDto result = scheduleMapper.toDto(scheduleRepo.save(scheduleMapper.toEntity(scheduleDto)));
         log.info("IN update - schedule: {} successfully updated", result);
         return result;

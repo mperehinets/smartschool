@@ -26,8 +26,9 @@ public class Subject extends BaseEntity {
     }
 
     @Builder
-    public Subject(Long id, EntityStatus status) {
+    public Subject(Long id, String name, EntityStatus status) {
         super(id);
         this.status = status;
+        this.name = name;
     }
 }

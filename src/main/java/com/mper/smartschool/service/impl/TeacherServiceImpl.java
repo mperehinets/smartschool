@@ -49,6 +49,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public TeacherDto update(TeacherDto teacherDto) {
+        findById(teacherDto.getId());
         TeacherDto result = teacherMapper.toDto(teacherRepo.save(teacherMapper.toEntity(teacherDto)));
         log.info("IN update - teacher: {} successfully updated", result);
         return result;

@@ -35,6 +35,7 @@ public class TemplateScheduleServiceImpl implements TemplateScheduleService {
 
     @Override
     public TemplateScheduleDto update(TemplateScheduleDto templateScheduleDto) {
+        findById(templateScheduleDto.getId());
         TemplateScheduleDto result = templateScheduleMapper.toDto(templateScheduleRepo
                 .save(templateScheduleMapper.toEntity(templateScheduleDto)));
         log.info("IN update - templateSchedule: {} successfully updated", result);

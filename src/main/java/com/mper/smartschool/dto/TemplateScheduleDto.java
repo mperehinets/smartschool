@@ -12,18 +12,18 @@ public class TemplateScheduleDto extends BaseDto {
 
     private Integer classNumber;
 
-    private Integer number;
+    private Integer lessonNumber;
 
-    private TeachersSubjectDto teachersSubject;
+    private SubjectDto subject;
 
     public TemplateScheduleDto() {
     }
 
     @Builder
-    public TemplateScheduleDto(Long id, Integer classNumber, Integer number, TeachersSubjectDto teachersSubject) {
+    public TemplateScheduleDto(Long id, Integer classNumber, Integer lessonNumber, SubjectDto subject) {
         super(id);
         this.classNumber = classNumber;
-        this.number = number;
-        this.teachersSubject = teachersSubject;
+        this.lessonNumber = lessonNumber;
+        this.subject = subject;
     }
 }

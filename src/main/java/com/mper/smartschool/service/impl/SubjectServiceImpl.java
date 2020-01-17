@@ -38,6 +38,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public SubjectDto update(SubjectDto subjectDto) {
+        findById(subjectDto.getId());
         SubjectDto result = subjectMapper.toDto(subjectRepo.save(subjectMapper.toEntity(subjectDto)));
         log.info("IN update - subject: {} successfully updated", result);
         return result;

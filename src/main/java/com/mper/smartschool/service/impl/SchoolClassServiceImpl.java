@@ -38,6 +38,7 @@ public class SchoolClassServiceImpl implements SchoolClassService {
 
     @Override
     public SchoolClassDto update(SchoolClassDto schoolClassDto) {
+        findById(schoolClassDto.getId());
         SchoolClassDto result = schoolClassMapper.toDto(schoolClassRepo
                 .save(schoolClassMapper.toEntity(schoolClassDto)));
         log.info("IN update - schoolClass: {} successfully updated", result);

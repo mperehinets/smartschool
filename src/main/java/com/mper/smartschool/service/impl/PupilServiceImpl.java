@@ -48,6 +48,7 @@ public class PupilServiceImpl implements PupilService {
 
     @Override
     public PupilDto update(PupilDto pupilDto) {
+        findById(pupilDto.getId());
         PupilDto result = pupilMapper.toDto(pupilRepo.save(pupilMapper.toEntity(pupilDto)));
         log.info("IN update - pupil: {} successfully updated", result);
         return result;

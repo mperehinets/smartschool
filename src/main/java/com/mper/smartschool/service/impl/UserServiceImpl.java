@@ -48,6 +48,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto update(UserDto userDto) {
+        findById(userDto.getId());
         UserDto result = userMapper.toDto(userRepo.save(userMapper.toEntity(userDto)));
         log.info("IN update - user: {} successfully updated", result);
         return result;

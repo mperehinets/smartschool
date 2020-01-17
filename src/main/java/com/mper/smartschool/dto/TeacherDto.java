@@ -20,7 +20,7 @@ public class TeacherDto extends UserDto {
     public TeacherDto() {
     }
 
-    @Builder
+    @Builder(builderMethodName = "teacherBuilder")
     public TeacherDto(Long id,
                       String firstName,
                       String secondName,
