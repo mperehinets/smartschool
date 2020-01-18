@@ -1,4 +1,4 @@
-package com.mper.smartschool.model;
+package com.mper.smartschool.entity;
 
 import lombok.Builder;
 import lombok.Data;

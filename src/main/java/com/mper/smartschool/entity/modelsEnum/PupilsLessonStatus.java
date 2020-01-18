@@ -1,4 +1,4 @@
-package com.mper.smartschool.model.modelsEnum;
+package com.mper.smartschool.entity.modelsEnum;
 
 public enum PupilsLessonStatus {
     PRESENT, ABSENT

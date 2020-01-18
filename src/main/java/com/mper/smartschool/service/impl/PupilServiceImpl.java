@@ -2,9 +2,9 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.PupilDto;
 import com.mper.smartschool.dto.mapper.PupilMapper;
-import com.mper.smartschool.model.Pupil;
-import com.mper.smartschool.model.Role;
-import com.mper.smartschool.model.modelsEnum.EntityStatus;
+import com.mper.smartschool.entity.Pupil;
+import com.mper.smartschool.entity.Role;
+import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.repository.PupilRepo;
 import com.mper.smartschool.repository.RoleRepo;
 import com.mper.smartschool.service.PupilService;

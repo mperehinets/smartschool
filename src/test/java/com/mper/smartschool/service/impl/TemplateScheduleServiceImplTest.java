@@ -4,7 +4,7 @@ import com.mper.smartschool.DtoDirector;
 import com.mper.smartschool.dto.TemplateScheduleDto;
 import com.mper.smartschool.dto.mapper.TemplateScheduleMapper;
 import com.mper.smartschool.dto.mapper.TemplateScheduleMapperImpl;
-import com.mper.smartschool.model.TemplateSchedule;
+import com.mper.smartschool.entity.TemplateSchedule;
 import com.mper.smartschool.repository.TemplateScheduleRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

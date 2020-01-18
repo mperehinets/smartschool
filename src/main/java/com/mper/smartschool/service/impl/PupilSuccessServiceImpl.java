@@ -2,7 +2,7 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.PupilSuccessDto;
 import com.mper.smartschool.dto.mapper.PupilSuccessMapper;
-import com.mper.smartschool.model.PupilSuccess;
+import com.mper.smartschool.entity.PupilSuccess;
 import com.mper.smartschool.repository.PupilSuccessRepo;
 import com.mper.smartschool.service.PupilSuccessService;
 import lombok.extern.slf4j.Slf4j;

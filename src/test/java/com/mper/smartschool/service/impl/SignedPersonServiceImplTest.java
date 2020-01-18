@@ -4,7 +4,7 @@ import com.mper.smartschool.DtoDirector;
 import com.mper.smartschool.dto.SignedPersonDto;
 import com.mper.smartschool.dto.mapper.SignedPersonMapper;
 import com.mper.smartschool.dto.mapper.SignedPersonMapperImpl;
-import com.mper.smartschool.model.SignedPerson;
+import com.mper.smartschool.entity.SignedPerson;
 import com.mper.smartschool.repository.SignedPersonRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

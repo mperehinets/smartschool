@@ -1,6 +1,6 @@
 package com.mper.smartschool.repository;
 
-import com.mper.smartschool.model.Role;
+import com.mper.smartschool.entity.Role;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

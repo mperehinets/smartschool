@@ -2,7 +2,7 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.TeachersSubjectDto;
 import com.mper.smartschool.dto.mapper.TeachersSubjectMapper;
-import com.mper.smartschool.model.TeachersSubject;
+import com.mper.smartschool.entity.TeachersSubject;
 import com.mper.smartschool.repository.TeachersSubjectRepo;
 import com.mper.smartschool.service.TeachersSubjectService;
 import lombok.extern.slf4j.Slf4j;

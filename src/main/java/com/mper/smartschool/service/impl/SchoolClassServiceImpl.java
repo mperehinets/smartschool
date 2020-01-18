@@ -2,8 +2,8 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.SchoolClassDto;
 import com.mper.smartschool.dto.mapper.SchoolClassMapper;
-import com.mper.smartschool.model.SchoolClass;
-import com.mper.smartschool.model.modelsEnum.EntityStatus;
+import com.mper.smartschool.entity.SchoolClass;
+import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.repository.SchoolClassRepo;
 import com.mper.smartschool.service.SchoolClassService;
 import lombok.extern.slf4j.Slf4j;

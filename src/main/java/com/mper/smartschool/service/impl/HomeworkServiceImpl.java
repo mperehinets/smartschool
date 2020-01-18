@@ -2,7 +2,7 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.HomeworkDto;
 import com.mper.smartschool.dto.mapper.HomeworkMapper;
-import com.mper.smartschool.model.Homework;
+import com.mper.smartschool.entity.Homework;
 import com.mper.smartschool.repository.HomeworkRepo;
 import com.mper.smartschool.service.HomeworkService;
 import lombok.extern.slf4j.Slf4j;

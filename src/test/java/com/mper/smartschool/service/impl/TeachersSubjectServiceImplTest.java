@@ -4,7 +4,7 @@ import com.mper.smartschool.DtoDirector;
 import com.mper.smartschool.dto.TeachersSubjectDto;
 import com.mper.smartschool.dto.mapper.TeachersSubjectMapper;
 import com.mper.smartschool.dto.mapper.TeachersSubjectMapperImpl;
-import com.mper.smartschool.model.TeachersSubject;
+import com.mper.smartschool.entity.TeachersSubject;
 import com.mper.smartschool.repository.TeachersSubjectRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

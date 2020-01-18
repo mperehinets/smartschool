@@ -2,7 +2,7 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.SignedPersonDto;
 import com.mper.smartschool.dto.mapper.SignedPersonMapper;
-import com.mper.smartschool.model.SignedPerson;
+import com.mper.smartschool.entity.SignedPerson;
 import com.mper.smartschool.repository.SignedPersonRepo;
 import com.mper.smartschool.service.SignedPersonService;
 import lombok.extern.slf4j.Slf4j;

@@ -1,8 +1,8 @@
-package com.mper.smartschool.model;
+package com.mper.smartschool.entity;
 
-import com.mper.smartschool.model.converter.YearAttributeConverter;
-import com.mper.smartschool.model.modelsEnum.EntityStatus;
-import com.mper.smartschool.model.modelsEnum.SchoolClassInitial;
+import com.mper.smartschool.entity.converter.YearAttributeConverter;
+import com.mper.smartschool.entity.modelsEnum.EntityStatus;
+import com.mper.smartschool.entity.modelsEnum.SchoolClassInitial;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

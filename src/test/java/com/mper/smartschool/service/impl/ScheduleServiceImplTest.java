@@ -4,7 +4,7 @@ import com.mper.smartschool.DtoDirector;
 import com.mper.smartschool.dto.ScheduleDto;
 import com.mper.smartschool.dto.mapper.ScheduleMapper;
 import com.mper.smartschool.dto.mapper.ScheduleMapperImpl;
-import com.mper.smartschool.model.Schedule;
+import com.mper.smartschool.entity.Schedule;
 import com.mper.smartschool.repository.ScheduleRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

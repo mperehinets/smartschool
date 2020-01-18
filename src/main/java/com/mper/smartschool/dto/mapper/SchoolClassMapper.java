@@ -1,7 +1,7 @@
 package com.mper.smartschool.dto.mapper;
 
 import com.mper.smartschool.dto.SchoolClassDto;
-import com.mper.smartschool.model.SchoolClass;
+import com.mper.smartschool.entity.SchoolClass;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

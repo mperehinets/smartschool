@@ -1,7 +1,7 @@
 package com.mper.smartschool.dto.mapper;
 
 import com.mper.smartschool.dto.PupilSuccessDto;
-import com.mper.smartschool.model.PupilSuccess;
+import com.mper.smartschool.entity.PupilSuccess;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

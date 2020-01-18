@@ -2,7 +2,7 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.ScheduleDto;
 import com.mper.smartschool.dto.mapper.ScheduleMapper;
-import com.mper.smartschool.model.Schedule;
+import com.mper.smartschool.entity.Schedule;
 import com.mper.smartschool.repository.ScheduleRepo;
 import com.mper.smartschool.service.ScheduleService;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
-package com.mper.smartschool.model;
+package com.mper.smartschool.entity;
 
-import com.mper.smartschool.model.modelsEnum.PupilsLessonStatus;
+import com.mper.smartschool.entity.modelsEnum.PupilsLessonStatus;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

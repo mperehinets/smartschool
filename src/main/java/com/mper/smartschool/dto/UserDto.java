@@ -1,7 +1,7 @@
 package com.mper.smartschool.dto;
 
-import com.mper.smartschool.model.Role;
-import com.mper.smartschool.model.modelsEnum.EntityStatus;
+import com.mper.smartschool.entity.Role;
+import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -4,7 +4,7 @@ import com.mper.smartschool.DtoDirector;
 import com.mper.smartschool.dto.HomeworkDto;
 import com.mper.smartschool.dto.mapper.HomeworkMapper;
 import com.mper.smartschool.dto.mapper.HomeworkMapperImpl;
-import com.mper.smartschool.model.Homework;
+import com.mper.smartschool.entity.Homework;
 import com.mper.smartschool.repository.HomeworkRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

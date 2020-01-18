@@ -1,4 +1,4 @@
-package com.mper.smartschool.model.converter;
+package com.mper.smartschool.entity.converter;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
