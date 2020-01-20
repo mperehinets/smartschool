@@ -25,7 +25,7 @@ public class PupilSuccessController {
         return pupilSuccessService.create(pupilSuccessDto);
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public PupilSuccessDto update(@PathVariable Long id, @RequestBody PupilSuccessDto pupilSuccessDto) {
         pupilSuccessDto.setId(id);
         return pupilSuccessService.update(pupilSuccessDto);

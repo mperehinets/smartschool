@@ -25,7 +25,7 @@ public class TemplateScheduleController {
         return templateScheduleService.create(templateScheduleDto);
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public TemplateScheduleDto update(@PathVariable Long id, @RequestBody TemplateScheduleDto templateScheduleDto) {
         templateScheduleDto.setId(id);
         return templateScheduleService.update(templateScheduleDto);

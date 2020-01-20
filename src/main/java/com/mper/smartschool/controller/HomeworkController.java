@@ -25,7 +25,7 @@ public class HomeworkController {
         return homeworkService.create(homeworkDto);
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public HomeworkDto update(@PathVariable Long id, @RequestBody HomeworkDto homeworkDto) {
         homeworkDto.setId(id);
         return homeworkService.update(homeworkDto);

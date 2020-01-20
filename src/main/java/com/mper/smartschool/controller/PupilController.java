@@ -25,7 +25,7 @@ public class PupilController {
         return pupilService.create(pupilDto);
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public PupilDto update(@PathVariable Long id, @RequestBody PupilDto pupilDto) {
         pupilDto.setId(id);
         return pupilService.update(pupilDto);

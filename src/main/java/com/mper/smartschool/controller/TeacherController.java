@@ -25,7 +25,7 @@ public class TeacherController {
         return teacherService.create(teacherDto);
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public TeacherDto update(@PathVariable Long id, @RequestBody TeacherDto teacherDto) {
         teacherDto.setId(id);
         return teacherService.update(teacherDto);

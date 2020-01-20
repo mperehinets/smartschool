@@ -25,7 +25,7 @@ public class SubjectController {
         return subjectService.create(subjectDto);
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public SubjectDto update(@PathVariable Long id, @RequestBody SubjectDto subjectDto) {
         subjectDto.setId(id);
         return subjectService.update(subjectDto);

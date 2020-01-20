@@ -25,7 +25,7 @@ public class SignedPersonController {
         return signedPersonService.create(signedPersonDto);
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public SignedPersonDto update(@PathVariable Long id, @RequestBody SignedPersonDto signedPersonDto) {
         signedPersonDto.setId(id);
         return signedPersonService.update(signedPersonDto);

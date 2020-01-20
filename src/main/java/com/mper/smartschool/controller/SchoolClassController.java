@@ -25,7 +25,7 @@ public class SchoolClassController {
         return schoolClassService.create(schoolClassDto);
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public SchoolClassDto update(@PathVariable Long id, @RequestBody SchoolClassDto schoolClassDto) {
         schoolClassDto.setId(id);
         return schoolClassService.update(schoolClassDto);
