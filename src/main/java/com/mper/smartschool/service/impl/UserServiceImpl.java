@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +37,7 @@ public class UserServiceImpl implements UserService {
         Role roleUser = roleRepo.findByName("ROLE_USER")
                 .orElseThrow(() -> new EntityNotFoundException("Role not found by name: ROLE_USER"));
 
-        userDto.getRoles().add(roleUser);
+        userDto.setRoles(Collections.singleton(roleUser));
         userDto.setStatus(EntityStatus.ACTIVE);
 
         UserDto result = userMapper.toDto(userRepo.save(userMapper.toEntity(userDto)));

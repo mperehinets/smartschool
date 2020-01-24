@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,7 +38,7 @@ public class TeacherServiceImpl implements TeacherService {
         Role roleTeacher = roleRepo.findByName("ROLE_TEACHER")
                 .orElseThrow(() -> new EntityNotFoundException("Role not found by name: ROLE_TEACHER"));
 
-        teacherDto.getRoles().add(roleTeacher);
+        teacherDto.setRoles(Collections.singleton(roleTeacher));
         teacherDto.setStatus(EntityStatus.ACTIVE);
 
         TeacherDto result = teacherMapper.toDto(teacherRepo.save(teacherMapper.toEntity(teacherDto)));

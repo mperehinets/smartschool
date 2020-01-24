@@ -25,10 +25,10 @@ public class User extends BaseEntity {
     @Column(name = "last_name")
     private String secondName;
 
-    @Column(name = "email")
+    @Column(name = "email", updatable = false)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", updatable = false)
     private String password;
 
     @Column(name = "date_birth")

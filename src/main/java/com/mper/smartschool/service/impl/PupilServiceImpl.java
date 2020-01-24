@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +37,7 @@ public class PupilServiceImpl implements PupilService {
         Role rolePupil = roleRepo.findByName("ROLE_PUPIL")
                 .orElseThrow(() -> new EntityNotFoundException("Role not found by name: ROLE_PUPIL"));
 
-        pupilDto.getRoles().add(rolePupil);
+        pupilDto.setRoles(Collections.singleton(rolePupil));
         pupilDto.setStatus(EntityStatus.ACTIVE);
 
         PupilDto result = pupilMapper.toDto(pupilRepo.save(pupilMapper.toEntity(pupilDto)));
