@@ -1,6 +1,5 @@
 package com.mper.smartschool.entity;
 
-import com.mper.smartschool.entity.converter.YearAttributeConverter;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.entity.modelsEnum.SchoolClassInitial;
 import lombok.Builder;
@@ -9,7 +8,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.time.Year;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -18,16 +16,15 @@ import java.time.Year;
 @Table(name = "classes")
 public class SchoolClass extends BaseEntity {
 
-    @Column(name = "number")
+    @Column(name = "number", updatable = false)
     private Integer number;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "initial")
+    @Column(name = "initial", updatable = false)
     private SchoolClassInitial initial;
 
-    @Convert(converter = YearAttributeConverter.class)
-    @Column(name = "year")
-    private Year year;
+    @Column(name = "season", updatable = false)
+    private String season;
 
     @OneToOne
     @JoinColumn(name = "class_teacher", referencedColumnName = "user")
@@ -44,13 +41,13 @@ public class SchoolClass extends BaseEntity {
     public SchoolClass(Long id,
                        Integer number,
                        SchoolClassInitial initial,
-                       Year year,
+                       String season,
                        Teacher classTeacher,
                        EntityStatus status) {
         super(id);
         this.number = number;
         this.initial = initial;
-        this.year = year;
+        this.season = season;
         this.classTeacher = classTeacher;
         this.status = status;
     }

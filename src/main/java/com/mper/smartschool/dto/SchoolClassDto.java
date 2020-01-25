@@ -7,8 +7,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.time.Year;
-
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -18,7 +16,7 @@ public class SchoolClassDto extends BaseDto {
 
     private SchoolClassInitial initial;
 
-    private Year year;
+    private String season;
 
     private TeacherDto classTeacher;
 
@@ -31,13 +29,13 @@ public class SchoolClassDto extends BaseDto {
     public SchoolClassDto(Long id,
                           Integer number,
                           SchoolClassInitial initial,
-                          Year year,
+                          String season,
                           TeacherDto classTeacher,
                           EntityStatus status) {
         super(id);
         this.number = number;
         this.initial = initial;
-        this.year = year;
+        this.season = season;
         this.classTeacher = classTeacher;
         this.status = status;
     }

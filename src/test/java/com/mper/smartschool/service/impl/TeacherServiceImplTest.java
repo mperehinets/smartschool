@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -60,7 +61,7 @@ public class TeacherServiceImplTest {
         teacherDto.setId(null);
         teacherDto.setStatus(null);
         Teacher teacher = teacherMapper.toEntity(teacherDto);
-        teacher.getRoles().add(roleTeacher);
+        teacher.setRoles(Collections.singleton(roleTeacher));
         teacher.setStatus(EntityStatus.ACTIVE);
         Mockito.when(teacherRepo.save(teacher)).thenAnswer(invocationOnMock -> {
             Teacher returnedTeacher = invocationOnMock.getArgument(0);
@@ -88,7 +89,7 @@ public class TeacherServiceImplTest {
 
         TeacherDto result = teacherService.update(teacherDto);
 
-        assertEquals(result, teacherDto);
+        assertThat(result).isEqualToIgnoringGivenFields(teacherDto, "email", "password");
     }
 
     @Test

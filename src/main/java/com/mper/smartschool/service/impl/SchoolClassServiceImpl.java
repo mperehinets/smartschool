@@ -4,6 +4,8 @@ import com.mper.smartschool.dto.SchoolClassDto;
 import com.mper.smartschool.dto.mapper.SchoolClassMapper;
 import com.mper.smartschool.entity.SchoolClass;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
+import com.mper.smartschool.entity.modelsEnum.SchoolClassInitial;
+import com.mper.smartschool.exception.SchoolFilledByClassesException;
 import com.mper.smartschool.repository.SchoolClassRepo;
 import com.mper.smartschool.service.SchoolClassService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -29,7 +32,15 @@ public class SchoolClassServiceImpl implements SchoolClassService {
 
     @Override
     public SchoolClassDto create(SchoolClassDto schoolClassDto) {
+        String currentSeason = getCurrentSeason();
+
+        SchoolClassDto lastSchoolClass = schoolClassMapper.toDto(schoolClassRepo
+                .findTop1BySeasonAndNumberOrderByInitialDesc(currentSeason, schoolClassDto.getNumber()));
+
+        schoolClassDto.setInitial(getNextSchoolClassInitial(lastSchoolClass));
+        schoolClassDto.setSeason(currentSeason);
         schoolClassDto.setStatus(EntityStatus.ACTIVE);
+
         SchoolClassDto result = schoolClassMapper.toDto(schoolClassRepo
                 .save(schoolClassMapper.toEntity(schoolClassDto)));
         log.info("IN create - schoolClass: {} successfully created", result);
@@ -69,5 +80,31 @@ public class SchoolClassServiceImpl implements SchoolClassService {
         schoolClassDto.setStatus(EntityStatus.DELETED);
         schoolClassRepo.save(schoolClassMapper.toEntity(schoolClassDto));
         log.info("IN deleteById - schoolClass with id: {} successfully deleted", id);
+    }
+
+    private String getCurrentSeason() {
+        LocalDate now = LocalDate.now();
+        return now.getYear() + "-" + (now.getYear() + 1);
+    }
+
+    private SchoolClassInitial getNextSchoolClassInitial(SchoolClassDto lastSchoolClass) {
+        if (lastSchoolClass == null) {
+            return SchoolClassInitial.A;
+        }
+        switch (lastSchoolClass.getInitial()) {
+            case A:
+                return SchoolClassInitial.B;
+            case B:
+                return SchoolClassInitial.C;
+            case C:
+                return SchoolClassInitial.D;
+            case D:
+                return SchoolClassInitial.E;
+            case E:
+                return SchoolClassInitial.F;
+            default:
+                throw new SchoolFilledByClassesException("School filled by classes number: "
+                        + lastSchoolClass.getNumber());
+        }
     }
 }

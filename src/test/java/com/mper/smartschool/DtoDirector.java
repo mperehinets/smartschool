@@ -6,66 +6,66 @@ import com.mper.smartschool.entity.modelsEnum.PupilsLessonStatus;
 import com.mper.smartschool.entity.modelsEnum.SchoolClassInitial;
 
 import java.time.LocalDate;
-import java.time.Year;
 import java.util.HashSet;
 import java.util.Random;
 
-public final class DtoDirector {
+public interface DtoDirector {
 
-    public static UserDto makeTestUserById(Long id) {
+    static UserDto makeTestUserDtoById(Long id) {
         return UserDto.userBuilder()
                 .id(id)
                 .firstName("User")
                 .secondName("User")
                 .dateBirth(LocalDate.of(2000, 12, 17))
                 .email("user" + id + "@gmail.com")
-                .password("user")
-                .roles(new HashSet<>())
+                .password("userPassword")
+                .roles(null)
                 .status(EntityStatus.ACTIVE)
                 .build();
     }
 
-    public static TeacherDto makeTestTeacherDtoById(Long id) {
+    static TeacherDto makeTestTeacherDtoById(Long id) {
         return TeacherDto.teacherBuilder()
                 .id(id)
                 .firstName("Teacher")
                 .secondName("Teacher")
                 .dateBirth(LocalDate.of(2000, 12, 19))
                 .email("teacher" + id + "@gmail.com")
-                .password("teacher")
+                .password("teacherPassword")
                 .education("Teacher")
-                .roles(new HashSet<>())
+                .roles(null)
                 .status(EntityStatus.ACTIVE)
                 .build();
     }
 
-    public static PupilDto makeTestPupilById(Long id) {
+    static PupilDto makeTestPupilDtoById(Long id) {
         return PupilDto.pupilBuilder()
                 .id(id)
                 .firstName("Pupil")
                 .secondName("Pupil")
                 .dateBirth(LocalDate.of(2000, 12, 17))
                 .email("pupil" + id + "@gmail.com")
-                .password("pupil")
+                .password("pupilPassword")
                 .schoolClass(makeTestSchoolClassDtoById(id + 1))
                 .signedPersons(new HashSet<>())
-                .roles(new HashSet<>())
+                .roles(null)
                 .status(EntityStatus.ACTIVE)
                 .build();
     }
 
-    public static SchoolClassDto makeTestSchoolClassDtoById(Long id) {
+    static SchoolClassDto makeTestSchoolClassDtoById(Long id) {
+        LocalDate now = LocalDate.now();
         return SchoolClassDto.builder()
                 .id(id)
                 .number(new Random().nextInt(11) + 1)
                 .initial(SchoolClassInitial.A)
-                .year(Year.now())
+                .season(now.getYear() + "-" + (now.getYear() + 1))
                 .classTeacher(makeTestTeacherDtoById(id))
                 .status(EntityStatus.ACTIVE)
                 .build();
     }
 
-    public static SubjectDto makeTestSubjectDtoById(Long id) {
+    static SubjectDto makeTestSubjectDtoById(Long id) {
         return SubjectDto.builder()
                 .id(id)
                 .name("Subject")
@@ -73,7 +73,7 @@ public final class DtoDirector {
                 .build();
     }
 
-    public static TeachersSubjectDto makeTestTeachersSubjectDtoById(Long id) {
+    static TeachersSubjectDto makeTestTeachersSubjectDtoById(Long id) {
         return TeachersSubjectDto.builder()
                 .id(id)
                 .subject(makeTestSubjectDtoById(id))
@@ -83,7 +83,7 @@ public final class DtoDirector {
                 .build();
     }
 
-    public static SignedPersonDto makeTestSignedPersonDtoById(Long id) {
+    static SignedPersonDto makeTestSignedPersonDtoById(Long id) {
         return SignedPersonDto.builder()
                 .id(id)
                 .fullName("Signed Person")
@@ -91,7 +91,7 @@ public final class DtoDirector {
                 .build();
     }
 
-    public static TemplateScheduleDto makeTestTemplateScheduleDtoById(Long id) {
+    static TemplateScheduleDto makeTestTemplateScheduleDtoById(Long id) {
         return TemplateScheduleDto.builder()
                 .id(id)
                 .classNumber(new Random().nextInt(11) + 1)
@@ -100,7 +100,7 @@ public final class DtoDirector {
                 .build();
     }
 
-    public static ScheduleDto makeTestScheduleDtoById(Long id) {
+    static ScheduleDto makeTestScheduleDtoById(Long id) {
         return ScheduleDto.builder()
                 .id(id)
                 .lessonNumber(new Random().nextInt(7) + 1)
@@ -110,17 +110,17 @@ public final class DtoDirector {
                 .build();
     }
 
-    public static PupilSuccessDto makeTestPupilSuccessDtoById(Long id) {
+    static PupilSuccessDto makeTestPupilSuccessDtoById(Long id) {
         return PupilSuccessDto.builder()
                 .id(id)
-                .pupil(makeTestPupilById(id))
+                .pupil(makeTestPupilDtoById(id))
                 .schedule(makeTestScheduleDtoById(id + 1))
                 .pupilsLessonStatus(PupilsLessonStatus.PRESENT)
                 .rating(new Random().nextInt(12) + 1)
                 .build();
     }
 
-    public static HomeworkDto makeTestHomeworkDtoById(Long id) {
+    static HomeworkDto makeTestHomeworkDtoById(Long id) {
         return HomeworkDto.builder()
                 .id(id)
                 .schedule(makeTestScheduleDtoById(id))

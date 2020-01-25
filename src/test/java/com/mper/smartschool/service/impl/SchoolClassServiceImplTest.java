@@ -6,6 +6,7 @@ import com.mper.smartschool.dto.mapper.SchoolClassMapper;
 import com.mper.smartschool.dto.mapper.SchoolClassMapperImpl;
 import com.mper.smartschool.entity.SchoolClass;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
+import com.mper.smartschool.entity.modelsEnum.SchoolClassInitial;
 import com.mper.smartschool.repository.SchoolClassRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -45,8 +47,25 @@ public class SchoolClassServiceImplTest {
     public void create_success() {
         schoolClassDto.setId(null);
         schoolClassDto.setStatus(null);
+        schoolClassDto.setSeason(null);
+        schoolClassDto.setInitial(null);
+
+        LocalDate now = LocalDate.now();
+        String currentSeason = now.getYear() + "-" + (now.getYear() + 1);
+
+        SchoolClass lastSchoolClass = schoolClassMapper.toEntity(schoolClassDto);
+        lastSchoolClass.setInitial(SchoolClassInitial.A);
+        lastSchoolClass.setSeason(currentSeason);
+        lastSchoolClass.setStatus(EntityStatus.ACTIVE);
+        lastSchoolClass.setId(5L);
+        Mockito.when(schoolClassRepo
+                .findTop1BySeasonAndNumberOrderByInitialDesc(currentSeason, schoolClassDto.getNumber()))
+                .thenReturn(lastSchoolClass);
+
         SchoolClass schoolClass = schoolClassMapper.toEntity(schoolClassDto);
         schoolClass.setStatus(EntityStatus.ACTIVE);
+        schoolClass.setSeason(currentSeason);
+        schoolClass.setInitial(SchoolClassInitial.B);
         Mockito.when(schoolClassRepo.save(schoolClass)).thenAnswer(invocationOnMock -> {
             SchoolClass returnedSchoolClass = invocationOnMock.getArgument(0);
             returnedSchoolClass.setId(1L);
@@ -59,7 +78,12 @@ public class SchoolClassServiceImplTest {
 
         assertEquals(result.getStatus(), EntityStatus.ACTIVE);
 
-        assertThat(result).isEqualToIgnoringGivenFields(schoolClassDto, "id", "status");
+        assertEquals(result.getInitial(), SchoolClassInitial.B);
+
+        assertEquals(result.getSeason(), currentSeason);
+
+        assertThat(result).isEqualToIgnoringGivenFields(schoolClassDto,
+                "id");
     }
 
     @Test

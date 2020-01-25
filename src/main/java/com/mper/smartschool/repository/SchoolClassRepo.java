@@ -4,4 +4,6 @@ import com.mper.smartschool.entity.SchoolClass;
 import org.springframework.data.repository.CrudRepository;
 
 public interface SchoolClassRepo extends CrudRepository<SchoolClass, Long> {
+
+    SchoolClass findTop1BySeasonAndNumberOrderByInitialDesc(String season, Integer number);
 }

@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -45,7 +46,7 @@ public class UserServiceImplTest {
     @BeforeEach
     public void setUp() {
         userService = new UserServiceImpl(userRepo, userMapper, roleRepo);
-        userDto = DtoDirector.makeTestUserById(1L);
+        userDto = DtoDirector.makeTestUserDtoById(1L);
     }
 
     @Test
@@ -60,7 +61,7 @@ public class UserServiceImplTest {
         userDto.setId(null);
         userDto.setStatus(null);
         User user = userMapper.toEntity(userDto);
-        user.getRoles().add(roleUser);
+        user.setRoles(Collections.singleton(roleUser));
         user.setStatus(EntityStatus.ACTIVE);
         Mockito.when(userRepo.save(user)).thenAnswer(invocationOnMock -> {
             User returnedUser = invocationOnMock.getArgument(0);
@@ -89,7 +90,7 @@ public class UserServiceImplTest {
 
         UserDto result = userService.update(userDto);
 
-        assertEquals(result, userDto);
+        assertThat(result).isEqualToIgnoringGivenFields(userDto, "email", "password");
     }
 
     @Test
@@ -145,8 +146,8 @@ public class UserServiceImplTest {
     }
 
     private Collection<UserDto> getCollectionOfUsersDto() {
-        UserDto userDto2 = DtoDirector.makeTestUserById(2L);
-        UserDto userDto3 = DtoDirector.makeTestUserById(3L);
+        UserDto userDto2 = DtoDirector.makeTestUserDtoById(2L);
+        UserDto userDto3 = DtoDirector.makeTestUserDtoById(3L);
         return Arrays.asList(userDto, userDto2, userDto3);
     }
 }

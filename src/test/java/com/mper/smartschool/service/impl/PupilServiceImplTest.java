@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -45,7 +46,7 @@ public class PupilServiceImplTest {
     @BeforeEach
     public void setUp() {
         pupilService = new PupilServiceImpl(pupilRepo, pupilMapper, roleRepo);
-        pupilDto = DtoDirector.makeTestPupilById(1L);
+        pupilDto = DtoDirector.makeTestPupilDtoById(1L);
     }
 
     @Test
@@ -60,7 +61,7 @@ public class PupilServiceImplTest {
         pupilDto.setId(null);
         pupilDto.setStatus(null);
         Pupil pupil = pupilMapper.toEntity(pupilDto);
-        pupil.getRoles().add(rolePupil);
+        pupil.setRoles(Collections.singleton(rolePupil));
         pupil.setStatus(EntityStatus.ACTIVE);
         Mockito.when(pupilRepo.save(pupil)).thenAnswer(invocationOnMock -> {
             Pupil returnedPupil = invocationOnMock.getArgument(0);
@@ -88,7 +89,7 @@ public class PupilServiceImplTest {
 
         PupilDto result = pupilService.update(pupilDto);
 
-        assertEquals(result, pupilDto);
+        assertThat(result).isEqualToIgnoringGivenFields(pupilDto, "email", "password");
     }
 
     @Test
@@ -143,8 +144,8 @@ public class PupilServiceImplTest {
     }
 
     private Collection<PupilDto> getCollectionOfPupilsDto() {
-        PupilDto pupilDto2 = DtoDirector.makeTestPupilById(2L);
-        PupilDto pupilDto3 = DtoDirector.makeTestPupilById(3L);
+        PupilDto pupilDto2 = DtoDirector.makeTestPupilDtoById(2L);
+        PupilDto pupilDto3 = DtoDirector.makeTestPupilDtoById(3L);
         return Arrays.asList(pupilDto, pupilDto2, pupilDto3);
     }
 }
