@@ -36,8 +36,14 @@ public class SchoolClassServiceImpl implements SchoolClassService {
 
         SchoolClassDto lastSchoolClass = schoolClassMapper.toDto(schoolClassRepo
                 .findTop1BySeasonAndNumberOrderByInitialDesc(currentSeason, schoolClassDto.getNumber()));
+        if (lastSchoolClass == null) {
+            schoolClassDto.setInitial(SchoolClassInitial.A);
+        } else {
+            schoolClassDto.setInitial(lastSchoolClass.getInitial().nextInitial()
+                    .orElseThrow(() -> new SchoolFilledByClassesException("School filled by classes number: "
+                            + schoolClassDto.getNumber())));
+        }
 
-        schoolClassDto.setInitial(getNextSchoolClassInitial(lastSchoolClass));
         schoolClassDto.setSeason(currentSeason);
         schoolClassDto.setStatus(EntityStatus.ACTIVE);
 
@@ -85,26 +91,5 @@ public class SchoolClassServiceImpl implements SchoolClassService {
     private String getCurrentSeason() {
         LocalDate now = LocalDate.now();
         return now.getYear() + "-" + (now.getYear() + 1);
-    }
-
-    private SchoolClassInitial getNextSchoolClassInitial(SchoolClassDto lastSchoolClass) {
-        if (lastSchoolClass == null) {
-            return SchoolClassInitial.A;
-        }
-        switch (lastSchoolClass.getInitial()) {
-            case A:
-                return SchoolClassInitial.B;
-            case B:
-                return SchoolClassInitial.C;
-            case C:
-                return SchoolClassInitial.D;
-            case D:
-                return SchoolClassInitial.E;
-            case E:
-                return SchoolClassInitial.F;
-            default:
-                throw new SchoolFilledByClassesException("School filled by classes number: "
-                        + lastSchoolClass.getNumber());
-        }
     }
 }

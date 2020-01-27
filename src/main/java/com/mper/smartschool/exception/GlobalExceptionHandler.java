@@ -29,7 +29,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .errors(Collections.singletonList(ex.getMessage()))
                 .build();
-        log.error("Entity not found, thrown", ex);
+        log.error("Entity not found, thrown:", ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -40,7 +40,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.FORBIDDEN)
                 .errors(Collections.singletonList(ex.getMessage()))
                 .build();
-        log.error("Entity not, thrown", ex);
+        log.error("School filled by classes, thrown:", ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -58,6 +58,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .errors(errors)
                 .build();
+        log.error("Bad request. Errors: {}", errors);
         return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
     }
 
