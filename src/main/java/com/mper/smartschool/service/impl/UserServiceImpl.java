@@ -75,9 +75,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteById(Long id) {
-        UserDto userDto = findById(id);
-        userDto.setStatus(EntityStatus.DELETED);
-        userRepo.save(userMapper.toEntity(userDto));
+        findById(id);
+        userRepo.setDeletedStatusById(id);
         log.info("IN deleteById - user with id: {} successfully deleted", id);
     }
 }

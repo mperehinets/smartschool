@@ -19,7 +19,7 @@ public class Subject extends BaseEntity {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "status", updatable = false)
     private EntityStatus status;
 
     public Subject() {

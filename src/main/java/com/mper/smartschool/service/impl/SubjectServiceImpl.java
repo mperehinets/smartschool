@@ -64,9 +64,8 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public void deleteById(Long id) {
-        SubjectDto subjectDto = findById(id);
-        subjectDto.setStatus(EntityStatus.DELETED);
-        subjectRepo.save(subjectMapper.toEntity(subjectDto));
+        findById(id);
+        subjectRepo.setDeletedStatusById(id);
         log.info("IN deleteById - subject with id: {} successfully deleted", id);
     }
 }

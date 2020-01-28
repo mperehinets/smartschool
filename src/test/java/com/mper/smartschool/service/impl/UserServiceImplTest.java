@@ -133,8 +133,7 @@ public class UserServiceImplTest {
         User user = userMapper.toEntity(userDto);
         Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
 
-        user.setStatus(EntityStatus.DELETED);
-        Mockito.when(userRepo.save(user)).thenReturn(user);
+        Mockito.when(userRepo.setDeletedStatusById(user.getId())).thenReturn(1);
 
         assertDoesNotThrow(() -> userService.deleteById(userDto.getId()));
     }

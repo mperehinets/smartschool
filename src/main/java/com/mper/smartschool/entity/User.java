@@ -41,7 +41,7 @@ public class User extends BaseEntity {
     private Set<Role> roles = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "status", updatable = false)
     private EntityStatus status;
 
     public User() {

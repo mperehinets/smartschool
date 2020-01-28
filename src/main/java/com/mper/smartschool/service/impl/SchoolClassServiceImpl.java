@@ -82,9 +82,8 @@ public class SchoolClassServiceImpl implements SchoolClassService {
 
     @Override
     public void deleteById(Long id) {
-        SchoolClassDto schoolClassDto = findById(id);
-        schoolClassDto.setStatus(EntityStatus.DELETED);
-        schoolClassRepo.save(schoolClassMapper.toEntity(schoolClassDto));
+        findById(id);
+        schoolClassRepo.setDeletedStatusById(id);
         log.info("IN deleteById - schoolClass with id: {} successfully deleted", id);
     }
 

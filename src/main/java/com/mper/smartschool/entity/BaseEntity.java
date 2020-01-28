@@ -15,7 +15,7 @@ public abstract class BaseEntity {
     private Long id;
 
     @CreationTimestamp
-    @Column(name = "created_date")
+    @Column(name = "created_date", updatable = false)
     private LocalDateTime createdDate;
 
     @UpdateTimestamp

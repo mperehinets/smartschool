@@ -137,8 +137,7 @@ public class SchoolClassServiceImplTest {
         SchoolClass schoolClass = schoolClassMapper.toEntity(schoolClassDto);
         Mockito.when(schoolClassRepo.findById(schoolClassDto.getId())).thenReturn(Optional.of(schoolClass));
 
-        schoolClass.setStatus(EntityStatus.DELETED);
-        Mockito.when(schoolClassRepo.save(schoolClass)).thenReturn(schoolClass);
+        Mockito.when(schoolClassRepo.setDeletedStatusById(schoolClass.getId())).thenReturn(1);
 
         assertDoesNotThrow(() -> schoolClassService.deleteById(schoolClassDto.getId()));
     }

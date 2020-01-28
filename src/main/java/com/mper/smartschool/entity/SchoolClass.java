@@ -31,7 +31,7 @@ public class SchoolClass extends BaseEntity {
     private Teacher classTeacher;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "status", updatable = false)
     private EntityStatus status;
 
     public SchoolClass() {

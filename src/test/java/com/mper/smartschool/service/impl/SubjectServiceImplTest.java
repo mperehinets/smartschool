@@ -113,8 +113,7 @@ public class SubjectServiceImplTest {
         Subject subject = subjectMapper.toEntity(subjectDto);
         Mockito.when(subjectRepo.findById(subjectDto.getId())).thenReturn(Optional.of(subject));
 
-        subject.setStatus(EntityStatus.DELETED);
-        Mockito.when(subjectRepo.save(subject)).thenReturn(subject);
+        Mockito.when(subjectRepo.setDeletedStatusById(subject.getId())).thenReturn(1);
 
         assertDoesNotThrow(() -> subjectService.deleteById(subjectDto.getId()));
     }
