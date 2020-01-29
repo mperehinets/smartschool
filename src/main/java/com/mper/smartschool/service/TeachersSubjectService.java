@@ -16,5 +16,5 @@ public interface TeachersSubjectService {
 
     void deleteById(Long id);
 
-    TeachersSubjectDto stopTeachSubjectById(Long id);
+    void stopTeachSubjectById(Long id);
 }

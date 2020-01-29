@@ -73,18 +73,14 @@ public class TeachersSubjectServiceImpl implements TeachersSubjectService {
     }
 
     @Override
-    public TeachersSubjectDto stopTeachSubjectById(Long id) {
+    public void stopTeachSubjectById(Long id) {
         TeachersSubjectDto teachersSubjectDto = findById(id);
         if (teachersSubjectDto.getEndDate() == null) {
-            teachersSubjectDto.setEndDate(LocalDate.now());
+            teachersSubjectRepo.stopTeachSubjectById(id);
         }
-
-        TeachersSubjectDto result = teachersSubjectMapper.toDto(teachersSubjectRepo
-                .save(teachersSubjectMapper.toEntity(teachersSubjectDto)));
-
-        log.info("IN stopTeachSubjectById - teachers: {} stopped teach subject: {}",
-                result.getTeacher(),
-                result.getSubject());
-        return result;
+        log.info("IN stopTeachSubjectById - teachers: {} stopped teach subject: {}. Date: {}",
+                teachersSubjectDto.getTeacher(),
+                teachersSubjectDto.getSubject(),
+                teachersSubjectDto.getEndDate());
     }
 }

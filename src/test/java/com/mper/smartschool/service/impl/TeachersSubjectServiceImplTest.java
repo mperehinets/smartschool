@@ -129,39 +129,13 @@ public class TeachersSubjectServiceImplTest {
 
     @Test
     public void stopTeachSubjectById_success() {
-        TeachersSubject foundTeachersSubject = teachersSubjectMapper.toEntity(teachersSubjectDto);
-        Mockito.when(teachersSubjectRepo.findById(teachersSubjectDto.getId()))
-                .thenReturn(Optional.of(foundTeachersSubject));
-
         TeachersSubject teachersSubject = teachersSubjectMapper.toEntity(teachersSubjectDto);
-        LocalDate endDate = LocalDate.now();
-        teachersSubject.setEndDate(endDate);
-        Mockito.when(teachersSubjectRepo.save(teachersSubject)).thenReturn(teachersSubject);
-
-        TeachersSubjectDto result = teachersSubjectService.stopTeachSubjectById(teachersSubjectDto.getId());
-
-        assertEquals(result.getEndDate(), endDate);
-
-        assertThat(result).isEqualToIgnoringGivenFields(teachersSubjectDto,
-                "endDate");
-    }
-
-    @Test
-    public void stopTeachSubjectById_notGenerateNewEndDate_ifFoundTeachersSubjectAlreadyStopped() {
-        TeachersSubject foundTeachersSubject = teachersSubjectMapper.toEntity(teachersSubjectDto);
-        LocalDate endDateOfFoundTeachersSubject = LocalDate.now().minusMonths(3);
-        foundTeachersSubject.setEndDate(endDateOfFoundTeachersSubject);
         Mockito.when(teachersSubjectRepo.findById(teachersSubjectDto.getId()))
-                .thenReturn(Optional.of(foundTeachersSubject));
+                .thenReturn(Optional.of(teachersSubject));
 
-        Mockito.when(teachersSubjectRepo.save(foundTeachersSubject)).thenReturn(foundTeachersSubject);
+        Mockito.when(teachersSubjectRepo.stopTeachSubjectById(teachersSubjectDto.getId())).thenReturn(1);
 
-        TeachersSubjectDto result = teachersSubjectService.stopTeachSubjectById(teachersSubjectDto.getId());
-
-        assertEquals(result.getEndDate(), endDateOfFoundTeachersSubject);
-
-        assertThat(result).isEqualToIgnoringGivenFields(teachersSubjectDto,
-                "endDate");
+        assertDoesNotThrow(() -> teachersSubjectService.stopTeachSubjectById(teachersSubjectDto.getId()));
     }
 
     @Test
@@ -169,7 +143,6 @@ public class TeachersSubjectServiceImplTest {
         Mockito.when(teachersSubjectRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
         assertThrows(EntityNotFoundException.class, () -> teachersSubjectService.stopTeachSubjectById(Long.MAX_VALUE));
     }
-
 
     private Collection<TeachersSubjectDto> getCollectionOfTeachersSubjectsDto() {
         TeachersSubjectDto teachersSubjectDto2 = DtoDirector.makeTestTeachersSubjectDtoById(2L);
