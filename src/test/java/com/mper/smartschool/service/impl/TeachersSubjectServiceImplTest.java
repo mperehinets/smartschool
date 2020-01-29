@@ -67,25 +67,6 @@ public class TeachersSubjectServiceImplTest {
     }
 
     @Test
-    public void update_success() {
-        TeachersSubject teachersSubject = teachersSubjectMapper.toEntity(teachersSubjectDto);
-        Mockito.when(teachersSubjectRepo.findById(teachersSubjectDto.getId())).thenReturn(Optional.of(teachersSubject));
-
-        Mockito.when(teachersSubjectRepo.save(teachersSubject)).thenReturn(teachersSubject);
-
-        TeachersSubjectDto result = teachersSubjectService.update(teachersSubjectDto);
-
-        assertEquals(result, teachersSubjectDto);
-    }
-
-    @Test
-    public void update_throwEntityNotFoundException_ifTeachersSubjectNotFound() {
-        teachersSubjectDto.setId(Long.MAX_VALUE);
-        Mockito.when(teachersSubjectRepo.findById(teachersSubjectDto.getId())).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> teachersSubjectService.update(teachersSubjectDto));
-    }
-
-    @Test
     public void findAll_success() {
         Collection<TeachersSubjectDto> teachersSubjectsDto = getCollectionOfTeachersSubjectsDto();
         Mockito.when(teachersSubjectRepo.findAll())

@@ -15,14 +15,14 @@ import java.time.LocalDate;
 @Table(name = "schedules")
 public class Schedule extends BaseEntity {
 
-    @Column(name = "date")
+    @Column(name = "date", updatable = false)
     private LocalDate date;
 
     @Column(name = "lesson_number")
     private Integer lessonNumber;
 
     @ManyToOne
-    @JoinColumn(name = "class", referencedColumnName = "id")
+    @JoinColumn(name = "class", referencedColumnName = "id", updatable = false)
     private SchoolClass schoolClass;
 
     @ManyToOne

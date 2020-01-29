@@ -39,15 +39,6 @@ public class TeachersSubjectServiceImpl implements TeachersSubjectService {
     }
 
     @Override
-    public TeachersSubjectDto update(TeachersSubjectDto teachersSubjectDto) {
-        findById(teachersSubjectDto.getId());
-        TeachersSubjectDto result = teachersSubjectMapper.toDto(teachersSubjectRepo
-                .save(teachersSubjectMapper.toEntity(teachersSubjectDto)));
-        log.info("IN update - teachersSubject: {} successfully updated", result);
-        return result;
-    }
-
-    @Override
     public Collection<TeachersSubjectDto> findAll() {
         Collection<TeachersSubjectDto> result = ((Collection<TeachersSubject>) teachersSubjectRepo.findAll())
                 .stream()

@@ -8,8 +8,6 @@ public interface TeachersSubjectService {
 
     TeachersSubjectDto create(TeachersSubjectDto teachersSubjectDto);
 
-    TeachersSubjectDto update(TeachersSubjectDto teachersSubjectDto);
-
     Collection<TeachersSubjectDto> findAll();
 
     TeachersSubjectDto findById(Long id);

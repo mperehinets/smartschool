@@ -23,7 +23,7 @@ public class Pupil extends User {
     @JoinColumn(name = "class", referencedColumnName = "id")
     private SchoolClass schoolClass;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany
     @JoinTable(name = "pupils_has_signed_persons",
             joinColumns = {@JoinColumn(name = "pupil", referencedColumnName = "user")},
             inverseJoinColumns = {@JoinColumn(name = "signed_person", referencedColumnName = "id")})

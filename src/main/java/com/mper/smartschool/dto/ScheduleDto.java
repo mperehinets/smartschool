@@ -1,10 +1,17 @@
 package com.mper.smartschool.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.mper.smartschool.dto.transfer.OnCreate;
+import com.mper.smartschool.dto.transfer.OnUpdate;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import javax.validation.constraints.Future;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
@@ -12,12 +19,24 @@ import java.time.LocalDate;
 @ToString(callSuper = true)
 public class ScheduleDto extends BaseDto {
 
+    @Future(groups = {OnCreate.class}, message = "{scheduleDto.date.future}")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate date;
 
+    @Min(groups = {OnCreate.class, OnUpdate.class},
+            value = 1,
+            message = "{scheduleDto.lessonNumber.min}")
+    @Max(groups = {OnCreate.class, OnUpdate.class},
+            value = 10,
+            message = "{scheduleDto.lessonNumber.max}")
     private Integer lessonNumber;
 
+    @NotNull(groups = {OnCreate.class},
+            message = "{scheduleDto.schoolClass.notnull}")
     private SchoolClassDto schoolClass;
 
+    @NotNull(groups = {OnCreate.class, OnUpdate.class},
+            message = "{scheduleDto.teachersSubject.notnull}")
     private TeachersSubjectDto teachersSubject;
 
     public ScheduleDto() {

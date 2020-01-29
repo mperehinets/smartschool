@@ -1,9 +1,12 @@
 package com.mper.smartschool.controller;
 
 import com.mper.smartschool.dto.TeacherDto;
+import com.mper.smartschool.dto.transfer.OnCreate;
+import com.mper.smartschool.dto.transfer.OnUpdate;
 import com.mper.smartschool.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -21,12 +24,12 @@ public class TeacherController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TeacherDto create(@RequestBody TeacherDto teacherDto) {
+    public TeacherDto create(@Validated(OnCreate.class) @RequestBody TeacherDto teacherDto) {
         return teacherService.create(teacherDto);
     }
 
     @PutMapping("/{id}")
-    public TeacherDto update(@PathVariable Long id, @RequestBody TeacherDto teacherDto) {
+    public TeacherDto update(@PathVariable Long id, @Validated(OnUpdate.class) @RequestBody TeacherDto teacherDto) {
         teacherDto.setId(id);
         return teacherService.update(teacherDto);
     }

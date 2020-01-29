@@ -20,7 +20,7 @@ public class PupilSuccess extends BaseEntity {
     private Pupil pupil;
 
     @ManyToOne
-    @JoinColumn(name = "schedule", referencedColumnName = "id")
+    @JoinColumn(name = "schedule", referencedColumnName = "id", updatable = false)
     private Schedule schedule;
 
     @Column(name = "rating")

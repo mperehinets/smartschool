@@ -1,9 +1,12 @@
 package com.mper.smartschool.controller;
 
 import com.mper.smartschool.dto.ScheduleDto;
+import com.mper.smartschool.dto.transfer.OnCreate;
+import com.mper.smartschool.dto.transfer.OnUpdate;
 import com.mper.smartschool.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -21,12 +24,12 @@ public class ScheduleController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ScheduleDto create(@RequestBody ScheduleDto scheduleDto) {
+    public ScheduleDto create(@Validated(OnCreate.class) @RequestBody ScheduleDto scheduleDto) {
         return scheduleService.create(scheduleDto);
     }
 
     @PutMapping("/{id}")
-    public ScheduleDto update(@PathVariable Long id, @RequestBody ScheduleDto scheduleDto) {
+    public ScheduleDto update(@PathVariable Long id, @Validated(OnUpdate.class) @RequestBody ScheduleDto scheduleDto) {
         scheduleDto.setId(id);
         return scheduleService.update(scheduleDto);
     }

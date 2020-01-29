@@ -1,9 +1,12 @@
 package com.mper.smartschool.controller;
 
 import com.mper.smartschool.dto.HomeworkDto;
+import com.mper.smartschool.dto.transfer.OnCreate;
+import com.mper.smartschool.dto.transfer.OnUpdate;
 import com.mper.smartschool.service.HomeworkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -21,12 +24,12 @@ public class HomeworkController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public HomeworkDto create(@RequestBody HomeworkDto homeworkDto) {
+    public HomeworkDto create(@Validated(OnCreate.class) @RequestBody HomeworkDto homeworkDto) {
         return homeworkService.create(homeworkDto);
     }
 
     @PutMapping("/{id}")
-    public HomeworkDto update(@PathVariable Long id, @RequestBody HomeworkDto homeworkDto) {
+    public HomeworkDto update(@PathVariable Long id, @Validated(OnUpdate.class) @RequestBody HomeworkDto homeworkDto) {
         homeworkDto.setId(id);
         return homeworkService.update(homeworkDto);
     }

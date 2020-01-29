@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Table(name = "templates_schedule")
 public class TemplateSchedule extends BaseEntity {
 
-    @Column(name = "class_number")
+    @Column(name = "class_number", updatable = false)
     private Integer classNumber;
 
     @Column(name = "lesson_number")

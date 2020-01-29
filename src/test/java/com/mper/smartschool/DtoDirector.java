@@ -104,7 +104,7 @@ public interface DtoDirector {
         return ScheduleDto.builder()
                 .id(id)
                 .lessonNumber(new Random().nextInt(7) + 1)
-                .date(LocalDate.now().minusDays(id))
+                .date(LocalDate.now().plusDays(id))
                 .schoolClass(makeTestSchoolClassDtoById(id))
                 .teachersSubject(makeTestTeachersSubjectDtoById(id))
                 .build();
@@ -124,7 +124,7 @@ public interface DtoDirector {
         return HomeworkDto.builder()
                 .id(id)
                 .schedule(makeTestScheduleDtoById(id))
-                .homework("homework")
+                .homework("Homework")
                 .build();
     }
 }

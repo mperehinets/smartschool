@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class Homework extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "schedule", referencedColumnName = "id")
+    @JoinColumn(name = "schedule", referencedColumnName = "id", updatable = false)
     private Schedule schedule;
 
     @Column(name = "homework")

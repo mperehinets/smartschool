@@ -1,9 +1,12 @@
 package com.mper.smartschool.controller;
 
 import com.mper.smartschool.dto.SignedPersonDto;
+import com.mper.smartschool.dto.transfer.OnCreate;
+import com.mper.smartschool.dto.transfer.OnUpdate;
 import com.mper.smartschool.service.SignedPersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -21,12 +24,13 @@ public class SignedPersonController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SignedPersonDto create(@RequestBody SignedPersonDto signedPersonDto) {
+    public SignedPersonDto create(@Validated(OnCreate.class) @RequestBody SignedPersonDto signedPersonDto) {
         return signedPersonService.create(signedPersonDto);
     }
 
     @PutMapping("/{id}")
-    public SignedPersonDto update(@PathVariable Long id, @RequestBody SignedPersonDto signedPersonDto) {
+    public SignedPersonDto update(@PathVariable Long id,
+                                  @Validated(OnUpdate.class) @RequestBody SignedPersonDto signedPersonDto) {
         signedPersonDto.setId(id);
         return signedPersonService.update(signedPersonDto);
     }
