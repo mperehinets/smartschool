@@ -10,6 +10,7 @@ import lombok.ToString;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.time.DayOfWeek;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -23,6 +24,10 @@ public class TemplateScheduleDto extends BaseDto {
             value = 11,
             message = "{templateScheduleDto.classNumber.max}")
     private Integer classNumber;
+
+    @NotNull(groups = {OnCreate.class},
+            message = "{templateScheduleDto.dayOfWeek.notNull}")
+    private DayOfWeek dayOfWeek;
 
     @Min(groups = {OnCreate.class, OnUpdate.class},
             value = 1,
@@ -40,9 +45,14 @@ public class TemplateScheduleDto extends BaseDto {
     }
 
     @Builder
-    public TemplateScheduleDto(Long id, Integer classNumber, Integer lessonNumber, SubjectDto subject) {
+    public TemplateScheduleDto(Long id,
+                               Integer classNumber,
+                               DayOfWeek dayOfWeek,
+                               Integer lessonNumber,
+                               SubjectDto subject) {
         super(id);
         this.classNumber = classNumber;
+        this.dayOfWeek = dayOfWeek;
         this.lessonNumber = lessonNumber;
         this.subject = subject;
     }

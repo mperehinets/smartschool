@@ -5,6 +5,7 @@ import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.entity.modelsEnum.PupilsLessonStatus;
 import com.mper.smartschool.entity.modelsEnum.SchoolClassInitial;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Random;
@@ -95,6 +96,7 @@ public interface DtoDirector {
         return TemplateScheduleDto.builder()
                 .id(id)
                 .classNumber(new Random().nextInt(11) + 1)
+                .dayOfWeek(DayOfWeek.FRIDAY)
                 .lessonNumber(new Random().nextInt(7) + 1)
                 .subject(makeTestSubjectDtoById(id))
                 .build();

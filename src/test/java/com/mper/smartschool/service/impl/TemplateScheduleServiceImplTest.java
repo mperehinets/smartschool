@@ -5,6 +5,7 @@ import com.mper.smartschool.dto.TemplateScheduleDto;
 import com.mper.smartschool.dto.mapper.TemplateScheduleMapper;
 import com.mper.smartschool.dto.mapper.TemplateScheduleMapperImpl;
 import com.mper.smartschool.entity.TemplateSchedule;
+import com.mper.smartschool.exception.DayFilledByLessonsException;
 import com.mper.smartschool.repository.TemplateScheduleRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,6 +56,15 @@ public class TemplateScheduleServiceImplTest {
         assertNotNull(result.getId());
 
         assertThat(result).isEqualToIgnoringGivenFields(templateScheduleDto, "id");
+    }
+
+    @Test
+    public void create_throwDayFilledByLessonsException_ifDayFilledByLessons() {
+        templateScheduleDto.setId(null);
+        Mockito.when(templateScheduleRepo.countByClassNumberAndDayOfWeek(templateScheduleDto.getClassNumber(),
+                templateScheduleDto.getDayOfWeek())).thenReturn(10);
+
+        assertThrows(DayFilledByLessonsException.class, () -> templateScheduleService.create(templateScheduleDto));
     }
 
     @Test

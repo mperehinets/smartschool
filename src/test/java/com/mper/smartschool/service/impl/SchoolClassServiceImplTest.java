@@ -7,6 +7,7 @@ import com.mper.smartschool.dto.mapper.SchoolClassMapperImpl;
 import com.mper.smartschool.entity.SchoolClass;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.entity.modelsEnum.SchoolClassInitial;
+import com.mper.smartschool.exception.SchoolFilledByClassesException;
 import com.mper.smartschool.repository.SchoolClassRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -84,6 +85,25 @@ public class SchoolClassServiceImplTest {
 
         assertThat(result).isEqualToIgnoringGivenFields(schoolClassDto,
                 "id");
+    }
+
+    @Test
+    public void create_throwSchoolFilledByClassesException_ifSchoolFilledByClasses() {
+        schoolClassDto.setId(null);
+
+        LocalDate now = LocalDate.now();
+        String currentSeason = now.getYear() + "-" + (now.getYear() + 1);
+
+        SchoolClass lastSchoolClass = schoolClassMapper.toEntity(schoolClassDto);
+        lastSchoolClass.setInitial(SchoolClassInitial.F);
+        lastSchoolClass.setSeason(currentSeason);
+        lastSchoolClass.setStatus(EntityStatus.ACTIVE);
+        lastSchoolClass.setId(5L);
+        Mockito.when(schoolClassRepo
+                .findTop1BySeasonAndNumberOrderByInitialDesc(currentSeason, schoolClassDto.getNumber()))
+                .thenReturn(lastSchoolClass);
+
+        assertThrows(SchoolFilledByClassesException.class, () -> schoolClassService.create(schoolClassDto));
     }
 
     @Test

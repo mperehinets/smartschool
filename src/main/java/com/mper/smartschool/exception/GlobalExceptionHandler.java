@@ -23,7 +23,7 @@ import java.util.List;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({EntityNotFoundException.class})
-    public ResponseEntity<ApiError> handleEntityNotFound(EntityNotFoundException ex, WebRequest request) {
+    public ResponseEntity<ApiError> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
         ApiError apiError = ApiError.builder()
                 .message(ex.getMessage())
                 .status(HttpStatus.NOT_FOUND)
@@ -34,13 +34,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({SchoolFilledByClassesException.class})
-    public ResponseEntity<ApiError> handleEntityNotFound(SchoolFilledByClassesException ex, WebRequest request) {
+    public ResponseEntity<ApiError> handleSchoolFilledByClassesException(SchoolFilledByClassesException ex,
+                                                                         WebRequest request) {
         ApiError apiError = ApiError.builder()
                 .message(ex.getMessage())
                 .status(HttpStatus.FORBIDDEN)
                 .errors(Collections.singletonList(ex.getMessage()))
                 .build();
         log.error("School filled by classes, thrown:", ex);
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler({DayFilledByLessonsException.class})
+    public ResponseEntity<ApiError> handleDayFilledByLessonsException(DayFilledByLessonsException ex,
+                                                                      WebRequest request) {
+        ApiError apiError = ApiError.builder()
+                .message(ex.getMessage())
+                .status(HttpStatus.FORBIDDEN)
+                .errors(Collections.singletonList(ex.getMessage()))
+                .build();
+        log.error("Day filled by lessons, thrown:", ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 

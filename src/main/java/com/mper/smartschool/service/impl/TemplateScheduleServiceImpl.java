@@ -3,12 +3,14 @@ package com.mper.smartschool.service.impl;
 import com.mper.smartschool.dto.TemplateScheduleDto;
 import com.mper.smartschool.dto.mapper.TemplateScheduleMapper;
 import com.mper.smartschool.entity.TemplateSchedule;
+import com.mper.smartschool.exception.DayFilledByLessonsException;
 import com.mper.smartschool.repository.TemplateScheduleRepo;
 import com.mper.smartschool.service.TemplateScheduleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.DayOfWeek;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,13 @@ public class TemplateScheduleServiceImpl implements TemplateScheduleService {
 
     @Override
     public TemplateScheduleDto create(TemplateScheduleDto templateScheduleDto) {
+        Integer classNumber = templateScheduleDto.getClassNumber();
+        DayOfWeek dayOfWeek = templateScheduleDto.getDayOfWeek();
+        int countLessons = templateScheduleRepo.countByClassNumberAndDayOfWeek(classNumber, dayOfWeek);
+        if (countLessons >= 10) {
+            throw new DayFilledByLessonsException(dayOfWeek + " is filled by lessons for class number: " + classNumber);
+        }
+
         TemplateScheduleDto result = templateScheduleMapper.toDto(templateScheduleRepo
                 .save(templateScheduleMapper.toEntity(templateScheduleDto)));
         log.info("IN create - templateSchedule: {} successfully created", result);
