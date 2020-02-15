@@ -4,7 +4,7 @@ import com.mper.smartschool.dto.TemplateScheduleDto;
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
 import com.mper.smartschool.service.TemplateScheduleService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,15 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/templateSchedules")
+@RequiredArgsConstructor
+@RequestMapping("/smartschool/templateSchedules")
 public class TemplateScheduleController {
 
     private final TemplateScheduleService templateScheduleService;
-
-    @Autowired
-    public TemplateScheduleController(TemplateScheduleService templateScheduleService) {
-        this.templateScheduleService = templateScheduleService;
-    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

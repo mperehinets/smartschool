@@ -2,7 +2,9 @@ package com.mper.smartschool.exception;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,21 +15,27 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 @ControllerAdvice
 @Slf4j
+@RequiredArgsConstructor
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({EntityNotFoundException.class})
-    public ResponseEntity<ApiError> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
+    private final MessageSource messageSource;
+
+    @ExceptionHandler({NotFoundException.class})
+    public ResponseEntity<ApiError> handleEntityNotFoundException(NotFoundException ex, Locale locale) {
+        Object[] args = {ex.getByWhat()};
+        String errorMessage = messageSource.getMessage(ex.getMessage(), args, locale);
+
         ApiError apiError = ApiError.builder()
-                .message(ex.getMessage())
+                .message(errorMessage)
                 .status(HttpStatus.NOT_FOUND)
-                .errors(Collections.singletonList(ex.getMessage()))
+                .errors(Collections.singletonList(errorMessage))
                 .build();
         log.error("Entity not found, thrown:", ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
@@ -35,11 +43,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({SchoolFilledByClassesException.class})
     public ResponseEntity<ApiError> handleSchoolFilledByClassesException(SchoolFilledByClassesException ex,
-                                                                         WebRequest request) {
+                                                                         Locale locale) {
+        Object[] args = {ex.getClassNumber()};
+        String errorMessage = messageSource.getMessage("SchoolFilledByClassesException", args, locale);
+
         ApiError apiError = ApiError.builder()
-                .message(ex.getMessage())
+                .message(errorMessage)
                 .status(HttpStatus.FORBIDDEN)
-                .errors(Collections.singletonList(ex.getMessage()))
+                .errors(Collections.singletonList(errorMessage))
                 .build();
         log.error("School filled by classes, thrown:", ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
@@ -47,11 +58,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({DayFilledByLessonsException.class})
     public ResponseEntity<ApiError> handleDayFilledByLessonsException(DayFilledByLessonsException ex,
-                                                                      WebRequest request) {
+                                                                      Locale locale) {
+        Object[] args = {ex.getDayOfWeek()};
+        String errorMessage = messageSource.getMessage("DayFilledByLessonsException", args, locale);
+
         ApiError apiError = ApiError.builder()
-                .message(ex.getMessage())
+                .message(errorMessage)
                 .status(HttpStatus.FORBIDDEN)
-                .errors(Collections.singletonList(ex.getMessage()))
+                .errors(Collections.singletonList(errorMessage))
                 .build();
         log.error("Day filled by lessons, thrown:", ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
@@ -73,6 +87,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
         log.error("Bad request. Errors: {}", errors);
         return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
+    }
+
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
+        ApiError apiError = ApiError.builder()
+                .message(ex.getLocalizedMessage())
+                .status(HttpStatus.BAD_REQUEST)
+                .errors(Collections.singletonList("error occurred"))
+                .build();
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     @Data

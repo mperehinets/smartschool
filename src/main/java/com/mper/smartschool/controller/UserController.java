@@ -4,7 +4,7 @@ import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
 import com.mper.smartschool.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,15 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/users")
+@RequiredArgsConstructor
+@RequestMapping("/smartschool/users")
 public class UserController {
 
     private final UserService userService;
-
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -47,5 +43,10 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id) {
         userService.deleteById(id);
+    }
+
+    @GetMapping("/")
+    public UserDto findByEmail(@RequestParam("email") String email) {
+        return userService.findByEmail(email);
     }
 }

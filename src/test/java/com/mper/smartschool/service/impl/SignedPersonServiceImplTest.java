@@ -5,6 +5,7 @@ import com.mper.smartschool.dto.SignedPersonDto;
 import com.mper.smartschool.dto.mapper.SignedPersonMapper;
 import com.mper.smartschool.dto.mapper.SignedPersonMapperImpl;
 import com.mper.smartschool.entity.SignedPerson;
+import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.SignedPersonRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -70,10 +70,10 @@ public class SignedPersonServiceImplTest {
     }
 
     @Test
-    public void update_throwEntityNotFoundException_ifSignedPersonNotFound() {
+    public void update_throwNotFoundException_ifSignedPersonNotFound() {
         signedPersonDto.setId(Long.MAX_VALUE);
         Mockito.when(signedPersonRepo.findById(signedPersonDto.getId())).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> signedPersonService.update(signedPersonDto));
+        assertThrows(NotFoundException.class, () -> signedPersonService.update(signedPersonDto));
     }
 
     @Test
@@ -98,9 +98,9 @@ public class SignedPersonServiceImplTest {
     }
 
     @Test
-    public void findById_throwEntityNotFoundException_ifSignedPersonNotFound() {
+    public void findById_throwNotFoundException_ifSignedPersonNotFound() {
         Mockito.when(signedPersonRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> signedPersonService.findById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> signedPersonService.findById(Long.MAX_VALUE));
     }
 
     @Test
@@ -112,9 +112,9 @@ public class SignedPersonServiceImplTest {
     }
 
     @Test
-    public void deleteById_throwEntityNotFoundException_ifSignedPersonNotFound() {
+    public void deleteById_throwNotFoundException_ifSignedPersonNotFound() {
         Mockito.when(signedPersonRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> signedPersonService.deleteById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> signedPersonService.deleteById(Long.MAX_VALUE));
     }
 
     private Collection<SignedPersonDto> getCollectionOfSignedPersonsDto() {

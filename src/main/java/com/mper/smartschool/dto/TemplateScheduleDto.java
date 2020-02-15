@@ -26,7 +26,7 @@ public class TemplateScheduleDto extends BaseDto {
     private Integer classNumber;
 
     @NotNull(groups = {OnCreate.class},
-            message = "{templateScheduleDto.dayOfWeek.notNull}")
+            message = "{templateScheduleDto.dayOfWeek.notnull}")
     private DayOfWeek dayOfWeek;
 
     @Min(groups = {OnCreate.class, OnUpdate.class},

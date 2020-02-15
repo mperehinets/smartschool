@@ -3,6 +3,7 @@ package com.mper.smartschool.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mper.smartschool.DtoDirector;
 import com.mper.smartschool.dto.SubjectDto;
+import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.service.SubjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,14 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-
-import javax.persistence.EntityNotFoundException;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(SubjectController.class)
+@ActiveProfiles("test")
 class SubjectControllerTest {
 
     @MockBean
@@ -40,7 +41,7 @@ class SubjectControllerTest {
     @Test
     public void create_return201_ifInputsIsValid() throws Exception {
         subjectDto.setId(null);
-        mockMvc.perform(post("/subjects")
+        mockMvc.perform(post("/smartschool/subjects")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(subjectDto)))
                 .andExpect(status().isCreated());
@@ -49,7 +50,7 @@ class SubjectControllerTest {
 
     @Test
     public void create_return400_ifIdIsNotNull() throws Exception {
-        mockMvc.perform(post("/subjects")
+        mockMvc.perform(post("/smartschool/subjects")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(subjectDto)))
                 .andExpect(status().isBadRequest());
@@ -59,7 +60,7 @@ class SubjectControllerTest {
     public void create_return400_ifNameIsNull() throws Exception {
         subjectDto.setId(null);
         subjectDto.setName(null);
-        mockMvc.perform(post("/subjects")
+        mockMvc.perform(post("/smartschool/subjects")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(subjectDto)))
                 .andExpect(status().isBadRequest());
@@ -69,7 +70,7 @@ class SubjectControllerTest {
     public void create_return400_ifNameNotMatchPattern() throws Exception {
         subjectDto.setId(null);
         subjectDto.setName("name$~");
-        mockMvc.perform(post("/subjects")
+        mockMvc.perform(post("/smartschool/subjects")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(subjectDto)))
                 .andExpect(status().isBadRequest());
@@ -77,7 +78,7 @@ class SubjectControllerTest {
 
     @Test
     public void update_return200_ifInputsIsValid() throws Exception {
-        mockMvc.perform(put("/subjects/{id}", subjectDto.getId())
+        mockMvc.perform(put("/smartschool/subjects/{id}", subjectDto.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(subjectDto)))
                 .andExpect(status().isOk());
@@ -87,8 +88,8 @@ class SubjectControllerTest {
     @Test
     public void update_return404_ifIdNotExist() throws Exception {
         subjectDto.setId(Long.MAX_VALUE);
-        Mockito.when(subjectService.update(subjectDto)).thenThrow(EntityNotFoundException.class);
-        mockMvc.perform(put("/subjects/{id}", subjectDto.getId())
+        Mockito.when(subjectService.update(subjectDto)).thenThrow(new NotFoundException("", null));
+        mockMvc.perform(put("/smartschool/subjects/{id}", subjectDto.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(subjectDto)))
                 .andExpect(status().isNotFound());
@@ -96,7 +97,7 @@ class SubjectControllerTest {
 
     @Test
     public void update_return400_ifIdIsNull() throws Exception {
-        mockMvc.perform(put("/subjects/null")
+        mockMvc.perform(put("/smartschool/subjects/null")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(subjectDto)))
                 .andExpect(status().isBadRequest());
@@ -105,7 +106,7 @@ class SubjectControllerTest {
     @Test
     public void update_return400_ifNameIsNull() throws Exception {
         subjectDto.setName(null);
-        mockMvc.perform(put("/subjects/{id}", subjectDto.getId())
+        mockMvc.perform(put("/smartschool/subjects/{id}", subjectDto.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(subjectDto)))
                 .andExpect(status().isBadRequest());
@@ -114,7 +115,7 @@ class SubjectControllerTest {
     @Test
     public void update_return400_ifNameNotMatchPattern() throws Exception {
         subjectDto.setName("name$~");
-        mockMvc.perform(put("/subjects/{id}", subjectDto.getId())
+        mockMvc.perform(put("/smartschool/subjects/{id}", subjectDto.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(subjectDto)))
                 .andExpect(status().isBadRequest());
@@ -122,7 +123,7 @@ class SubjectControllerTest {
 
     @Test
     public void findAll_return200() throws Exception {
-        mockMvc.perform(get("/subjects")
+        mockMvc.perform(get("/smartschool/subjects")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         Mockito.verify(subjectService, Mockito.times(1)).findAll();
@@ -130,7 +131,7 @@ class SubjectControllerTest {
 
     @Test
     public void findById_return200_ifInputsIsValid() throws Exception {
-        mockMvc.perform(get("/subjects/{id}", subjectDto.getId())
+        mockMvc.perform(get("/smartschool/subjects/{id}", subjectDto.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         Mockito.verify(subjectService, Mockito.times(1)).findById(subjectDto.getId());
@@ -138,15 +139,15 @@ class SubjectControllerTest {
 
     @Test
     public void findById_return404_ifInputIdNotExist() throws Exception {
-        Mockito.when(subjectService.findById(Long.MAX_VALUE)).thenThrow(EntityNotFoundException.class);
-        mockMvc.perform(get("/subjects/{id}", Long.MAX_VALUE)
+        Mockito.when(subjectService.findById(Long.MAX_VALUE)).thenThrow(new NotFoundException("", null));
+        mockMvc.perform(get("/smartschool/subjects/{id}", Long.MAX_VALUE)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void deleteById_return200_ifInputsValid() throws Exception {
-        mockMvc.perform(delete("/subjects/{id}", subjectDto.getId())
+        mockMvc.perform(delete("/smartschool/subjects/{id}", subjectDto.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         Mockito.verify(subjectService, Mockito.times(1))
@@ -155,8 +156,8 @@ class SubjectControllerTest {
 
     @Test
     public void deleteById_return404_ifInputIdNotExist() throws Exception {
-        Mockito.doThrow(EntityNotFoundException.class).when(subjectService).deleteById(Long.MAX_VALUE);
-        mockMvc.perform(delete("/subjects/{id}", Long.MAX_VALUE)
+        Mockito.doThrow(new NotFoundException("", null)).when(subjectService).deleteById(Long.MAX_VALUE);
+        mockMvc.perform(delete("/smartschool/subjects/{id}", Long.MAX_VALUE)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }

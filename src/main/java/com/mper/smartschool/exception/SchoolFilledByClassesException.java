@@ -1,11 +1,15 @@
 package com.mper.smartschool.exception;
 
 public class SchoolFilledByClassesException extends RuntimeException {
-    public SchoolFilledByClassesException(String message) {
-        super(message);
+
+    private final int classNumber;
+
+    public SchoolFilledByClassesException(int classNumber) {
+        super(String.format("School filled by classes number: %d", classNumber));
+        this.classNumber = classNumber;
     }
 
-    public SchoolFilledByClassesException(String message, Throwable cause) {
-        super(message, cause);
+    public int getClassNumber() {
+        return classNumber;
     }
 }

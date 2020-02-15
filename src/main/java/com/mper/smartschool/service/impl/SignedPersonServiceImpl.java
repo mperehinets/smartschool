@@ -2,31 +2,27 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.SignedPersonDto;
 import com.mper.smartschool.dto.mapper.SignedPersonMapper;
-import com.mper.smartschool.entity.SignedPerson;
+import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.SignedPersonRepo;
 import com.mper.smartschool.service.SignedPersonService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class SignedPersonServiceImpl implements SignedPersonService {
 
     private final SignedPersonRepo signedPersonRepo;
     private final SignedPersonMapper signedPersonMapper;
 
-    @Autowired
-    public SignedPersonServiceImpl(SignedPersonRepo signedPersonRepo, SignedPersonMapper signedPersonMapper) {
-        this.signedPersonRepo = signedPersonRepo;
-        this.signedPersonMapper = signedPersonMapper;
-    }
-
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public SignedPersonDto create(SignedPersonDto signedPersonDto) {
         SignedPersonDto result = signedPersonMapper.toDto(signedPersonRepo
                 .save(signedPersonMapper.toEntity(signedPersonDto)));
@@ -35,6 +31,7 @@ public class SignedPersonServiceImpl implements SignedPersonService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public SignedPersonDto update(SignedPersonDto signedPersonDto) {
         findById(signedPersonDto.getId());
         SignedPersonDto result = signedPersonMapper.toDto(signedPersonRepo
@@ -45,7 +42,7 @@ public class SignedPersonServiceImpl implements SignedPersonService {
 
     @Override
     public Collection<SignedPersonDto> findAll() {
-        Collection<SignedPersonDto> result = ((Collection<SignedPerson>) signedPersonRepo.findAll())
+        Collection<SignedPersonDto> result = signedPersonRepo.findAll()
                 .stream()
                 .map(signedPersonMapper::toDto)
                 .collect(Collectors.toList());
@@ -56,12 +53,13 @@ public class SignedPersonServiceImpl implements SignedPersonService {
     @Override
     public SignedPersonDto findById(Long id) {
         SignedPersonDto result = signedPersonMapper.toDto(signedPersonRepo.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("SignedPerson not found by id: " + id)));
+                .orElseThrow(() -> new NotFoundException("SignedPersonNotFoundException.byId", id)));
         log.info("IN findById - signedPerson: {} found by id: {}", result, id);
         return result;
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteById(Long id) {
         findById(id);
         signedPersonRepo.deleteById(id);

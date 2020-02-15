@@ -2,31 +2,27 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.HomeworkDto;
 import com.mper.smartschool.dto.mapper.HomeworkMapper;
-import com.mper.smartschool.entity.Homework;
+import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.HomeworkRepo;
 import com.mper.smartschool.service.HomeworkService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class HomeworkServiceImpl implements HomeworkService {
 
     private final HomeworkRepo homeworkRepo;
     private final HomeworkMapper homeworkMapper;
 
-    @Autowired
-    public HomeworkServiceImpl(HomeworkRepo homeworkRepo, HomeworkMapper homeworkMapper) {
-        this.homeworkRepo = homeworkRepo;
-        this.homeworkMapper = homeworkMapper;
-    }
-
     @Override
+    @PreAuthorize("hasRole('TEACHER')")
     public HomeworkDto create(HomeworkDto homeworkDto) {
         HomeworkDto result = homeworkMapper.toDto(homeworkRepo.save(homeworkMapper.toEntity(homeworkDto)));
         log.info("IN create - homework: {} successfully created", result);
@@ -34,6 +30,7 @@ public class HomeworkServiceImpl implements HomeworkService {
     }
 
     @Override
+    @PreAuthorize("hasRole('TEACHER')")
     public HomeworkDto update(HomeworkDto homeworkDto) {
         findById(homeworkDto.getId());
         HomeworkDto result = homeworkMapper.toDto(homeworkRepo.save(homeworkMapper.toEntity(homeworkDto)));
@@ -41,9 +38,10 @@ public class HomeworkServiceImpl implements HomeworkService {
         return result;
     }
 
+
     @Override
     public Collection<HomeworkDto> findAll() {
-        Collection<HomeworkDto> result = ((Collection<Homework>) homeworkRepo.findAll())
+        Collection<HomeworkDto> result = homeworkRepo.findAll()
                 .stream()
                 .map(homeworkMapper::toDto)
                 .collect(Collectors.toList());
@@ -54,12 +52,13 @@ public class HomeworkServiceImpl implements HomeworkService {
     @Override
     public HomeworkDto findById(Long id) {
         HomeworkDto result = homeworkMapper.toDto(homeworkRepo.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Homework not found by id: " + id)));
+                .orElseThrow(() -> new NotFoundException("HomeworkNotFoundException.byId", id)));
         log.info("IN findById - homework: {} found by id: {}", result, id);
         return result;
     }
 
     @Override
+    @PreAuthorize("hasRole('TEACHER')")
     public void deleteById(Long id) {
         findById(id);
         homeworkRepo.deleteById(id);

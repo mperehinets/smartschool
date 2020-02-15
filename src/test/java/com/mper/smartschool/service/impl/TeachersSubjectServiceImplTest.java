@@ -5,6 +5,7 @@ import com.mper.smartschool.dto.TeachersSubjectDto;
 import com.mper.smartschool.dto.mapper.TeachersSubjectMapper;
 import com.mper.smartschool.dto.mapper.TeachersSubjectMapperImpl;
 import com.mper.smartschool.entity.TeachersSubject;
+import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.TeachersSubjectRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
@@ -89,9 +89,9 @@ public class TeachersSubjectServiceImplTest {
     }
 
     @Test
-    public void findById_throwEntityNotFoundException_ifTeachersSubjectNotFound() {
+    public void findById_throwNotFoundException_ifTeachersSubjectNotFound() {
         Mockito.when(teachersSubjectRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> teachersSubjectService.findById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> teachersSubjectService.findById(Long.MAX_VALUE));
     }
 
     @Test
@@ -103,9 +103,9 @@ public class TeachersSubjectServiceImplTest {
     }
 
     @Test
-    public void deleteById_throwEntityNotFoundException_ifTeachersSubjectNotFound() {
+    public void deleteById_throwNotFoundException_ifTeachersSubjectNotFound() {
         Mockito.when(teachersSubjectRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> teachersSubjectService.deleteById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> teachersSubjectService.deleteById(Long.MAX_VALUE));
     }
 
     @Test
@@ -120,9 +120,9 @@ public class TeachersSubjectServiceImplTest {
     }
 
     @Test
-    public void stopTeachSubjectById_throwEntityNotFoundException_ifTeachersSubjectNotFound() {
+    public void stopTeachSubjectById_throwNotFoundException_ifTeachersSubjectNotFound() {
         Mockito.when(teachersSubjectRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> teachersSubjectService.stopTeachSubjectById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> teachersSubjectService.stopTeachSubjectById(Long.MAX_VALUE));
     }
 
     private Collection<TeachersSubjectDto> getCollectionOfTeachersSubjectsDto() {

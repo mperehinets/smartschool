@@ -2,14 +2,16 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.PupilDto;
 import com.mper.smartschool.dto.mapper.PupilMapper;
-import com.mper.smartschool.entity.Pupil;
 import com.mper.smartschool.entity.Role;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
+import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.PupilRepo;
 import com.mper.smartschool.repository.RoleRepo;
 import com.mper.smartschool.service.PupilService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -19,26 +21,23 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class PupilServiceImpl implements PupilService {
 
     private final PupilRepo pupilRepo;
     private final PupilMapper pupilMapper;
     private final RoleRepo roleRepo;
-
-    @Autowired
-    public PupilServiceImpl(PupilRepo pupilRepo, PupilMapper pupilMapper, RoleRepo roleRepo) {
-        this.pupilRepo = pupilRepo;
-        this.pupilMapper = pupilMapper;
-        this.roleRepo = roleRepo;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public PupilDto create(PupilDto pupilDto) {
         Role rolePupil = roleRepo.findByName("ROLE_PUPIL")
                 .orElseThrow(() -> new EntityNotFoundException("Role not found by name: ROLE_PUPIL"));
 
         pupilDto.setRoles(Collections.singleton(rolePupil));
         pupilDto.setStatus(EntityStatus.ACTIVE);
+        pupilDto.setPassword(passwordEncoder.encode(pupilDto.getPassword()));
 
         PupilDto result = pupilMapper.toDto(pupilRepo.save(pupilMapper.toEntity(pupilDto)));
 
@@ -48,6 +47,7 @@ public class PupilServiceImpl implements PupilService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN') or hasRole('PUPIL') and authentication.principal.id == #pupilDto.id")
     public PupilDto update(PupilDto pupilDto) {
         findById(pupilDto.getId());
         PupilDto result = pupilMapper.toDto(pupilRepo.save(pupilMapper.toEntity(pupilDto)));
@@ -57,7 +57,7 @@ public class PupilServiceImpl implements PupilService {
 
     @Override
     public Collection<PupilDto> findAll() {
-        Collection<PupilDto> result = ((Collection<Pupil>) pupilRepo.findAll())
+        Collection<PupilDto> result = pupilRepo.findAll()
                 .stream()
                 .map(pupilMapper::toDto)
                 .collect(Collectors.toList());
@@ -68,12 +68,13 @@ public class PupilServiceImpl implements PupilService {
     @Override
     public PupilDto findById(Long id) {
         PupilDto result = pupilMapper.toDto(pupilRepo.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Pupil not found by id: " + id)));
+                .orElseThrow(() -> new NotFoundException("PupilNotFoundException.byId", id)));
         log.info("IN findById - pupil: {} found by id: {}", result, id);
         return result;
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteById(Long id) {
         PupilDto pupilDto = findById(id);
         pupilDto.setStatus(EntityStatus.DELETED);

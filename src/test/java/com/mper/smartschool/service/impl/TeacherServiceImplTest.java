@@ -8,6 +8,7 @@ import com.mper.smartschool.dto.mapper.TeacherMapperImpl;
 import com.mper.smartschool.entity.Role;
 import com.mper.smartschool.entity.Teacher;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
+import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.RoleRepo;
 import com.mper.smartschool.repository.TeacherRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,8 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,6 +38,9 @@ public class TeacherServiceImplTest {
     @Mock
     private RoleRepo roleRepo;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     private TeacherMapper teacherMapper = new TeacherMapperImpl();
 
     private TeacherServiceImpl teacherService;
@@ -45,7 +49,7 @@ public class TeacherServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        teacherService = new TeacherServiceImpl(teacherRepo, teacherMapper, roleRepo);
+        teacherService = new TeacherServiceImpl(teacherRepo, teacherMapper, roleRepo, passwordEncoder);
         teacherDto = DtoDirector.makeTestTeacherDtoById(1L);
     }
 
@@ -58,11 +62,16 @@ public class TeacherServiceImplTest {
                 .build();
         Mockito.when(roleRepo.findByName(roleTeacher.getName())).thenReturn(Optional.of(roleTeacher));
 
+        String encodedPassword = "encodedPassword";
+
+        Mockito.when(passwordEncoder.encode(teacherDto.getPassword())).thenReturn(encodedPassword);
+
         teacherDto.setId(null);
         teacherDto.setStatus(null);
         Teacher teacher = teacherMapper.toEntity(teacherDto);
         teacher.setRoles(Collections.singleton(roleTeacher));
         teacher.setStatus(EntityStatus.ACTIVE);
+        teacher.setPassword(encodedPassword);
         Mockito.when(teacherRepo.save(teacher)).thenAnswer(invocationOnMock -> {
             Teacher returnedTeacher = invocationOnMock.getArgument(0);
             returnedTeacher.setId(1L);
@@ -93,10 +102,10 @@ public class TeacherServiceImplTest {
     }
 
     @Test
-    public void update_throwEntityNotFoundException_ifTeacherNotFound() {
+    public void update_throwNotFoundException_ifTeacherNotFound() {
         teacherDto.setId(Long.MAX_VALUE);
         Mockito.when(teacherRepo.findById(teacherDto.getId())).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> teacherService.update(teacherDto));
+        assertThrows(NotFoundException.class, () -> teacherService.update(teacherDto));
     }
 
     @Test
@@ -121,9 +130,9 @@ public class TeacherServiceImplTest {
     }
 
     @Test
-    public void findById_throwEntityNotFoundException_ifTeacherNotFound() {
+    public void findById_throwNotFoundException_ifTeacherNotFound() {
         Mockito.when(teacherRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> teacherService.findById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> teacherService.findById(Long.MAX_VALUE));
     }
 
     @Test
@@ -138,9 +147,9 @@ public class TeacherServiceImplTest {
     }
 
     @Test
-    public void deleteById_throwEntityNotFoundException_ifTeacherNotFound() {
+    public void deleteById_throwNotFoundException_ifTeacherNotFound() {
         Mockito.when(teacherRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> teacherService.deleteById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> teacherService.deleteById(Long.MAX_VALUE));
     }
 
     private Collection<TeacherDto> getCollectionOfTeachersDto() {

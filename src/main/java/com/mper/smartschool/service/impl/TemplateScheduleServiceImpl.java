@@ -2,38 +2,35 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.TemplateScheduleDto;
 import com.mper.smartschool.dto.mapper.TemplateScheduleMapper;
-import com.mper.smartschool.entity.TemplateSchedule;
 import com.mper.smartschool.exception.DayFilledByLessonsException;
+import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.TemplateScheduleRepo;
 import com.mper.smartschool.service.TemplateScheduleService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.DayOfWeek;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class TemplateScheduleServiceImpl implements TemplateScheduleService {
 
     private final TemplateScheduleRepo templateScheduleRepo;
     private final TemplateScheduleMapper templateScheduleMapper;
 
-    public TemplateScheduleServiceImpl(TemplateScheduleRepo templateScheduleRepo,
-                                       TemplateScheduleMapper templateScheduleMapper) {
-        this.templateScheduleRepo = templateScheduleRepo;
-        this.templateScheduleMapper = templateScheduleMapper;
-    }
-
     @Override
     public TemplateScheduleDto create(TemplateScheduleDto templateScheduleDto) {
-        Integer classNumber = templateScheduleDto.getClassNumber();
+        int classNumber = templateScheduleDto.getClassNumber();
         DayOfWeek dayOfWeek = templateScheduleDto.getDayOfWeek();
         int countLessons = templateScheduleRepo.countByClassNumberAndDayOfWeek(classNumber, dayOfWeek);
         if (countLessons >= 10) {
-            throw new DayFilledByLessonsException(dayOfWeek + " is filled by lessons for class number: " + classNumber);
+            throw new DayFilledByLessonsException(dayOfWeek);
         }
 
         TemplateScheduleDto result = templateScheduleMapper.toDto(templateScheduleRepo
@@ -53,7 +50,7 @@ public class TemplateScheduleServiceImpl implements TemplateScheduleService {
 
     @Override
     public Collection<TemplateScheduleDto> findAll() {
-        Collection<TemplateScheduleDto> result = ((Collection<TemplateSchedule>) templateScheduleRepo.findAll())
+        Collection<TemplateScheduleDto> result = templateScheduleRepo.findAll()
                 .stream()
                 .map(templateScheduleMapper::toDto)
                 .collect(Collectors.toList());
@@ -64,7 +61,7 @@ public class TemplateScheduleServiceImpl implements TemplateScheduleService {
     @Override
     public TemplateScheduleDto findById(Long id) {
         TemplateScheduleDto result = templateScheduleMapper.toDto(templateScheduleRepo.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("TemplateSchedule not found by id: " + id)));
+                .orElseThrow(() -> new NotFoundException("TemplateScheduleNotFoundException.byId", id)));
         log.info("IN findById - templateSchedule: {} found by id: {}", result, id);
         return result;
     }

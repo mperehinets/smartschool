@@ -6,6 +6,7 @@ import com.mper.smartschool.dto.mapper.SubjectMapper;
 import com.mper.smartschool.dto.mapper.SubjectMapperImpl;
 import com.mper.smartschool.entity.Subject;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
+import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.SubjectRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -75,10 +75,10 @@ public class SubjectServiceImplTest {
     }
 
     @Test
-    public void update_throwEntityNotFoundException_ifSubjectNotFound() {
+    public void update_throwNotFoundException_ifSubjectNotFound() {
         subjectDto.setId(Long.MAX_VALUE);
         Mockito.when(subjectRepo.findById(subjectDto.getId())).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> subjectService.update(subjectDto));
+        assertThrows(NotFoundException.class, () -> subjectService.update(subjectDto));
     }
 
     @Test
@@ -103,9 +103,9 @@ public class SubjectServiceImplTest {
     }
 
     @Test
-    public void findById_throwEntityNotFoundException_ifSubjectNotFound() {
+    public void findById_throwNotFoundException_ifSubjectNotFound() {
         Mockito.when(subjectRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> subjectService.findById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> subjectService.findById(Long.MAX_VALUE));
     }
 
     @Test
@@ -119,9 +119,9 @@ public class SubjectServiceImplTest {
     }
 
     @Test
-    public void deleteById_throwEntityNotFoundException_ifSubjectNotFound() {
+    public void deleteById_throwNotFoundException_ifSubjectNotFound() {
         Mockito.when(subjectRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> subjectService.deleteById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> subjectService.deleteById(Long.MAX_VALUE));
     }
 
     private Collection<SubjectDto> getCollectionOfSubjectsDto() {

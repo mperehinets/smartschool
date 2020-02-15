@@ -13,7 +13,6 @@ import java.time.LocalDate;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-
 public class TeachersSubjectDto extends BaseDto {
     @NotNull(groups = {OnCreate.class, OnUpdate.class},
             message = "{teachersSubjectDto.teacher.notnull}")

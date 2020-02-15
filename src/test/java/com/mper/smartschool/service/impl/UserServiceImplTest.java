@@ -7,6 +7,7 @@ import com.mper.smartschool.dto.mapper.UserMapperImpl;
 import com.mper.smartschool.entity.Role;
 import com.mper.smartschool.entity.User;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
+import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.RoleRepo;
 import com.mper.smartschool.repository.UserRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,8 +16,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,6 +37,9 @@ public class UserServiceImplTest {
     @Mock
     private RoleRepo roleRepo;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     private UserMapper userMapper = new UserMapperImpl();
 
     private UserServiceImpl userService;
@@ -45,7 +49,7 @@ public class UserServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        userService = new UserServiceImpl(userRepo, userMapper, roleRepo);
+        userService = new UserServiceImpl(userRepo, userMapper, roleRepo, passwordEncoder);
         userDto = DtoDirector.makeTestUserDtoById(1L);
     }
 
@@ -58,11 +62,16 @@ public class UserServiceImplTest {
                 .build();
         Mockito.when(roleRepo.findByName(roleUser.getName())).thenReturn(Optional.of(roleUser));
 
+        String encodedPassword = "encodedPassword";
+
+        Mockito.when(passwordEncoder.encode(userDto.getPassword())).thenReturn(encodedPassword);
+
         userDto.setId(null);
         userDto.setStatus(null);
         User user = userMapper.toEntity(userDto);
         user.setRoles(Collections.singleton(roleUser));
         user.setStatus(EntityStatus.ACTIVE);
+        user.setPassword(encodedPassword);
         Mockito.when(userRepo.save(user)).thenAnswer(invocationOnMock -> {
             User returnedUser = invocationOnMock.getArgument(0);
             returnedUser.setId(1L);
@@ -94,10 +103,10 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void update_throwEntityNotFoundException_ifUserNotFound() {
+    public void update_throwNotFoundException_ifUserNotFound() {
         userDto.setId(Long.MAX_VALUE);
         Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> userService.update(userDto));
+        assertThrows(NotFoundException.class, () -> userService.update(userDto));
     }
 
     @Test
@@ -123,9 +132,9 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void findById_throwEntityNotFoundException_ifUserNotFound() {
+    public void findById_throwNotFoundException_ifUserNotFound() {
         Mockito.when(userRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> userService.findById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> userService.findById(Long.MAX_VALUE));
     }
 
     @Test
@@ -139,9 +148,26 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void deleteById_throwEntityNotFoundException_ifUserNotFound() {
+    public void deleteById_throwNotFoundException_ifUserNotFound() {
         Mockito.when(userRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> userService.deleteById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> userService.deleteById(Long.MAX_VALUE));
+    }
+
+    @Test
+    public void findByEmail_success() {
+        User user = userMapper.toEntity(userDto);
+        Mockito.when(userRepo.findByEmail(userDto.getEmail())).thenReturn(Optional.of(user));
+
+        UserDto result = userService.findByEmail(userDto.getEmail());
+
+        assertEquals(result, userDto);
+    }
+
+    @Test
+    public void findByEmail_throwNotFoundException_ifUserNotFound() {
+        String nonExistentEmail = "hello@com";
+        Mockito.when(userRepo.findByEmail(nonExistentEmail)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> userService.findByEmail(nonExistentEmail));
     }
 
     private Collection<UserDto> getCollectionOfUsersDto() {

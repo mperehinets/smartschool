@@ -4,7 +4,7 @@ import com.mper.smartschool.dto.TeacherDto;
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
 import com.mper.smartschool.service.TeacherService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,15 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/teachers")
+@RequiredArgsConstructor
+@RequestMapping("/smartschool/teachers")
 public class TeacherController {
 
     private final TeacherService teacherService;
-
-    @Autowired
-    public TeacherController(TeacherService teacherService) {
-        this.teacherService = teacherService;
-    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

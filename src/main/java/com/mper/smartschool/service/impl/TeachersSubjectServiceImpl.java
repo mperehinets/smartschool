@@ -2,34 +2,28 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.TeachersSubjectDto;
 import com.mper.smartschool.dto.mapper.TeachersSubjectMapper;
-import com.mper.smartschool.entity.TeachersSubject;
+import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.TeachersSubjectRepo;
 import com.mper.smartschool.service.TeachersSubjectService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class TeachersSubjectServiceImpl implements TeachersSubjectService {
-
 
     private final TeachersSubjectRepo teachersSubjectRepo;
     private final TeachersSubjectMapper teachersSubjectMapper;
 
-    @Autowired
-    public TeachersSubjectServiceImpl(TeachersSubjectRepo teachersSubjectRepo,
-                                      TeachersSubjectMapper teachersSubjectMapper) {
-        this.teachersSubjectRepo = teachersSubjectRepo;
-        this.teachersSubjectMapper = teachersSubjectMapper;
-    }
-
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public TeachersSubjectDto create(TeachersSubjectDto teachersSubjectDto) {
         teachersSubjectDto.setStartDate(LocalDate.now());
         TeachersSubjectDto result = teachersSubjectMapper.toDto(teachersSubjectRepo
@@ -39,8 +33,9 @@ public class TeachersSubjectServiceImpl implements TeachersSubjectService {
     }
 
     @Override
+    @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
     public Collection<TeachersSubjectDto> findAll() {
-        Collection<TeachersSubjectDto> result = ((Collection<TeachersSubject>) teachersSubjectRepo.findAll())
+        Collection<TeachersSubjectDto> result = teachersSubjectRepo.findAll()
                 .stream()
                 .map(teachersSubjectMapper::toDto)
                 .collect(Collectors.toList());
@@ -49,9 +44,10 @@ public class TeachersSubjectServiceImpl implements TeachersSubjectService {
     }
 
     @Override
+    @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
     public TeachersSubjectDto findById(Long id) {
         TeachersSubjectDto result = teachersSubjectMapper.toDto(teachersSubjectRepo.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("TeachersSubject not found by id: " + id)));
+                .orElseThrow(() -> new NotFoundException("TeachersSubjectNotFoundException.byId", id)));
         log.info("IN findById - teachersSubject: {} found by id: {}", result, id);
         return result;
     }
@@ -64,6 +60,7 @@ public class TeachersSubjectServiceImpl implements TeachersSubjectService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public void stopTeachSubjectById(Long id) {
         TeachersSubjectDto teachersSubjectDto = findById(id);
         if (teachersSubjectDto.getEndDate() == null) {

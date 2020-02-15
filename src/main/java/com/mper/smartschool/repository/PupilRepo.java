@@ -1,7 +1,7 @@
 package com.mper.smartschool.repository;
 
 import com.mper.smartschool.entity.Pupil;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PupilRepo extends CrudRepository<Pupil, Long> {
+public interface PupilRepo extends JpaRepository<Pupil, Long> {
 }

@@ -4,7 +4,7 @@ import com.mper.smartschool.dto.PupilSuccessDto;
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
 import com.mper.smartschool.service.PupilSuccessService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,15 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/pupilSuccesses")
+@RequiredArgsConstructor
+@RequestMapping("/smartschool/pupilSuccesses")
 public class PupilSuccessController {
 
     private final PupilSuccessService pupilSuccessService;
-
-    @Autowired
-    public PupilSuccessController(PupilSuccessService pupilSuccessService) {
-        this.pupilSuccessService = pupilSuccessService;
-    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

@@ -4,7 +4,7 @@ import com.mper.smartschool.dto.HomeworkDto;
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
 import com.mper.smartschool.service.HomeworkService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,15 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/homeworks")
+@RequiredArgsConstructor
+@RequestMapping("/smartschool/homeworks")
 public class HomeworkController {
 
     private final HomeworkService homeworkService;
-
-    @Autowired
-    public HomeworkController(HomeworkService homeworkService) {
-        this.homeworkService = homeworkService;
-    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

@@ -5,6 +5,7 @@ import com.mper.smartschool.dto.HomeworkDto;
 import com.mper.smartschool.dto.mapper.HomeworkMapper;
 import com.mper.smartschool.dto.mapper.HomeworkMapperImpl;
 import com.mper.smartschool.entity.Homework;
+import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.HomeworkRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -70,10 +70,10 @@ public class HomeworkServiceImplTest {
     }
 
     @Test
-    public void update_throwEntityNotFoundException_ifHomeworkNotFound() {
+    public void update_throwNotFoundException_ifHomeworkNotFound() {
         homeworkDto.setId(Long.MAX_VALUE);
         Mockito.when(homeworkRepo.findById(homeworkDto.getId())).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> homeworkService.update(homeworkDto));
+        assertThrows(NotFoundException.class, () -> homeworkService.update(homeworkDto));
     }
 
     @Test
@@ -98,9 +98,9 @@ public class HomeworkServiceImplTest {
     }
 
     @Test
-    public void findById_throwEntityNotFoundException_ifHomeworkNotFound() {
+    public void findById_throwNotFoundException_ifHomeworkNotFound() {
         Mockito.when(homeworkRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> homeworkService.findById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> homeworkService.findById(Long.MAX_VALUE));
     }
 
     @Test
@@ -112,9 +112,9 @@ public class HomeworkServiceImplTest {
     }
 
     @Test
-    public void deleteById_throwEntityNotFoundException_ifHomeworkNotFound() {
+    public void deleteById_throwNotFoundException_ifHomeworkNotFound() {
         Mockito.when(homeworkRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> homeworkService.deleteById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> homeworkService.deleteById(Long.MAX_VALUE));
     }
 
     private Collection<HomeworkDto> getCollectionOfHomeworksDto() {

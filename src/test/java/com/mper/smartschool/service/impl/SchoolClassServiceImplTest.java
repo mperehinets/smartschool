@@ -7,6 +7,7 @@ import com.mper.smartschool.dto.mapper.SchoolClassMapperImpl;
 import com.mper.smartschool.entity.SchoolClass;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.entity.modelsEnum.SchoolClassInitial;
+import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.exception.SchoolFilledByClassesException;
 import com.mper.smartschool.repository.SchoolClassRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
@@ -60,7 +60,7 @@ public class SchoolClassServiceImplTest {
         lastSchoolClass.setStatus(EntityStatus.ACTIVE);
         lastSchoolClass.setId(5L);
         Mockito.when(schoolClassRepo
-                .findTop1BySeasonAndNumberOrderByInitialDesc(currentSeason, schoolClassDto.getNumber()))
+                .lastSchoolClassBySeasonAndNumber(currentSeason, schoolClassDto.getNumber()))
                 .thenReturn(lastSchoolClass);
 
         SchoolClass schoolClass = schoolClassMapper.toEntity(schoolClassDto);
@@ -100,7 +100,7 @@ public class SchoolClassServiceImplTest {
         lastSchoolClass.setStatus(EntityStatus.ACTIVE);
         lastSchoolClass.setId(5L);
         Mockito.when(schoolClassRepo
-                .findTop1BySeasonAndNumberOrderByInitialDesc(currentSeason, schoolClassDto.getNumber()))
+                .lastSchoolClassBySeasonAndNumber(currentSeason, schoolClassDto.getNumber()))
                 .thenReturn(lastSchoolClass);
 
         assertThrows(SchoolFilledByClassesException.class, () -> schoolClassService.create(schoolClassDto));
@@ -119,10 +119,10 @@ public class SchoolClassServiceImplTest {
     }
 
     @Test
-    public void update_throwEntityNotFoundException_ifSchoolClassNotFound() {
+    public void update_throwNotFoundException_ifSchoolClassNotFound() {
         schoolClassDto.setId(Long.MAX_VALUE);
         Mockito.when(schoolClassRepo.findById(schoolClassDto.getId())).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> schoolClassService.update(schoolClassDto));
+        assertThrows(NotFoundException.class, () -> schoolClassService.update(schoolClassDto));
     }
 
     @Test
@@ -147,9 +147,9 @@ public class SchoolClassServiceImplTest {
     }
 
     @Test
-    public void findById_throwEntityNotFoundException_ifSchoolClassNotFound() {
+    public void findById_throwNotFoundException_ifSchoolClassNotFound() {
         Mockito.when(schoolClassRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> schoolClassService.findById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> schoolClassService.findById(Long.MAX_VALUE));
     }
 
     @Test
@@ -163,9 +163,9 @@ public class SchoolClassServiceImplTest {
     }
 
     @Test
-    public void deleteById_throwEntityNotFoundException_ifSchoolClassNotFound() {
+    public void deleteById_throwNotFoundException_ifSchoolClassNotFound() {
         Mockito.when(schoolClassRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> schoolClassService.deleteById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> schoolClassService.deleteById(Long.MAX_VALUE));
     }
 
     private Collection<SchoolClassDto> getCollectionOfSchoolClassesDto() {

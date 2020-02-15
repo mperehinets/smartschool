@@ -6,6 +6,7 @@ import com.mper.smartschool.dto.mapper.TemplateScheduleMapper;
 import com.mper.smartschool.dto.mapper.TemplateScheduleMapperImpl;
 import com.mper.smartschool.entity.TemplateSchedule;
 import com.mper.smartschool.exception.DayFilledByLessonsException;
+import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.TemplateScheduleRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -81,10 +81,10 @@ public class TemplateScheduleServiceImplTest {
     }
 
     @Test
-    public void update_throwEntityNotFoundException_ifTemplateScheduleNotFound() {
+    public void update_throwNotFoundException_ifTemplateScheduleNotFound() {
         templateScheduleDto.setId(Long.MAX_VALUE);
         Mockito.when(templateScheduleRepo.findById(templateScheduleDto.getId())).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> templateScheduleService.update(templateScheduleDto));
+        assertThrows(NotFoundException.class, () -> templateScheduleService.update(templateScheduleDto));
     }
 
     @Test
@@ -111,9 +111,9 @@ public class TemplateScheduleServiceImplTest {
     }
 
     @Test
-    public void findById_throwEntityNotFoundException_ifTemplateScheduleNotFound() {
+    public void findById_throwNotFoundException_ifTemplateScheduleNotFound() {
         Mockito.when(templateScheduleRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> templateScheduleService.findById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> templateScheduleService.findById(Long.MAX_VALUE));
     }
 
     @Test
@@ -126,9 +126,9 @@ public class TemplateScheduleServiceImplTest {
     }
 
     @Test
-    public void deleteById_throwEntityNotFoundException_ifTemplateScheduleNotFound() {
+    public void deleteById_throwNotFoundException_ifTemplateScheduleNotFound() {
         Mockito.when(templateScheduleRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> templateScheduleService.deleteById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> templateScheduleService.deleteById(Long.MAX_VALUE));
     }
 
     private Collection<TemplateScheduleDto> getCollectionOfTemplateSchedulesDto() {

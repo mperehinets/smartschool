@@ -5,6 +5,7 @@ import com.mper.smartschool.dto.PupilSuccessDto;
 import com.mper.smartschool.dto.mapper.PupilSuccessMapper;
 import com.mper.smartschool.dto.mapper.PupilSuccessMapperImpl;
 import com.mper.smartschool.entity.PupilSuccess;
+import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.PupilSuccessRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -70,10 +70,10 @@ public class PupilSuccessServiceImplTest {
     }
 
     @Test
-    public void update_throwEntityNotFoundException_ifPupilSuccessNotFound() {
+    public void update_throwNotFoundException_ifPupilSuccessNotFound() {
         pupilSuccessDto.setId(Long.MAX_VALUE);
         Mockito.when(pupilSuccessRepo.findById(pupilSuccessDto.getId())).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> pupilSuccessService.update(pupilSuccessDto));
+        assertThrows(NotFoundException.class, () -> pupilSuccessService.update(pupilSuccessDto));
     }
 
     @Test
@@ -98,9 +98,9 @@ public class PupilSuccessServiceImplTest {
     }
 
     @Test
-    public void findById_throwEntityNotFoundException_ifPupilSuccessNotFound() {
+    public void findById_throwNotFoundException_ifPupilSuccessNotFound() {
         Mockito.when(pupilSuccessRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> pupilSuccessService.findById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> pupilSuccessService.findById(Long.MAX_VALUE));
     }
 
     @Test
@@ -112,9 +112,9 @@ public class PupilSuccessServiceImplTest {
     }
 
     @Test
-    public void deleteById_throwEntityNotFoundException_ifPupilSuccessNotFound() {
+    public void deleteById_throwNotFoundException_ifPupilSuccessNotFound() {
         Mockito.when(pupilSuccessRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> pupilSuccessService.deleteById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> pupilSuccessService.deleteById(Long.MAX_VALUE));
     }
 
     private Collection<PupilSuccessDto> getCollectionOfPupilSuccessesDto() {

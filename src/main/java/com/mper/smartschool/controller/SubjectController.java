@@ -4,7 +4,7 @@ import com.mper.smartschool.dto.SubjectDto;
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
 import com.mper.smartschool.service.SubjectService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,15 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/subjects")
+@RequiredArgsConstructor
+@RequestMapping("/smartschool/subjects")
 public class SubjectController {
 
     private final SubjectService subjectService;
-
-    @Autowired
-    public SubjectController(SubjectService subjectService) {
-        this.subjectService = subjectService;
-    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

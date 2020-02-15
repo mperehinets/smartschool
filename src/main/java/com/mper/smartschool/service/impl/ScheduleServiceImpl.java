@@ -2,31 +2,27 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.ScheduleDto;
 import com.mper.smartschool.dto.mapper.ScheduleMapper;
-import com.mper.smartschool.entity.Schedule;
+import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.ScheduleRepo;
 import com.mper.smartschool.service.ScheduleService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ScheduleServiceImpl implements ScheduleService {
 
     private final ScheduleRepo scheduleRepo;
     private final ScheduleMapper scheduleMapper;
 
-    @Autowired
-    public ScheduleServiceImpl(ScheduleRepo scheduleRepo, ScheduleMapper scheduleMapper) {
-        this.scheduleRepo = scheduleRepo;
-        this.scheduleMapper = scheduleMapper;
-    }
-
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ScheduleDto create(ScheduleDto scheduleDto) {
         ScheduleDto result = scheduleMapper.toDto(scheduleRepo.save(scheduleMapper.toEntity(scheduleDto)));
         log.info("IN create - schedule: {} successfully created", result);
@@ -34,6 +30,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public ScheduleDto update(ScheduleDto scheduleDto) {
         findById(scheduleDto.getId());
         ScheduleDto result = scheduleMapper.toDto(scheduleRepo.save(scheduleMapper.toEntity(scheduleDto)));
@@ -43,7 +40,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Collection<ScheduleDto> findAll() {
-        Collection<ScheduleDto> result = ((Collection<Schedule>) scheduleRepo.findAll())
+        Collection<ScheduleDto> result = scheduleRepo.findAll()
                 .stream()
                 .map(scheduleMapper::toDto)
                 .collect(Collectors.toList());
@@ -54,12 +51,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public ScheduleDto findById(Long id) {
         ScheduleDto result = scheduleMapper.toDto(scheduleRepo.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Schedule not found by id: " + id)));
+                .orElseThrow(() -> new NotFoundException("ScheduleNotFoundException.byId", id)));
         log.info("IN findById - schedule: {} found by id: {}", result, id);
         return result;
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteById(Long id) {
         findById(id);
         scheduleRepo.deleteById(id);

@@ -5,6 +5,7 @@ import com.mper.smartschool.dto.ScheduleDto;
 import com.mper.smartschool.dto.mapper.ScheduleMapper;
 import com.mper.smartschool.dto.mapper.ScheduleMapperImpl;
 import com.mper.smartschool.entity.Schedule;
+import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.ScheduleRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -70,10 +70,10 @@ public class ScheduleServiceImplTest {
     }
 
     @Test
-    public void update_throwEntityNotFoundException_ifScheduleNotFound() {
+    public void update_throwNotFoundException_ifScheduleNotFound() {
         scheduleDto.setId(Long.MAX_VALUE);
         Mockito.when(scheduleRepo.findById(scheduleDto.getId())).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> scheduleService.update(scheduleDto));
+        assertThrows(NotFoundException.class, () -> scheduleService.update(scheduleDto));
     }
 
     @Test
@@ -98,9 +98,9 @@ public class ScheduleServiceImplTest {
     }
 
     @Test
-    public void findById_throwEntityNotFoundException_ifScheduleNotFound() {
+    public void findById_throwNotFoundException_ifScheduleNotFound() {
         Mockito.when(scheduleRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> scheduleService.findById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> scheduleService.findById(Long.MAX_VALUE));
     }
 
     @Test
@@ -112,9 +112,9 @@ public class ScheduleServiceImplTest {
     }
 
     @Test
-    public void deleteById_throwEntityNotFoundException_ifScheduleNotFound() {
+    public void deleteById_throwNotFoundException_ifScheduleNotFound() {
         Mockito.when(scheduleRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> scheduleService.deleteById(Long.MAX_VALUE));
+        assertThrows(NotFoundException.class, () -> scheduleService.deleteById(Long.MAX_VALUE));
     }
 
     private Collection<ScheduleDto> getCollectionOfSchedulesDto() {

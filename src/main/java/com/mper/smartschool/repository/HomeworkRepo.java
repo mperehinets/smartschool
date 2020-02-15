@@ -1,7 +1,7 @@
 package com.mper.smartschool.repository;
 
 import com.mper.smartschool.entity.Homework;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface HomeworkRepo extends CrudRepository<Homework, Long> {
+public interface HomeworkRepo extends JpaRepository<Homework, Long> {
 }
