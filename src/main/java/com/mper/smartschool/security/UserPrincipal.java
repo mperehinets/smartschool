@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 public class UserPrincipal implements UserDetails {
 
     private final Long id;
+    private final String firstName;
+    private final String secondName;
     private final String email;
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
@@ -25,6 +27,8 @@ public class UserPrincipal implements UserDetails {
 
     public UserPrincipal(User user) {
         id = user.getId();
+        firstName = user.getFirstName();
+        secondName = user.getSecondName();
         email = user.getEmail();
         password = user.getPassword();
         authorities = user.getRoles().stream()

@@ -1,8 +1,9 @@
-package com.mper.smartschool.dto;
+package com.mper.smartschool.security.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
