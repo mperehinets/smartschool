@@ -34,11 +34,12 @@ public class PupilDto extends UserDto {
                     String email,
                     String password,
                     LocalDate dateBirth,
+                    String avatarName,
                     Set<Role> roles,
                     EntityStatus status,
                     SchoolClassDto schoolClass,
                     Set<SignedPersonDto> signedPersons) {
-        super(id, firstName, secondName, email, password, dateBirth, roles, status);
+        super(id, firstName, secondName, email, password, dateBirth, avatarName, roles, status);
         this.schoolClass = schoolClass;
         this.signedPersons = signedPersons;
     }

@@ -36,10 +36,11 @@ public class TeacherDto extends UserDto {
                       String email,
                       String password,
                       LocalDate dateBirth,
+                      String avatarName,
                       Set<Role> roles,
                       EntityStatus status,
                       String education) {
-        super(id, firstName, secondName, email, password, dateBirth, roles, status);
+        super(id, firstName, secondName, email, password, dateBirth, avatarName, roles, status);
         this.education = education;
     }
 }

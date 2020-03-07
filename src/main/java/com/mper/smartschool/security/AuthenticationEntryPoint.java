@@ -28,7 +28,7 @@ public class AuthenticationEntryPoint {
                             new UsernamePasswordAuthenticationToken(
                                     authenticationRequest.getEmail(),
                                     authenticationRequest.getPassword())).getPrincipal()));
-        } catch (AuthenticationException e) {
+        } catch (AuthenticationException ex) {
             throw new BadCredentialsException("Unauthorized");
         }
     }

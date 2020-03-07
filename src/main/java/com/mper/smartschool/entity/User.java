@@ -34,6 +34,9 @@ public class User extends BaseEntity {
     @Column(name = "date_birth")
     private LocalDate dateBirth;
 
+    @Column(name = "avatar")
+    private String avatarName;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_has_roles",
             joinColumns = {@JoinColumn(name = "user", referencedColumnName = "id")},
@@ -54,6 +57,7 @@ public class User extends BaseEntity {
                 String email,
                 String password,
                 LocalDate dateBirth,
+                String avatarName,
                 Set<Role> roles,
                 EntityStatus status) {
         super(id);
@@ -62,6 +66,7 @@ public class User extends BaseEntity {
         this.email = email;
         this.password = password;
         this.dateBirth = dateBirth;
+        this.avatarName = avatarName;
         this.roles = roles;
         this.status = status;
     }

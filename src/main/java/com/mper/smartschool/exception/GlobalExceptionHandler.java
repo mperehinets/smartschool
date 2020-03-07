@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
@@ -39,7 +40,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .errors(Collections.singletonList(errorMessage))
                 .build();
         log.error("Entity not found, thrown:", ex);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        return ResponseEntity
+                .status(apiError.getStatus())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(apiError);
     }
 
     @ExceptionHandler({SchoolFilledByClassesException.class})
@@ -85,6 +89,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+    @ExceptionHandler({WrongImageTypeException.class})
+    public ResponseEntity<ApiError> handleWrongImageTypeException(WrongImageTypeException ex, Locale locale) {
+        String errorMessage = messageSource.getMessage(ex.getMessage(), null, locale);
+
+        ApiError apiError = ApiError.builder()
+                .message(errorMessage)
+                .status(HttpStatus.FORBIDDEN)
+                .errors(Collections.singletonList(errorMessage))
+                .build();
+        log.error("Wrong image type, thrown:", ex);
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers,
@@ -110,6 +127,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .errors(Collections.singletonList("error occurred"))
                 .build();
+        log.error("Something went wrong, thrown:", ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 

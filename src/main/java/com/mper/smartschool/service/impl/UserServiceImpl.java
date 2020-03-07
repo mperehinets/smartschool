@@ -7,6 +7,7 @@ import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.RoleRepo;
 import com.mper.smartschool.repository.UserRepo;
+import com.mper.smartschool.service.AvatarStorageService;
 import com.mper.smartschool.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,14 +30,17 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final RoleRepo roleRepo;
     private final PasswordEncoder passwordEncoder;
+    private final AvatarStorageService avatarStorageService;
 
     @Override
     public UserDto create(UserDto userDto) {
         Role roleUser = roleRepo.findByName("ROLE_USER")
                 .orElseThrow(() -> new EntityNotFoundException("Role not found by name: ROLE_USER"));
+
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         userDto.setRoles(Collections.singleton(roleUser));
         userDto.setStatus(EntityStatus.ACTIVE);
+        avatarStorageService.resolveAvatar(userDto);
 
         UserDto result = userMapper.toDto(userRepo.save(userMapper.toEntity(userDto)));
 
@@ -48,6 +52,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto update(UserDto userDto) {
         findById(userDto.getId());
+        avatarStorageService.resolveAvatar(userDto);
         UserDto result = userMapper.toDto(userRepo.save(userMapper.toEntity(userDto)));
         log.info("IN update - user: {} successfully updated", result);
         return result;

@@ -10,9 +10,12 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Random;
 
-public interface DtoDirector {
+public final class DtoDirector {
 
-    static UserDto makeTestUserDtoById(Long id) {
+    private DtoDirector() {
+    }
+
+    public static UserDto makeTestUserDtoById(Long id) {
         return UserDto.userBuilder()
                 .id(id)
                 .firstName("User")
@@ -20,12 +23,13 @@ public interface DtoDirector {
                 .dateBirth(LocalDate.of(2000, 12, 17))
                 .email("user" + id + "@gmail.com")
                 .password("userPassword")
+                .avatarName("some-avatar.png")
                 .roles(null)
                 .status(EntityStatus.ACTIVE)
                 .build();
     }
 
-    static TeacherDto makeTestTeacherDtoById(Long id) {
+    public static TeacherDto makeTestTeacherDtoById(Long id) {
         return TeacherDto.teacherBuilder()
                 .id(id)
                 .firstName("Teacher")
@@ -34,12 +38,13 @@ public interface DtoDirector {
                 .email("teacher" + id + "@gmail.com")
                 .password("teacherPassword")
                 .education("Teacher")
+                .avatarName("some-avatar.png")
                 .roles(null)
                 .status(EntityStatus.ACTIVE)
                 .build();
     }
 
-    static PupilDto makeTestPupilDtoById(Long id) {
+    public static PupilDto makeTestPupilDtoById(Long id) {
         return PupilDto.pupilBuilder()
                 .id(id)
                 .firstName("Pupil")
@@ -49,12 +54,13 @@ public interface DtoDirector {
                 .password("pupilPassword")
                 .schoolClass(makeTestSchoolClassDtoById(id + 1))
                 .signedPersons(new HashSet<>())
+                .avatarName("some-avatar.png")
                 .roles(null)
                 .status(EntityStatus.ACTIVE)
                 .build();
     }
 
-    static SchoolClassDto makeTestSchoolClassDtoById(Long id) {
+    public static SchoolClassDto makeTestSchoolClassDtoById(Long id) {
         LocalDate now = LocalDate.now();
         return SchoolClassDto.builder()
                 .id(id)
@@ -66,7 +72,7 @@ public interface DtoDirector {
                 .build();
     }
 
-    static SubjectDto makeTestSubjectDtoById(Long id) {
+    public static SubjectDto makeTestSubjectDtoById(Long id) {
         return SubjectDto.builder()
                 .id(id)
                 .name("Subject")
@@ -74,7 +80,7 @@ public interface DtoDirector {
                 .build();
     }
 
-    static TeachersSubjectDto makeTestTeachersSubjectDtoById(Long id) {
+    public static TeachersSubjectDto makeTestTeachersSubjectDtoById(Long id) {
         return TeachersSubjectDto.builder()
                 .id(id)
                 .subject(makeTestSubjectDtoById(id))
@@ -84,7 +90,7 @@ public interface DtoDirector {
                 .build();
     }
 
-    static SignedPersonDto makeTestSignedPersonDtoById(Long id) {
+    public static SignedPersonDto makeTestSignedPersonDtoById(Long id) {
         return SignedPersonDto.builder()
                 .id(id)
                 .fullName("Signed Person")
@@ -92,7 +98,7 @@ public interface DtoDirector {
                 .build();
     }
 
-    static TemplateScheduleDto makeTestTemplateScheduleDtoById(Long id) {
+    public static TemplateScheduleDto makeTestTemplateScheduleDtoById(Long id) {
         return TemplateScheduleDto.builder()
                 .id(id)
                 .classNumber(new Random().nextInt(11) + 1)
@@ -102,7 +108,7 @@ public interface DtoDirector {
                 .build();
     }
 
-    static ScheduleDto makeTestScheduleDtoById(Long id) {
+    public static ScheduleDto makeTestScheduleDtoById(Long id) {
         return ScheduleDto.builder()
                 .id(id)
                 .lessonNumber(new Random().nextInt(7) + 1)
@@ -112,7 +118,7 @@ public interface DtoDirector {
                 .build();
     }
 
-    static PupilSuccessDto makeTestPupilSuccessDtoById(Long id) {
+    public static PupilSuccessDto makeTestPupilSuccessDtoById(Long id) {
         return PupilSuccessDto.builder()
                 .id(id)
                 .pupil(makeTestPupilDtoById(id))
@@ -122,7 +128,7 @@ public interface DtoDirector {
                 .build();
     }
 
-    static HomeworkDto makeTestHomeworkDtoById(Long id) {
+    public static HomeworkDto makeTestHomeworkDtoById(Long id) {
         return HomeworkDto.builder()
                 .id(id)
                 .schedule(makeTestScheduleDtoById(id))

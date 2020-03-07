@@ -1,5 +1,8 @@
 package com.mper.smartschool.exception;
 
+import lombok.Getter;
+
+@Getter
 public class SchoolFilledByClassesException extends RuntimeException {
 
     private final int classNumber;
@@ -7,9 +10,5 @@ public class SchoolFilledByClassesException extends RuntimeException {
     public SchoolFilledByClassesException(int classNumber) {
         super(String.format("School filled by classes number: %d", classNumber));
         this.classNumber = classNumber;
-    }
-
-    public int getClassNumber() {
-        return classNumber;
     }
 }

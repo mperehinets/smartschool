@@ -51,6 +51,8 @@ public class UserDto extends BaseDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateBirth;
 
+    private String avatarName;
+
     @NotEmpty(groups = {OnUpdate.class}, message = "{userDto.roles.notempty}")
     private Set<Role> roles = new HashSet<>();
 
@@ -66,6 +68,7 @@ public class UserDto extends BaseDto {
                    String email,
                    String password,
                    LocalDate dateBirth,
+                   String avatarName,
                    Set<Role> roles,
                    EntityStatus status) {
         super(id);
@@ -74,6 +77,7 @@ public class UserDto extends BaseDto {
         this.email = email;
         this.password = password;
         this.dateBirth = dateBirth;
+        this.avatarName = avatarName;
         this.roles = roles;
         this.status = status;
     }

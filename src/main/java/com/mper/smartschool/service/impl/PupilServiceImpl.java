@@ -7,6 +7,7 @@ import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.PupilRepo;
 import com.mper.smartschool.repository.RoleRepo;
+import com.mper.smartschool.service.AvatarStorageService;
 import com.mper.smartschool.service.PupilService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class PupilServiceImpl implements PupilService {
     private final PupilMapper pupilMapper;
     private final RoleRepo roleRepo;
     private final PasswordEncoder passwordEncoder;
+    private final AvatarStorageService avatarStorageService;
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
@@ -38,6 +40,7 @@ public class PupilServiceImpl implements PupilService {
         pupilDto.setRoles(Collections.singleton(rolePupil));
         pupilDto.setStatus(EntityStatus.ACTIVE);
         pupilDto.setPassword(passwordEncoder.encode(pupilDto.getPassword()));
+        avatarStorageService.resolveAvatar(pupilDto);
 
         PupilDto result = pupilMapper.toDto(pupilRepo.save(pupilMapper.toEntity(pupilDto)));
 
@@ -50,6 +53,7 @@ public class PupilServiceImpl implements PupilService {
     @PreAuthorize("hasRole('ADMIN') or hasRole('PUPIL') and authentication.principal.id == #pupilDto.id")
     public PupilDto update(PupilDto pupilDto) {
         findById(pupilDto.getId());
+        avatarStorageService.resolveAvatar(pupilDto);
         PupilDto result = pupilMapper.toDto(pupilRepo.save(pupilMapper.toEntity(pupilDto)));
         log.info("IN update - pupil: {} successfully updated", result);
         return result;

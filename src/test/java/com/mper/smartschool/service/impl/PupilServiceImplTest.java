@@ -11,6 +11,7 @@ import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.PupilRepo;
 import com.mper.smartschool.repository.RoleRepo;
+import com.mper.smartschool.service.AvatarStorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,6 +42,9 @@ public class PupilServiceImplTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private AvatarStorageService avatarStorageService;
+
     private PupilMapper pupilMapper = new PupilMapperImpl();
 
     private PupilServiceImpl pupilService;
@@ -49,7 +53,7 @@ public class PupilServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        pupilService = new PupilServiceImpl(pupilRepo, pupilMapper, roleRepo, passwordEncoder);
+        pupilService = new PupilServiceImpl(pupilRepo, pupilMapper, roleRepo, passwordEncoder, avatarStorageService);
         pupilDto = DtoDirector.makeTestPupilDtoById(1L);
     }
 

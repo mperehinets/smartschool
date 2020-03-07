@@ -7,6 +7,7 @@ import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.RoleRepo;
 import com.mper.smartschool.repository.TeacherRepo;
+import com.mper.smartschool.service.AvatarStorageService;
 import com.mper.smartschool.service.TeacherService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class TeacherServiceImpl implements TeacherService {
     private final TeacherMapper teacherMapper;
     private final RoleRepo roleRepo;
     private final PasswordEncoder passwordEncoder;
+    private final AvatarStorageService avatarStorageService;
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
@@ -38,6 +40,8 @@ public class TeacherServiceImpl implements TeacherService {
         teacherDto.setRoles(Collections.singleton(roleTeacher));
         teacherDto.setStatus(EntityStatus.ACTIVE);
         teacherDto.setPassword(passwordEncoder.encode(teacherDto.getPassword()));
+        avatarStorageService.resolveAvatar(teacherDto);
+
         TeacherDto result = teacherMapper.toDto(teacherRepo.save(teacherMapper.toEntity(teacherDto)));
 
         log.info("IN create - teacher: {} successfully created", result);
@@ -49,6 +53,7 @@ public class TeacherServiceImpl implements TeacherService {
     @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') and authentication.principal.id == #teacherDto.id")
     public TeacherDto update(TeacherDto teacherDto) {
         findById(teacherDto.getId());
+        avatarStorageService.resolveAvatar(teacherDto);
         TeacherDto result = teacherMapper.toDto(teacherRepo.save(teacherMapper.toEntity(teacherDto)));
         log.info("IN update - teacher: {} successfully updated", result);
         return result;
