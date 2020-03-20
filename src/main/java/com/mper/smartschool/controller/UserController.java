@@ -1,5 +1,6 @@
 package com.mper.smartschool.controller;
 
+import com.mper.smartschool.dto.ResetPasswordDto;
 import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
@@ -18,7 +19,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto create(@Validated(OnCreate.class) @RequestBody UserDto userDto) {
         return userService.create(userDto);
@@ -45,8 +46,34 @@ public class UserController {
         userService.deleteById(id);
     }
 
+    @PutMapping("/activate/{id}")
+    public void activateById(@PathVariable Long id) {
+        userService.activateById(id);
+    }
+
+    @PutMapping("/deactivate/{id}")
+    public void deactivateById(@PathVariable Long id) {
+        userService.deactivateById(id);
+    }
+
     @GetMapping("/")
     public UserDto findByEmail(@RequestParam("email") String email) {
         return userService.findByEmail(email);
+    }
+
+    @PutMapping("/give-admin/{id}")
+    public UserDto makeAdminById(@PathVariable Long id) {
+        return userService.giveAdminById(id);
+    }
+
+    @PutMapping("/take-admin-away/{id}")
+    public UserDto takeAdminAwayById(@PathVariable Long id) {
+        return userService.takeAdminAwayById(id);
+    }
+
+    @PutMapping("/reset-password-by-admin/{id}")
+    public void resetPasswordByAdmin(@PathVariable Long id, @Validated @RequestBody ResetPasswordDto resetPasswordDto) {
+        resetPasswordDto.setId(id);
+        userService.resetPasswordByAdmin(resetPasswordDto);
     }
 }

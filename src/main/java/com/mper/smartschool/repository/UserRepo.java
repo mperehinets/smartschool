@@ -11,10 +11,26 @@ import java.util.Optional;
 
 
 public interface UserRepo extends JpaRepository<User, Long> {
+
+    Optional<User> findByEmail(String email);
+
     @Transactional
     @Modifying
     @Query("update User set status = 'DELETED' where id = :id")
-    int setDeletedStatusById(@Param("id") Long id);
+    void setDeletedStatusById(@Param("id") Long id);
 
-    Optional<User> findByEmail(String email);
+    @Transactional
+    @Modifying
+    @Query("update User set status = 'ACTIVE' where id = :id")
+    void setActiveStatusById(@Param("id") Long id);
+
+    @Transactional
+    @Modifying
+    @Query("update User set status = 'NOT_ACTIVE' where id = :id")
+    void setNotActiveStatusById(@Param("id") Long id);
+
+    @Transactional
+    @Modifying
+    @Query("update User set password = :password  where id = :id")
+    void updatePasswordById(@Param("id") Long id, @Param("password") String password);
 }

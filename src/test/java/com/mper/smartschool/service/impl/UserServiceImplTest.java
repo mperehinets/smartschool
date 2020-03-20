@@ -1,6 +1,7 @@
 package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.DtoDirector;
+import com.mper.smartschool.dto.ResetPasswordDto;
 import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.dto.mapper.UserMapper;
 import com.mper.smartschool.dto.mapper.UserMapperImpl;
@@ -58,7 +59,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void create_success() {
+    public void createAdmin_success() {
         Role roleUser = Role.builder()
                 .id(1L)
                 .name("ROLE_USER")
@@ -146,8 +147,7 @@ public class UserServiceImplTest {
         User user = userMapper.toEntity(userDto);
         Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
 
-        Mockito.when(userRepo.setDeletedStatusById(user.getId())).thenReturn(1);
-
+        Mockito.doNothing().when(userRepo).setDeletedStatusById(user.getId());
         assertDoesNotThrow(() -> userService.deleteById(userDto.getId()));
     }
 
@@ -155,6 +155,38 @@ public class UserServiceImplTest {
     public void deleteById_throwNotFoundException_ifUserNotFound() {
         Mockito.when(userRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> userService.deleteById(Long.MAX_VALUE));
+    }
+
+    @Test
+    public void activateById_success() {
+        User user = userMapper.toEntity(userDto);
+        Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
+
+        Mockito.doNothing().when(userRepo).setActiveStatusById(user.getId());
+
+        assertDoesNotThrow(() -> userService.activateById(userDto.getId()));
+    }
+
+    @Test
+    public void activateById_throwNotFoundException_ifUserNotFound() {
+        Mockito.when(userRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> userService.activateById(Long.MAX_VALUE));
+    }
+
+    @Test
+    public void deactivateById_success() {
+        User user = userMapper.toEntity(userDto);
+        Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
+
+        Mockito.doNothing().when(userRepo).setNotActiveStatusById(user.getId());
+
+        assertDoesNotThrow(() -> userService.deactivateById(userDto.getId()));
+    }
+
+    @Test
+    public void deactivateById_throwNotFoundException_ifUserNotFound() {
+        Mockito.when(userRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> userService.deactivateById(Long.MAX_VALUE));
     }
 
     @Test
@@ -172,6 +204,85 @@ public class UserServiceImplTest {
         String nonExistentEmail = "hello@com";
         Mockito.when(userRepo.findByEmail(nonExistentEmail)).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> userService.findByEmail(nonExistentEmail));
+    }
+
+    @Test
+    public void giveAdminById_success() {
+        Role roleAdmin = Role.builder()
+                .id(1L)
+                .name("ROLE_ADMIN")
+                .status(EntityStatus.ACTIVE)
+                .build();
+        Mockito.when(roleRepo.findByName(roleAdmin.getName())).thenReturn(Optional.of(roleAdmin));
+
+        userDto.getRoles().add(roleAdmin);
+        User user = userMapper.toEntity(userDto);
+        Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
+        Mockito.when(userRepo.save(user)).thenReturn(user);
+
+        UserDto result = userService.giveAdminById(userDto.getId());
+
+        assertEquals(userDto, result);
+    }
+
+    @Test
+    public void giveAdminById_throwNotFoundException_ifUserNotFound() {
+        userDto.setId(Long.MAX_VALUE);
+        Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> userService.giveAdminById(userDto.getId()));
+    }
+
+    @Test
+    public void takeAdminAwayById_success() {
+        Role roleAdmin = Role.builder()
+                .id(1L)
+                .name("ROLE_ADMIN")
+                .status(EntityStatus.ACTIVE)
+                .build();
+        Mockito.when(roleRepo.findByName(roleAdmin.getName())).thenReturn(Optional.of(roleAdmin));
+
+        userDto.getRoles().remove(roleAdmin);
+        User user = userMapper.toEntity(userDto);
+        Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
+        Mockito.when(userRepo.save(user)).thenReturn(user);
+
+        UserDto result = userService.takeAdminAwayById(userDto.getId());
+
+        assertEquals(userDto, result);
+    }
+
+    @Test
+    public void takeAdminAwayById_throwNotFoundException_ifUserNotFound() {
+        userDto.setId(Long.MAX_VALUE);
+        Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> userService.takeAdminAwayById(userDto.getId()));
+    }
+
+    @Test
+    public void resetPasswordByAdmin_success() {
+        ResetPasswordDto resetPasswordDto = new ResetPasswordDto();
+        resetPasswordDto.setId(1L);
+        resetPasswordDto.setNewPassword("newPassword");
+
+        User user = userMapper.toEntity(userDto);
+        Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
+
+        String encodedPassword = "encodedPassword";
+        Mockito.when(passwordEncoder.encode(resetPasswordDto.getNewPassword())).thenReturn(encodedPassword);
+
+        Mockito.doNothing()
+                .when(userRepo).updatePasswordById(resetPasswordDto.getId(), encodedPassword);
+
+        assertDoesNotThrow(() -> userService.resetPasswordByAdmin(resetPasswordDto));
+    }
+
+    @Test
+    public void resetPasswordByAdmin_throwNotFoundException_ifUserNotFound() {
+        ResetPasswordDto resetPasswordDto = new ResetPasswordDto();
+        resetPasswordDto.setId(Long.MAX_VALUE);
+        resetPasswordDto.setNewPassword("newPassword");
+        Mockito.when(userRepo.findById(resetPasswordDto.getId())).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> userService.resetPasswordByAdmin(resetPasswordDto));
     }
 
     private Collection<UserDto> getCollectionOfUsersDto() {

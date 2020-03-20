@@ -1,6 +1,5 @@
 package com.mper.smartschool.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
 import com.mper.smartschool.entity.Role;
@@ -23,14 +22,14 @@ public class UserDto extends BaseDto {
     @NotNull(groups = {OnCreate.class, OnUpdate.class},
             message = "{userDto.firstName.notnull}")
     @Pattern(groups = {OnCreate.class, OnUpdate.class},
-            regexp = "[A-ZА-ЯІ][A-Za-zА-Яа-яіІ\\- ]{2,60}",
+            regexp = "[A-Za-zА-Яа-яіІ\\- ]{3,60}",
             message = "{userDto.firstName.pattern}")
     private String firstName;
 
     @NotNull(groups = {OnCreate.class, OnUpdate.class},
             message = "{userDto.secondName.notnull}")
     @Pattern(groups = {OnCreate.class, OnUpdate.class},
-            regexp = "[A-ZА-ЯІ][A-Za-zА-Яа-яіІ\\- ]{2,60}",
+            regexp = "[A-Za-zА-Яа-яіІ\\- ]{3,60}",
             message = "{userDto.secondName.pattern}")
     private String secondName;
 
@@ -48,12 +47,10 @@ public class UserDto extends BaseDto {
     private String password;
 
     @Past(groups = {OnCreate.class, OnUpdate.class}, message = "{userDto.dateBirth.past}")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateBirth;
 
     private String avatarName;
 
-    @NotEmpty(groups = {OnUpdate.class}, message = "{userDto.roles.notempty}")
     private Set<Role> roles = new HashSet<>();
 
     private EntityStatus status;

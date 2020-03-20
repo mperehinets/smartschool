@@ -56,7 +56,10 @@ public class SecurityConfigProduction extends WebSecurityConfigurerAdapter {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/smartschool/**");
+                registry.addMapping("/smartschool/**")
+                        .allowedOrigins("*")
+                        .allowedMethods("GET", "POST", "DELETE", "PUT")
+                        .allowCredentials(true);
             }
         };
     }
@@ -71,6 +74,7 @@ public class SecurityConfigProduction extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) {
         http
                 .antMatcher("/smartschool/**")
+                .cors().and()
                 .httpBasic().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

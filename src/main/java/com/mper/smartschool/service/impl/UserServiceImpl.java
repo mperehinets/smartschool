@@ -1,5 +1,6 @@
 package com.mper.smartschool.service.impl;
 
+import com.mper.smartschool.dto.ResetPasswordDto;
 import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.dto.mapper.UserMapper;
 import com.mper.smartschool.entity.Role;
@@ -11,11 +12,9 @@ import com.mper.smartschool.service.AvatarStorageService;
 import com.mper.smartschool.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+//@PreAuthorize("hasRole('ADMIN')")
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
@@ -35,7 +34,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto create(UserDto userDto) {
         Role roleUser = roleRepo.findByName("ROLE_USER")
-                .orElseThrow(() -> new EntityNotFoundException("Role not found by name: ROLE_USER"));
+                .orElseThrow(() -> new NotFoundException("RoleNotFoundException.byName", "ROLE_USER"));
 
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         userDto.setRoles(Collections.singleton(roleUser));
@@ -51,7 +50,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto update(UserDto userDto) {
-        findById(userDto.getId());
+        UserDto foundUser = findById(userDto.getId());
+        userDto.setEmail(foundUser.getEmail());
+        userDto.setPassword(foundUser.getPassword());
+        userDto.setRoles(foundUser.getRoles());
+        userDto.setStatus(foundUser.getStatus());
         avatarStorageService.resolveAvatar(userDto);
         UserDto result = userMapper.toDto(userRepo.save(userMapper.toEntity(userDto)));
         log.info("IN update - user: {} successfully updated", result);
@@ -84,10 +87,58 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void activateById(Long id) {
+        findById(id);
+        userRepo.setActiveStatusById(id);
+        log.info("IN activateById - user with id: {} successfully activated", id);
+    }
+
+    @Override
+    public void deactivateById(Long id) {
+        findById(id);
+        userRepo.setNotActiveStatusById(id);
+        log.info("IN deactivateById - user with id: {} successfully deactivated", id);
+    }
+
+    @Override
     public UserDto findByEmail(String email) {
         UserDto result = userMapper.toDto(userRepo.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("UserNotFoundException.byEmail", email)));
         log.info("IN findByEmail - user: {} found by email: {}", result, email);
         return result;
+    }
+
+    @Override
+    public UserDto giveAdminById(Long id) {
+        UserDto userDto = findById(id);
+        Role roleAdmin = roleRepo.findByName("ROLE_ADMIN")
+                .orElseThrow(() -> new NotFoundException("RoleNotFoundException.byName", "ROLE_ADMIN"));
+        userDto.getRoles().add(roleAdmin);
+
+        UserDto result = userMapper.toDto(userRepo.save(userMapper.toEntity(userDto)));
+
+        log.info("IN giveAdminById - user: {} successfully got role ADMIN", result);
+        return result;
+    }
+
+    @Override
+    public UserDto takeAdminAwayById(Long id) {
+        UserDto userDto = findById(id);
+        Role roleAdmin = roleRepo.findByName("ROLE_ADMIN")
+                .orElseThrow(() -> new NotFoundException("RoleNotFoundException.byName", "ROLE_ADMIN"));
+        userDto.getRoles().remove(roleAdmin);
+
+        UserDto result = userMapper.toDto(userRepo.save(userMapper.toEntity(userDto)));
+
+        log.info("IN takeAdminAwayById - user: {} successfully lost role ADMIN", result);
+        return result;
+    }
+
+    @Override
+    public void resetPasswordByAdmin(ResetPasswordDto resetPasswordDto) {
+        findById(resetPasswordDto.getId());
+        userRepo.updatePasswordById(resetPasswordDto.getId(),
+                passwordEncoder.encode(resetPasswordDto.getNewPassword()));
+        log.info("IN resetPasswordByAdmin - user with id: {} got new password", resetPasswordDto.getId());
     }
 }

@@ -242,14 +242,6 @@ class PupilControllerTest {
     }
 
     @Test
-    public void update_return400_ifRolesIsNull() throws Exception {
-        mockMvc.perform(put("/smartschool/pupils/{id}", pupilDto.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(pupilDto)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     public void update_return400_ifSchoolClassIsNull() throws Exception {
         pupilDto.setRoles(Collections.singleton(new Role()));
         pupilDto.setSchoolClass(null);

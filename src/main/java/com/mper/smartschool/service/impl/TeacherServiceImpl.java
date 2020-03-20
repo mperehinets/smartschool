@@ -15,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -35,7 +34,7 @@ public class TeacherServiceImpl implements TeacherService {
     @PreAuthorize("hasRole('ADMIN')")
     public TeacherDto create(TeacherDto teacherDto) {
         Role roleTeacher = roleRepo.findByName("ROLE_TEACHER")
-                .orElseThrow(() -> new EntityNotFoundException("Role not found by name: ROLE_TEACHER"));
+                .orElseThrow(() -> new NotFoundException("RoleNotFoundException.byName", "ROLE_TEACHER"));
 
         teacherDto.setRoles(Collections.singleton(roleTeacher));
         teacherDto.setStatus(EntityStatus.ACTIVE);
@@ -52,7 +51,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') and authentication.principal.id == #teacherDto.id")
     public TeacherDto update(TeacherDto teacherDto) {
-        findById(teacherDto.getId());
+        teacherDto.setRoles(findById(teacherDto.getId()).getRoles());
         avatarStorageService.resolveAvatar(teacherDto);
         TeacherDto result = teacherMapper.toDto(teacherRepo.save(teacherMapper.toEntity(teacherDto)));
         log.info("IN update - teacher: {} successfully updated", result);

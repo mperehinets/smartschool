@@ -1,5 +1,6 @@
 package com.mper.smartschool.service;
 
+import com.mper.smartschool.dto.ResetPasswordDto;
 import com.mper.smartschool.dto.UserDto;
 
 import java.util.Collection;
@@ -16,5 +17,15 @@ public interface UserService {
 
     void deleteById(Long id);
 
+    void activateById(Long id);
+
+    void deactivateById(Long id);
+
+    UserDto giveAdminById(Long id);
+
+    UserDto takeAdminAwayById(Long id);
+
     UserDto findByEmail(String email);
+
+    void resetPasswordByAdmin(ResetPasswordDto resetPasswordDto);
 }

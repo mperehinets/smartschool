@@ -24,7 +24,7 @@ public final class DtoDirector {
                 .email("user" + id + "@gmail.com")
                 .password("userPassword")
                 .avatarName("some-avatar.png")
-                .roles(null)
+                .roles(new HashSet<>())
                 .status(EntityStatus.ACTIVE)
                 .build();
     }

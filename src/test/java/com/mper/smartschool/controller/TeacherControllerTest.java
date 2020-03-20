@@ -252,14 +252,6 @@ class TeacherControllerTest {
     }
 
     @Test
-    public void update_return400_ifRolesIsNull() throws Exception {
-        mockMvc.perform(put("/smartschool/teachers/{id}", teacherDto.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(teacherDto)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     public void update_return400_ifEducationIsNull() throws Exception {
         teacherDto.setId(null);
         teacherDto.setEducation(null);

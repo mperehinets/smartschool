@@ -25,10 +25,10 @@ public class User extends BaseEntity {
     @Column(name = "last_name")
     private String secondName;
 
-    @Column(name = "email", updatable = false)
+    @Column(name = "email")
     private String email;
 
-    @Column(name = "password", updatable = false)
+    @Column(name = "password")
     private String password;
 
     @Column(name = "date_birth")
@@ -44,7 +44,7 @@ public class User extends BaseEntity {
     private Set<Role> roles = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", updatable = false)
+    @Column(name = "status")
     private EntityStatus status;
 
     public User() {
