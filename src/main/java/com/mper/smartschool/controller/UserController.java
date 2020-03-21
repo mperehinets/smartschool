@@ -1,6 +1,7 @@
 package com.mper.smartschool.controller;
 
 import com.mper.smartschool.dto.ResetPasswordDto;
+import com.mper.smartschool.dto.UpdateAvatarDto;
 import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
@@ -75,5 +76,12 @@ public class UserController {
     public void resetPasswordByAdmin(@PathVariable Long id, @Validated @RequestBody ResetPasswordDto resetPasswordDto) {
         resetPasswordDto.setId(id);
         userService.resetPasswordByAdmin(resetPasswordDto);
+    }
+
+    //Following methods without tests
+    @PutMapping("/update-avatar/{id}")
+    public void updateAvatarById(@PathVariable Long id, @RequestBody UpdateAvatarDto updateAvatarDto) {
+        updateAvatarDto.setId(id);
+        userService.updateAvatarById(updateAvatarDto);
     }
 }

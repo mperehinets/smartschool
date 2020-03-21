@@ -1,6 +1,7 @@
 package com.mper.smartschool.service;
 
 import com.mper.smartschool.dto.ResetPasswordDto;
+import com.mper.smartschool.dto.UpdateAvatarDto;
 import com.mper.smartschool.dto.UserDto;
 
 import java.util.Collection;
@@ -28,4 +29,7 @@ public interface UserService {
     UserDto findByEmail(String email);
 
     void resetPasswordByAdmin(ResetPasswordDto resetPasswordDto);
+
+    //Following methods without tests
+    void updateAvatarById(UpdateAvatarDto updateAvatarDto);
 }

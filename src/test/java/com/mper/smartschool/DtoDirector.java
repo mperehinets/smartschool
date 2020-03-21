@@ -22,7 +22,6 @@ public final class DtoDirector {
                 .secondName("User")
                 .dateBirth(LocalDate.of(2000, 12, 17))
                 .email("user" + id + "@gmail.com")
-                .password("userPassword")
                 .avatarName("some-avatar.png")
                 .roles(new HashSet<>())
                 .status(EntityStatus.ACTIVE)

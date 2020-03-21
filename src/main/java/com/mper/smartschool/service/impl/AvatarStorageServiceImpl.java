@@ -81,4 +81,14 @@ public class AvatarStorageServiceImpl implements AvatarStorageService {
             userDto.setAvatarName("default.png");
         }
     }
+
+    @Override
+    public String resolveAvatar(String avatarName) {
+        try {
+            load(avatarName);
+            return avatarName;
+        } catch (NotFoundException | NullPointerException ex) {
+            return "default.png";
+        }
+    }
 }

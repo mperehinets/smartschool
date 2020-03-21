@@ -18,9 +18,6 @@ import java.util.stream.Collectors;
 public class UserPrincipal implements UserDetails {
 
     private final Long id;
-    private final String firstName;
-    private final String secondName;
-    private final String avatarName;
     private final String email;
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
@@ -28,9 +25,6 @@ public class UserPrincipal implements UserDetails {
 
     public UserPrincipal(User user) {
         id = user.getId();
-        firstName = user.getFirstName();
-        secondName = user.getSecondName();
-        avatarName = user.getAvatarName();
         email = user.getEmail();
         password = user.getPassword();
         authorities = user.getRoles().stream()
@@ -52,10 +46,6 @@ public class UserPrincipal implements UserDetails {
     @Override
     public String getUsername() {
         return email;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     @Override

@@ -59,7 +59,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void createAdmin_success() {
+    public void createUser_success() {
         Role roleUser = Role.builder()
                 .id(1L)
                 .name("ROLE_USER")
@@ -91,7 +91,11 @@ public class UserServiceImplTest {
 
         assertEquals(result.getRoles(), Stream.of(roleUser).collect(Collectors.toSet()));
 
-        assertThat(result).isEqualToIgnoringGivenFields(userDto, "id", "roles", "status");
+        assertThat(result).isEqualToIgnoringGivenFields(userDto,
+                "id",
+                "roles",
+                "status",
+                "password");
     }
 
 
@@ -260,9 +264,10 @@ public class UserServiceImplTest {
 
     @Test
     public void resetPasswordByAdmin_success() {
-        ResetPasswordDto resetPasswordDto = new ResetPasswordDto();
-        resetPasswordDto.setId(1L);
-        resetPasswordDto.setNewPassword("newPassword");
+        ResetPasswordDto resetPasswordDto = ResetPasswordDto.builder()
+                .id(1L)
+                .newPassword("newPassword")
+                .build();
 
         User user = userMapper.toEntity(userDto);
         Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
@@ -278,9 +283,10 @@ public class UserServiceImplTest {
 
     @Test
     public void resetPasswordByAdmin_throwNotFoundException_ifUserNotFound() {
-        ResetPasswordDto resetPasswordDto = new ResetPasswordDto();
-        resetPasswordDto.setId(Long.MAX_VALUE);
-        resetPasswordDto.setNewPassword("newPassword");
+        ResetPasswordDto resetPasswordDto = ResetPasswordDto.builder()
+                .id(Long.MAX_VALUE)
+                .newPassword("newPassword")
+                .build();
         Mockito.when(userRepo.findById(resetPasswordDto.getId())).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> userService.resetPasswordByAdmin(resetPasswordDto));
     }

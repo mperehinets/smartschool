@@ -15,4 +15,6 @@ public interface AvatarStorageService {
     Resource load(String fileName);
 
     void resolveAvatar(UserDto userDto);
+
+    String resolveAvatar(String avatarName);
 }
