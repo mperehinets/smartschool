@@ -32,4 +32,6 @@ public interface UserService {
 
     //Following methods without tests
     void updateAvatarById(UpdateAvatarDto updateAvatarDto);
+
+    Long getCount();
 }

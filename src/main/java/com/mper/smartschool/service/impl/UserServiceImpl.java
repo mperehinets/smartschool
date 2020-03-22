@@ -164,4 +164,12 @@ public class UserServiceImpl implements UserService {
                 updateAvatarDto.getId(),
                 updateAvatarDto.getNewAvatarName());
     }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public Long getCount() {
+        Long result = userRepo.count();
+        log.info("IN count - count of users: {}", result);
+        return result;
+    }
 }

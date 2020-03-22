@@ -84,4 +84,9 @@ public class UserController {
         updateAvatarDto.setId(id);
         userService.updateAvatarById(updateAvatarDto);
     }
+
+    @GetMapping("/count")
+    public Long getCount() {
+        return userService.getCount();
+    }
 }
