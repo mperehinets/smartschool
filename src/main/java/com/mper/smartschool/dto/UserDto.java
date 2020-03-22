@@ -2,6 +2,7 @@ package com.mper.smartschool.dto;
 
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
+import com.mper.smartschool.dto.validator.EmailUnique;
 import com.mper.smartschool.entity.Role;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import lombok.Builder;
@@ -37,6 +38,7 @@ public class UserDto extends BaseDto {
             message = "{userDto.email.notblank}")
     @Email(groups = {OnCreate.class},
             message = "{userDto.email.email}")
+    @EmailUnique(groups = {OnCreate.class})
     private String email;
 
     @NotNull(groups = {OnCreate.class},

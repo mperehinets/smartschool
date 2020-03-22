@@ -1,5 +1,9 @@
-package com.mper.smartschool.exception;
+package com.mper.smartschool.exception.hendler;
 
+import com.mper.smartschool.exception.DayFilledByLessonsException;
+import com.mper.smartschool.exception.NotFoundException;
+import com.mper.smartschool.exception.SchoolFilledByClassesException;
+import com.mper.smartschool.exception.WrongImageTypeException;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +58,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         ApiError apiError = ApiError.builder()
                 .message(errorMessage)
-                .status(HttpStatus.FORBIDDEN)
+                .status(HttpStatus.BAD_REQUEST)
                 .errors(Collections.singletonList(errorMessage))
                 .build();
         log.error("School filled by classes, thrown:", ex);
@@ -69,7 +73,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         ApiError apiError = ApiError.builder()
                 .message(errorMessage)
-                .status(HttpStatus.FORBIDDEN)
+                .status(HttpStatus.BAD_REQUEST)
                 .errors(Collections.singletonList(errorMessage))
                 .build();
         log.error("Day filled by lessons, thrown:", ex);
@@ -95,7 +99,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         ApiError apiError = ApiError.builder()
                 .message(errorMessage)
-                .status(HttpStatus.FORBIDDEN)
+                .status(HttpStatus.BAD_REQUEST)
                 .errors(Collections.singletonList(errorMessage))
                 .build();
         log.error("Wrong image type, thrown:", ex);

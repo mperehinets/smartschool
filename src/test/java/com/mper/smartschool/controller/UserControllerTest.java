@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mper.smartschool.DtoDirector;
 import com.mper.smartschool.dto.ResetPasswordDto;
 import com.mper.smartschool.dto.UserDto;
+import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.entity.Role;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.service.UserService;
@@ -17,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.validation.GroupSequence;
 import java.time.LocalDate;
 import java.util.Collections;
 
@@ -47,6 +49,7 @@ class UserControllerTest {
     public void create_return201_ifInputsIsValid() throws Exception {
         userDto.setId(null);
         userDto.setPassword("somePassword");
+        Mockito.when(userService.findByEmail(userDto.getEmail())).thenThrow(new NotFoundException("", null));
         mockMvc.perform(post("/smartschool/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userDto)))

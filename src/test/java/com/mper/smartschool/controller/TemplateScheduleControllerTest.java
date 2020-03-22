@@ -115,7 +115,7 @@ class TemplateScheduleControllerTest {
         mockMvc.perform(post("/smartschool/templateSchedules")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(templateScheduleDto)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isBadRequest());
     }
 
     @Test

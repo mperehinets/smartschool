@@ -6,6 +6,7 @@ import com.mper.smartschool.dto.PupilDto;
 import com.mper.smartschool.entity.Role;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.service.PupilService;
+import com.mper.smartschool.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -29,6 +30,9 @@ class PupilControllerTest {
     @MockBean
     private PupilService pupilService;
 
+    @MockBean
+    private UserService userService;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -45,6 +49,7 @@ class PupilControllerTest {
     @Test
     public void create_return201_ifInputsIsValid() throws Exception {
         pupilDto.setId(null);
+        Mockito.when(userService.findByEmail(pupilDto.getEmail())).thenThrow(new NotFoundException("", null));
         mockMvc.perform(post("/smartschool/pupils")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(pupilDto)))
