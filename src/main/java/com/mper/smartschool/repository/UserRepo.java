@@ -1,6 +1,7 @@
 package com.mper.smartschool.repository;
 
 import com.mper.smartschool.entity.User;
+import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,18 +17,8 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
     @Transactional
     @Modifying
-    @Query("update User set status = 'DELETED' where id = :id")
-    void setDeletedStatusById(@Param("id") Long id);
-
-    @Transactional
-    @Modifying
-    @Query("update User set status = 'ACTIVE' where id = :id")
-    void setActiveStatusById(@Param("id") Long id);
-
-    @Transactional
-    @Modifying
-    @Query("update User set status = 'NOT_ACTIVE' where id = :id")
-    void setNotActiveStatusById(@Param("id") Long id);
+    @Query("update User set status = :status where id = :id")
+    void changeStatusById(@Param("id") Long id, @Param("status") EntityStatus status);
 
     @Transactional
     @Modifying

@@ -22,7 +22,7 @@ public class HomeworkDto extends BaseDto {
     @NotNull(groups = {OnCreate.class, OnUpdate.class},
             message = "{homeworkDto.homework.notnull}")
     @Pattern(groups = {OnCreate.class, OnUpdate.class},
-            regexp = "[A-ZА-ЯІ][A-Za-zА-Яа-я0-9іІ\\-.,'?!()№ ]{2,60}",
+            regexp = "[A-Za-zА-Яа-яіІїЇєЄ`'\\-.,?!()№ ]{2,60}",
             message = "{homeworkDto.homework.pattern}")
     private String homework;
 

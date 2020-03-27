@@ -21,7 +21,7 @@ public class SignedPersonDto extends BaseDto {
     @NotNull(groups = {OnCreate.class, OnUpdate.class},
             message = "{signedPersonDto.fullName.notnull}")
     @Pattern(groups = {OnCreate.class, OnUpdate.class},
-            regexp = "[A-ZА-ЯІ][A-Za-zА-Яа-яіІ\\- ]{2,60}",
+            regexp = "[A-Za-zА-Яа-яіІїЇєЄ`'\\- ]{3,60}",
             message = "{signedPersonDto.fullName.pattern}")
     private String fullName;
 

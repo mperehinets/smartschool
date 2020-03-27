@@ -1,5 +1,6 @@
 package com.mper.smartschool.controller;
 
+import com.mper.smartschool.dto.ChangeStatusDto;
 import com.mper.smartschool.dto.SubjectDto;
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
@@ -40,8 +41,14 @@ public class SubjectController {
         return subjectService.findById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Long id) {
-        subjectService.deleteById(id);
+    @PutMapping("/change-status/{id}")
+    public void changeStatusById(@PathVariable Long id, @RequestBody ChangeStatusDto changeStatusDto) {
+        changeStatusDto.setId(id);
+        subjectService.changeStatusById(changeStatusDto);
+    }
+
+    @GetMapping("/count")
+    public Long getCount() {
+        return subjectService.getCount();
     }
 }

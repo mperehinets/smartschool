@@ -1,7 +1,7 @@
 package com.mper.smartschool.controller;
 
+import com.mper.smartschool.dto.ChangeStatusDto;
 import com.mper.smartschool.dto.ResetPasswordDto;
-import com.mper.smartschool.dto.UpdateAvatarDto;
 import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
@@ -42,19 +42,10 @@ public class UserController {
         return userService.findById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Long id) {
-        userService.deleteById(id);
-    }
-
-    @PutMapping("/activate/{id}")
-    public void activateById(@PathVariable Long id) {
-        userService.activateById(id);
-    }
-
-    @PutMapping("/deactivate/{id}")
-    public void deactivateById(@PathVariable Long id) {
-        userService.deactivateById(id);
+    @PutMapping("/change-status/{id}")
+    public void changeStatusById(@PathVariable Long id, @RequestBody ChangeStatusDto changeStatusDto) {
+        changeStatusDto.setId(id);
+        userService.changeStatusById(changeStatusDto);
     }
 
     @GetMapping("/")
@@ -72,21 +63,25 @@ public class UserController {
         return userService.takeAdminAwayById(id);
     }
 
-    @PutMapping("/reset-password-by-admin/{id}")
-    public void resetPasswordByAdmin(@PathVariable Long id, @Validated @RequestBody ResetPasswordDto resetPasswordDto) {
+    @PutMapping("/reset-password/{id}")
+    public void resetPassword(@PathVariable Long id, @Validated @RequestBody ResetPasswordDto resetPasswordDto) {
         resetPasswordDto.setId(id);
-        userService.resetPasswordByAdmin(resetPasswordDto);
+        userService.resetPassword(resetPasswordDto);
     }
 
     //Following methods without tests
-    @PutMapping("/update-avatar/{id}")
-    public void updateAvatarById(@PathVariable Long id, @RequestBody UpdateAvatarDto updateAvatarDto) {
-        updateAvatarDto.setId(id);
-        userService.updateAvatarById(updateAvatarDto);
+    @PutMapping("/current/update-avatar")
+    public void updateAvatarForCurrent(@RequestBody String avatarName) {
+        userService.updateAvatarForCurrent(avatarName);
     }
 
     @GetMapping("/count")
     public Long getCount() {
         return userService.getCount();
+    }
+
+    @GetMapping("/current")
+    public UserDto findCurrent() {
+        return userService.findCurrent();
     }
 }

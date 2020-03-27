@@ -23,14 +23,14 @@ public class UserDto extends BaseDto {
     @NotNull(groups = {OnCreate.class, OnUpdate.class},
             message = "{userDto.firstName.notnull}")
     @Pattern(groups = {OnCreate.class, OnUpdate.class},
-            regexp = "[A-Za-zА-Яа-яіІ\\- ]{3,60}",
+            regexp = "[A-Za-zА-Яа-яіІїЇєЄ`'\\- ]{3,60}",
             message = "{userDto.firstName.pattern}")
     private String firstName;
 
     @NotNull(groups = {OnCreate.class, OnUpdate.class},
             message = "{userDto.secondName.notnull}")
     @Pattern(groups = {OnCreate.class, OnUpdate.class},
-            regexp = "[A-Za-zА-Яа-яіІ\\- ]{3,60}",
+            regexp = "[A-Za-zА-Яа-яіІїЇєЄ`'\\- ]{3,60}",
             message = "{userDto.secondName.pattern}")
     private String secondName;
 

@@ -1,6 +1,7 @@
 package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.DtoDirector;
+import com.mper.smartschool.dto.ChangeStatusDto;
 import com.mper.smartschool.dto.ResetPasswordDto;
 import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.dto.mapper.UserMapper;
@@ -147,50 +148,27 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void deleteById_success() {
+    public void changeStatusById_success() {
         User user = userMapper.toEntity(userDto);
         Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
 
-        Mockito.doNothing().when(userRepo).setDeletedStatusById(user.getId());
-        assertDoesNotThrow(() -> userService.deleteById(userDto.getId()));
+        ChangeStatusDto changeStatusDto = ChangeStatusDto.builder()
+                .id(user.getId())
+                .newStatus(EntityStatus.EXCLUDED)
+                .build();
+
+        Mockito.doNothing().when(userRepo).changeStatusById(changeStatusDto.getId(), changeStatusDto.getNewStatus());
+        assertDoesNotThrow(() -> userService.changeStatusById(changeStatusDto));
     }
 
     @Test
-    public void deleteById_throwNotFoundException_ifUserNotFound() {
-        Mockito.when(userRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> userService.deleteById(Long.MAX_VALUE));
-    }
-
-    @Test
-    public void activateById_success() {
-        User user = userMapper.toEntity(userDto);
-        Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
-
-        Mockito.doNothing().when(userRepo).setActiveStatusById(user.getId());
-
-        assertDoesNotThrow(() -> userService.activateById(userDto.getId()));
-    }
-
-    @Test
-    public void activateById_throwNotFoundException_ifUserNotFound() {
-        Mockito.when(userRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> userService.activateById(Long.MAX_VALUE));
-    }
-
-    @Test
-    public void deactivateById_success() {
-        User user = userMapper.toEntity(userDto);
-        Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
-
-        Mockito.doNothing().when(userRepo).setNotActiveStatusById(user.getId());
-
-        assertDoesNotThrow(() -> userService.deactivateById(userDto.getId()));
-    }
-
-    @Test
-    public void deactivateById_throwNotFoundException_ifUserNotFound() {
-        Mockito.when(userRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> userService.deactivateById(Long.MAX_VALUE));
+    public void changeStatusById_throwNotFoundException_ifUserNotFound() {
+        ChangeStatusDto changeStatusDto = ChangeStatusDto.builder()
+                .id(Long.MAX_VALUE)
+                .newStatus(EntityStatus.EXCLUDED)
+                .build();
+        Mockito.when(userRepo.findById(changeStatusDto.getId())).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> userService.changeStatusById(changeStatusDto));
     }
 
     @Test
@@ -278,7 +256,7 @@ public class UserServiceImplTest {
         Mockito.doNothing()
                 .when(userRepo).updatePasswordById(resetPasswordDto.getId(), encodedPassword);
 
-        assertDoesNotThrow(() -> userService.resetPasswordByAdmin(resetPasswordDto));
+        assertDoesNotThrow(() -> userService.resetPassword(resetPasswordDto));
     }
 
     @Test
@@ -288,7 +266,7 @@ public class UserServiceImplTest {
                 .newPassword("newPassword")
                 .build();
         Mockito.when(userRepo.findById(resetPasswordDto.getId())).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> userService.resetPasswordByAdmin(resetPasswordDto));
+        assertThrows(NotFoundException.class, () -> userService.resetPassword(resetPasswordDto));
     }
 
     private Collection<UserDto> getCollectionOfUsersDto() {

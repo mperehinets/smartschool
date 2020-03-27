@@ -2,7 +2,9 @@ package com.mper.smartschool.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mper.smartschool.DtoDirector;
+import com.mper.smartschool.dto.ChangeStatusDto;
 import com.mper.smartschool.dto.SubjectDto;
+import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.service.SubjectService;
 import org.junit.jupiter.api.BeforeEach;
@@ -146,19 +148,31 @@ class SubjectControllerTest {
     }
 
     @Test
-    public void deleteById_return200_ifInputsValid() throws Exception {
-        mockMvc.perform(delete("/smartschool/subjects/{id}", subjectDto.getId())
-                .contentType(MediaType.APPLICATION_JSON))
+    public void changeStatusById_return200_ifInputsValid() throws Exception {
+        ChangeStatusDto changeStatusDto = ChangeStatusDto.builder()
+                .id(subjectDto.getId())
+                .newStatus(EntityStatus.EXCLUDED)
+                .build();
+
+        mockMvc.perform(put("/smartschool/subjects/change-status/{id}", changeStatusDto.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(changeStatusDto)))
                 .andExpect(status().isOk());
         Mockito.verify(subjectService, Mockito.times(1))
-                .deleteById(subjectDto.getId());
+                .changeStatusById(changeStatusDto);
     }
 
     @Test
-    public void deleteById_return404_ifInputIdNotExist() throws Exception {
-        Mockito.doThrow(new NotFoundException("", null)).when(subjectService).deleteById(Long.MAX_VALUE);
-        mockMvc.perform(delete("/smartschool/subjects/{id}", Long.MAX_VALUE)
-                .contentType(MediaType.APPLICATION_JSON))
+    public void changeStatusById_return404_ifInputIdNotExist() throws Exception {
+        ChangeStatusDto changeStatusDto = ChangeStatusDto.builder()
+                .id(Long.MAX_VALUE)
+                .newStatus(EntityStatus.EXCLUDED)
+                .build();
+        Mockito.doThrow(new NotFoundException("", null))
+                .when(subjectService).changeStatusById(changeStatusDto);
+        mockMvc.perform(put("/smartschool/subjects/change-status/{id}", changeStatusDto.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(changeStatusDto)))
                 .andExpect(status().isNotFound());
     }
 }

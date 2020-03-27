@@ -1,7 +1,7 @@
 package com.mper.smartschool.service;
 
+import com.mper.smartschool.dto.ChangeStatusDto;
 import com.mper.smartschool.dto.ResetPasswordDto;
-import com.mper.smartschool.dto.UpdateAvatarDto;
 import com.mper.smartschool.dto.UserDto;
 
 import java.util.Collection;
@@ -16,11 +16,7 @@ public interface UserService {
 
     UserDto findById(Long id);
 
-    void deleteById(Long id);
-
-    void activateById(Long id);
-
-    void deactivateById(Long id);
+    void changeStatusById(ChangeStatusDto changeStatusDto);
 
     UserDto giveAdminById(Long id);
 
@@ -28,10 +24,12 @@ public interface UserService {
 
     UserDto findByEmail(String email);
 
-    void resetPasswordByAdmin(ResetPasswordDto resetPasswordDto);
+    void resetPassword(ResetPasswordDto resetPasswordDto);
 
     //Following methods without tests
-    void updateAvatarById(UpdateAvatarDto updateAvatarDto);
+    void updateAvatarForCurrent(String avatarName);
 
     Long getCount();
+
+    UserDto findCurrent();
 }

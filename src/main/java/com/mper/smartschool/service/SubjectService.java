@@ -1,5 +1,6 @@
 package com.mper.smartschool.service;
 
+import com.mper.smartschool.dto.ChangeStatusDto;
 import com.mper.smartschool.dto.SubjectDto;
 
 import java.util.Collection;
@@ -14,5 +15,7 @@ public interface SubjectService {
 
     SubjectDto findById(Long id);
 
-    void deleteById(Long id);
+    void changeStatusById(ChangeStatusDto changeStatusDto);
+
+    Long getCount();
 }

@@ -1,5 +1,6 @@
 package com.mper.smartschool.service.impl;
 
+import com.mper.smartschool.dto.ChangeStatusDto;
 import com.mper.smartschool.dto.SubjectDto;
 import com.mper.smartschool.dto.mapper.SubjectMapper;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
@@ -34,7 +35,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public SubjectDto update(SubjectDto subjectDto) {
-        findById(subjectDto.getId());
+        subjectDto.setStatus(findById(subjectDto.getId()).getStatus());
         SubjectDto result = subjectMapper.toDto(subjectRepo.save(subjectMapper.toEntity(subjectDto)));
         log.info("IN update - subject: {} successfully updated", result);
         return result;
@@ -60,9 +61,19 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public void deleteById(Long id) {
-        findById(id);
-        subjectRepo.setDeletedStatusById(id);
-        log.info("IN deleteById - subject with id: {} successfully deleted", id);
+    public void changeStatusById(ChangeStatusDto changeStatusDto) {
+        findById(changeStatusDto.getId());
+        subjectRepo.changeStatusById(changeStatusDto.getId(), changeStatusDto.getNewStatus());
+        log.info("IN changeStatusById - subject with id: {} successfully got new status: {}",
+                changeStatusDto.getId(),
+                changeStatusDto.getNewStatus());
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public Long getCount() {
+        Long result = subjectRepo.count();
+        log.info("IN count - count of subjects: {}", result);
+        return result;
     }
 }

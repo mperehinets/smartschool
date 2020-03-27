@@ -1,6 +1,7 @@
 package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.DtoDirector;
+import com.mper.smartschool.dto.ChangeStatusDto;
 import com.mper.smartschool.dto.SubjectDto;
 import com.mper.smartschool.dto.mapper.SubjectMapper;
 import com.mper.smartschool.dto.mapper.SubjectMapperImpl;
@@ -109,19 +110,30 @@ public class SubjectServiceImplTest {
     }
 
     @Test
-    public void deleteById_success() {
+    public void changeStatusById_success() {
         Subject subject = subjectMapper.toEntity(subjectDto);
         Mockito.when(subjectRepo.findById(subjectDto.getId())).thenReturn(Optional.of(subject));
 
-        Mockito.when(subjectRepo.setDeletedStatusById(subject.getId())).thenReturn(1);
+        ChangeStatusDto changeStatusDto = ChangeStatusDto.builder()
+                .id(subject.getId())
+                .newStatus(EntityStatus.EXCLUDED)
+                .build();
 
-        assertDoesNotThrow(() -> subjectService.deleteById(subjectDto.getId()));
+        Mockito.when(subjectRepo.changeStatusById(changeStatusDto.getId(),
+                changeStatusDto.getNewStatus())).thenReturn(1);
+
+        assertDoesNotThrow(() -> subjectService.changeStatusById(changeStatusDto));
     }
 
     @Test
-    public void deleteById_throwNotFoundException_ifSubjectNotFound() {
-        Mockito.when(subjectRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> subjectService.deleteById(Long.MAX_VALUE));
+    public void changeStatusById_throwNotFoundException_ifSubjectNotFound() {
+        ChangeStatusDto changeStatusDto = ChangeStatusDto.builder()
+                .id(Long.MAX_VALUE)
+                .newStatus(EntityStatus.EXCLUDED)
+                .build();
+        Mockito.when(subjectRepo.findById(changeStatusDto.getId())).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class,
+                () -> subjectService.changeStatusById(changeStatusDto));
     }
 
     private Collection<SubjectDto> getCollectionOfSubjectsDto() {

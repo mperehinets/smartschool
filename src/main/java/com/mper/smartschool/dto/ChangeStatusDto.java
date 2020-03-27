@@ -1,5 +1,6 @@
 package com.mper.smartschool.dto;
 
+import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,13 +9,12 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class UpdateAvatarDto extends BaseDto {
-
-    private String newAvatarName;
+public class ChangeStatusDto extends BaseDto {
+    EntityStatus newStatus;
 
     @Builder
-    public UpdateAvatarDto(Long id, String newAvatarName) {
+    public ChangeStatusDto(Long id, EntityStatus newStatus) {
         super(id);
-        this.newAvatarName = newAvatarName;
+        this.newStatus = newStatus;
     }
 }

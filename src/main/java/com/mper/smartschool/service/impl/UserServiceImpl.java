@@ -1,7 +1,7 @@
 package com.mper.smartschool.service.impl;
 
+import com.mper.smartschool.dto.ChangeStatusDto;
 import com.mper.smartschool.dto.ResetPasswordDto;
-import com.mper.smartschool.dto.UpdateAvatarDto;
 import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.dto.mapper.UserMapper;
 import com.mper.smartschool.entity.Role;
@@ -9,11 +9,13 @@ import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.RoleRepo;
 import com.mper.smartschool.repository.UserRepo;
+import com.mper.smartschool.security.UserPrincipal;
 import com.mper.smartschool.service.AvatarStorageService;
 import com.mper.smartschool.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -84,27 +86,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
-    public void deleteById(Long id) {
-        findById(id);
-        userRepo.setDeletedStatusById(id);
-        log.info("IN deleteById - user with id: {} successfully deleted", id);
-    }
-
-    @Override
-    @PreAuthorize("hasRole('ADMIN')")
-    public void activateById(Long id) {
-        findById(id);
-        userRepo.setActiveStatusById(id);
-        log.info("IN activateById - user with id: {} successfully activated", id);
-    }
-
-    @Override
-    @PreAuthorize("hasRole('ADMIN')")
-    public void deactivateById(Long id) {
-        findById(id);
-        userRepo.setNotActiveStatusById(id);
-        log.info("IN deactivateById - user with id: {} successfully deactivated", id);
+    @PreAuthorize("hasRole('ADMIN') and authentication.principal.id != #changeStatusDto.id")
+    public void changeStatusById(ChangeStatusDto changeStatusDto) {
+        findById(changeStatusDto.getId());
+        userRepo.changeStatusById(changeStatusDto.getId(), changeStatusDto.getNewStatus());
+        log.info("IN changeStatusBuID - user with id: {} successfully got new status: {}",
+                changeStatusDto.getId(),
+                changeStatusDto.getNewStatus());
     }
 
     @Override
@@ -117,7 +105,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') and authentication.principal.id != #id")
     public UserDto giveAdminById(Long id) {
         UserDto userDto = findById(id);
         Role roleAdmin = roleRepo.findByName("ROLE_ADMIN")
@@ -131,7 +119,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') and authentication.principal.id != #id")
     public UserDto takeAdminAwayById(Long id) {
         UserDto userDto = findById(id);
         Role roleAdmin = roleRepo.findByName("ROLE_ADMIN")
@@ -145,8 +133,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
-    public void resetPasswordByAdmin(ResetPasswordDto resetPasswordDto) {
+    @PreAuthorize("hasRole('ADMIN') and authentication.principal.id != #resetPasswordDto.id")
+    public void resetPassword(ResetPasswordDto resetPasswordDto) {
         findById(resetPasswordDto.getId());
         userRepo.updatePasswordById(resetPasswordDto.getId(),
                 passwordEncoder.encode(resetPasswordDto.getNewPassword()));
@@ -154,15 +142,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateAvatarById(UpdateAvatarDto updateAvatarDto) {
-        findById(updateAvatarDto.getId());
-
-        updateAvatarDto.setNewAvatarName(avatarStorageService.resolveAvatar(updateAvatarDto.getNewAvatarName()));
-
-        userRepo.updateAvatarNameById(updateAvatarDto.getId(), updateAvatarDto.getNewAvatarName());
-        log.info("IN updateAvatarById - user with id: {} got new avatar: {}",
-                updateAvatarDto.getId(),
-                updateAvatarDto.getNewAvatarName());
+    public void updateAvatarForCurrent(String avatarName) {
+        String resolvedAvatarName = avatarStorageService.resolveAvatar(avatarName);
+        userRepo.updateAvatarNameById(findCurrent().getId(), resolvedAvatarName);
+        log.info("IN updateAvatarForCurrent - current user got new avatar: {}", resolvedAvatarName);
     }
 
     @Override
@@ -170,6 +153,18 @@ public class UserServiceImpl implements UserService {
     public Long getCount() {
         Long result = userRepo.count();
         log.info("IN count - count of users: {}", result);
+        return result;
+    }
+
+    @Override
+    public UserDto findCurrent() {
+        UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        UserDto result = findById(userPrincipal.getId());
+        log.info("IN findCurrent - current user: {} found", result);
         return result;
     }
 }

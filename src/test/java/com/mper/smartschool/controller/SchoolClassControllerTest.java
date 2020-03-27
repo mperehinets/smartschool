@@ -95,7 +95,7 @@ class SchoolClassControllerTest {
         mockMvc.perform(post("/smartschool/schoolClasses")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(schoolClassDto)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isForbidden());
     }
 
     @Test

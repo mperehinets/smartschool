@@ -36,13 +36,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                                     FilterChain chain) {
         String token = req.getHeader(HEADER_NAME);
         if (token == null || !token.startsWith(TOKEN_PREFIX)) {
-            res.sendError(HttpServletResponse.SC_FORBIDDEN,
+            res.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                     messageSource.getMessage("JWT.missing", null, MessageConfig.resolveLocale(req)));
             return;
         }
         UserPrincipal parsedUser = jwtTokenProvider.parseToken(token);
         if (parsedUser == null) {
-            res.sendError(HttpServletResponse.SC_FORBIDDEN,
+            res.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                     messageSource.getMessage("JWT.invalid", null, MessageConfig.resolveLocale(req)));
             return;
         }

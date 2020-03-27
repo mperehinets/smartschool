@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -58,7 +59,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         ApiError apiError = ApiError.builder()
                 .message(errorMessage)
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.FORBIDDEN)
                 .errors(Collections.singletonList(errorMessage))
                 .build();
         log.error("School filled by classes, thrown:", ex);
@@ -73,7 +74,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         ApiError apiError = ApiError.builder()
                 .message(errorMessage)
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.FORBIDDEN)
                 .errors(Collections.singletonList(errorMessage))
                 .build();
         log.error("Day filled by lessons, thrown:", ex);
@@ -90,6 +91,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .errors(Collections.singletonList(errorMessage))
                 .build();
         log.error("Bad credentials, thrown:", ex);
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler({AccessDeniedException.class})
+    public ResponseEntity<ApiError> handleBadCredentialsException(AccessDeniedException ex, Locale locale) {
+        String errorMessage = messageSource.getMessage("Access.denied", null, locale);
+
+        ApiError apiError = ApiError.builder()
+                .message(errorMessage)
+                .status(HttpStatus.FORBIDDEN)
+                .errors(Collections.singletonList(errorMessage))
+                .build();
+        log.error("Access denied, thrown:", ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -129,7 +143,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ApiError apiError = ApiError.builder()
                 .message(ex.getLocalizedMessage())
                 .status(HttpStatus.BAD_REQUEST)
-                .errors(Collections.singletonList("error occurred"))
+                .errors(Collections.singletonList("Something went wrong :("))
                 .build();
         log.error("Something went wrong, thrown:", ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());

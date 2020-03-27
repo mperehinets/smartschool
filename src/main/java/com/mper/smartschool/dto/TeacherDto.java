@@ -22,7 +22,7 @@ public class TeacherDto extends UserDto {
     @NotNull(groups = {OnCreate.class, OnUpdate.class},
             message = "{teacherDto.education.notnull}")
     @Pattern(groups = {OnCreate.class, OnUpdate.class},
-            regexp = "[A-ZА-ЯІ][A-Za-zА-Яа-я0-9іІ\\-.,№ ]{2,60}",
+            regexp = "[A-Za-zА-Яа-яіІїЇєЄ`'\\-.,№ ]{2,60}",
             message = "{teacherDto.education.pattern}")
     private String education;
 
