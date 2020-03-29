@@ -14,5 +14,6 @@ public interface TeacherService {
 
     TeacherDto findById(Long id);
 
-    void deleteById(Long id);
+    //Following methods without tests
+    Long getCount();
 }

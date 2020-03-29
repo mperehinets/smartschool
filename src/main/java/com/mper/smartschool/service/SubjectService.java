@@ -5,7 +5,7 @@ import com.mper.smartschool.dto.SubjectDto;
 
 import java.util.Collection;
 
-public interface SubjectService {
+public interface SubjectService extends FieldValueExistsService {
 
     SubjectDto create(SubjectDto subjectDto);
 
@@ -16,6 +16,9 @@ public interface SubjectService {
     SubjectDto findById(Long id);
 
     void changeStatusById(ChangeStatusDto changeStatusDto);
+
+    //Fallowing methods without tests
+    SubjectDto findByName(String name);
 
     Long getCount();
 }

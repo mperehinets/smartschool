@@ -41,6 +41,11 @@ public class SubjectController {
         return subjectService.findById(id);
     }
 
+    @GetMapping("/")
+    public SubjectDto findByName(@RequestParam("name") String name) {
+        return subjectService.findByName(name);
+    }
+
     @PutMapping("/change-status/{id}")
     public void changeStatusById(@PathVariable Long id, @RequestBody ChangeStatusDto changeStatusDto) {
         changeStatusDto.setId(id);

@@ -299,20 +299,4 @@ class TeacherControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
-
-    @Test
-    public void deleteById_return200_ifInputsValid() throws Exception {
-        mockMvc.perform(delete("/smartschool/teachers/{id}", teacherDto.getId())
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-        Mockito.verify(teacherService, Mockito.times(1)).deleteById(teacherDto.getId());
-    }
-
-    @Test
-    public void deleteById_return404_ifInputIdNotExist() throws Exception {
-        Mockito.doThrow(new NotFoundException("", null)).when(teacherService).deleteById(Long.MAX_VALUE);
-        mockMvc.perform(delete("/smartschool/teachers/{id}", Long.MAX_VALUE)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
 }

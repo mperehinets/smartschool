@@ -6,7 +6,7 @@ import com.mper.smartschool.dto.UserDto;
 
 import java.util.Collection;
 
-public interface UserService {
+public interface UserService extends FieldValueExistsService {
 
     UserDto create(UserDto userDto);
 

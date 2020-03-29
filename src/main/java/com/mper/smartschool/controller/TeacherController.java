@@ -40,8 +40,8 @@ public class TeacherController {
         return teacherService.findById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Long id) {
-        teacherService.deleteById(id);
+    @GetMapping("/count")
+    public Long getCount() {
+        return teacherService.getCount();
     }
 }

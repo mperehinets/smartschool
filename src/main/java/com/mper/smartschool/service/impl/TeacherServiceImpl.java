@@ -49,9 +49,12 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER') and authentication.principal.id == #teacherDto.id")
+    @PreAuthorize("hasRole('ADMIN')")
     public TeacherDto update(TeacherDto teacherDto) {
-        teacherDto.setRoles(findById(teacherDto.getId()).getRoles());
+        TeacherDto foundTeacher = findById(teacherDto.getId());
+        teacherDto.setEmail(foundTeacher.getEmail());
+        teacherDto.setRoles(foundTeacher.getRoles());
+        teacherDto.setStatus(foundTeacher.getStatus());
         avatarStorageService.resolveAvatar(teacherDto);
         TeacherDto result = teacherMapper.toDto(teacherRepo.save(teacherMapper.toEntity(teacherDto)));
         log.info("IN update - teacher: {} successfully updated", result);
@@ -59,6 +62,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public Collection<TeacherDto> findAll() {
         Collection<TeacherDto> result = teacherRepo.findAll()
                 .stream()
@@ -78,10 +82,9 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public void deleteById(Long id) {
-        TeacherDto teacherDto = findById(id);
-        teacherDto.setStatus(EntityStatus.DELETED);
-        teacherRepo.save(teacherMapper.toEntity(teacherDto));
-        log.info("IN deleteById - teacher with id: {} successfully deleted", id);
+    public Long getCount() {
+        Long result = teacherRepo.count();
+        log.info("IN count - count of teachers: {}", result);
+        return result;
     }
 }

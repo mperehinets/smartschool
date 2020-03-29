@@ -8,10 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 public interface SubjectRepo extends JpaRepository<Subject, Long> {
     @Transactional
     @Modifying
     @Query("update Subject set status = :status where id = :id")
     int changeStatusById(@Param("id") Long id, @Param("status") EntityStatus status);
+
+    Optional<Subject> findByName(String name);
 }

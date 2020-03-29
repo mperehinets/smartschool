@@ -143,23 +143,6 @@ public class TeacherServiceImplTest {
         assertThrows(NotFoundException.class, () -> teacherService.findById(Long.MAX_VALUE));
     }
 
-    @Test
-    public void deleteById_success() {
-        Teacher teacher = teacherMapper.toEntity(teacherDto);
-        Mockito.when(teacherRepo.findById(teacherDto.getId())).thenReturn(Optional.of(teacher));
-
-        teacher.setStatus(EntityStatus.DELETED);
-        Mockito.when(teacherRepo.save(teacher)).thenReturn(teacher);
-
-        assertDoesNotThrow(() -> teacherService.deleteById(teacherDto.getId()));
-    }
-
-    @Test
-    public void deleteById_throwNotFoundException_ifTeacherNotFound() {
-        Mockito.when(teacherRepo.findById(Long.MAX_VALUE)).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> teacherService.deleteById(Long.MAX_VALUE));
-    }
-
     private Collection<TeacherDto> getCollectionOfTeachersDto() {
         TeacherDto teacherDto2 = DtoDirector.makeTestTeacherDtoById(2L);
         TeacherDto teacherDto3 = DtoDirector.makeTestTeacherDtoById(3L);

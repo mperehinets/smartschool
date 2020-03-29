@@ -24,6 +24,19 @@ public class SubjectServiceImpl implements SubjectService {
     private final SubjectMapper subjectMapper;
 
     @Override
+    public boolean fieldValueExists(Object value, String fieldName) {
+        try {
+            if (fieldName.equals("name")) {
+                findByName(value.toString());
+                return true;
+            }
+            throw new UnsupportedOperationException("Field name not supported");
+        } catch (NotFoundException ex) {
+            return false;
+        }
+    }
+
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     public SubjectDto create(SubjectDto subjectDto) {
         subjectDto.setStatus(EntityStatus.ACTIVE);
@@ -67,6 +80,14 @@ public class SubjectServiceImpl implements SubjectService {
         log.info("IN changeStatusById - subject with id: {} successfully got new status: {}",
                 changeStatusDto.getId(),
                 changeStatusDto.getNewStatus());
+    }
+
+    @Override
+    public SubjectDto findByName(String name) {
+        SubjectDto result = subjectMapper.toDto(subjectRepo.findByName(name)
+                .orElseThrow(() -> new NotFoundException("SubjectNotFoundException.byName", name)));
+        log.info("IN findByName - subject: {} found by name: {}", result, name);
+        return result;
     }
 
     @Override

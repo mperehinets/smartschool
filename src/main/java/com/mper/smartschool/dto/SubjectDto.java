@@ -2,7 +2,9 @@ package com.mper.smartschool.dto;
 
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
+import com.mper.smartschool.dto.validator.unique.Unique;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
+import com.mper.smartschool.service.SubjectService;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,6 +23,10 @@ public class SubjectDto extends BaseDto {
     @Pattern(groups = {OnCreate.class, OnUpdate.class},
             regexp = "[A-Za-zА-Яа-яіІїЇєЄ`'\\- ]{3,60}",
             message = "{subjectDto.name.pattern}")
+    @Unique(groups = {OnCreate.class, OnUpdate.class},
+            service = SubjectService.class,
+            fieldName = "name",
+            message = "{subjectDto.name.unique}")
     private String name;
 
     private EntityStatus status;

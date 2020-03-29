@@ -35,6 +35,19 @@ public class UserServiceImpl implements UserService {
     private final AvatarStorageService avatarStorageService;
 
     @Override
+    public boolean fieldValueExists(Object value, String fieldName) {
+        try {
+            if (fieldName.equals("email")) {
+                findByEmail(value.toString());
+                return true;
+            }
+            throw new UnsupportedOperationException("Field name not supported");
+        } catch (NotFoundException ex) {
+            return false;
+        }
+    }
+
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     public UserDto create(UserDto userDto) {
         Role roleUser = roleRepo.findByName("ROLE_USER")
