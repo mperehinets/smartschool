@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.Set;
@@ -19,10 +18,8 @@ import java.util.Set;
 @ToString(callSuper = true)
 public class TeacherDto extends UserDto {
 
-    @NotNull(groups = {OnCreate.class, OnUpdate.class},
-            message = "{teacherDto.education.notnull}")
     @Pattern(groups = {OnCreate.class, OnUpdate.class},
-            regexp = "[A-Za-zА-Яа-яіІїЇєЄ`'\\-.,№ ]{2,60}",
+            regexp = "[A-Za-zА-Яа-яіІїЇєЄ`'\\-.,№ ]{0,200}",
             message = "{teacherDto.education.pattern}")
     private String education;
 

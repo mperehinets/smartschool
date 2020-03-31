@@ -63,13 +63,13 @@ public class UserController {
         return userService.takeAdminAwayById(id);
     }
 
+    //Following methods without tests
     @PutMapping("/reset-password/{id}")
     public void resetPassword(@PathVariable Long id, @Validated @RequestBody ResetPasswordDto resetPasswordDto) {
         resetPasswordDto.setId(id);
         userService.resetPassword(resetPasswordDto);
     }
 
-    //Following methods without tests
     @PutMapping("/current/update-avatar")
     public void updateAvatarForCurrent(@RequestBody String avatarName) {
         userService.updateAvatarForCurrent(avatarName);

@@ -2,7 +2,6 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.TeacherDto;
 import com.mper.smartschool.dto.mapper.TeacherMapper;
-import com.mper.smartschool.entity.Role;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.RoleRepo;
@@ -33,10 +32,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public TeacherDto create(TeacherDto teacherDto) {
-        Role roleTeacher = roleRepo.findByName("ROLE_TEACHER")
-                .orElseThrow(() -> new NotFoundException("RoleNotFoundException.byName", "ROLE_TEACHER"));
-
-        teacherDto.setRoles(Collections.singleton(roleTeacher));
+        teacherDto.setRoles(Collections.singleton(roleRepo.findTeacherRole()));
         teacherDto.setStatus(EntityStatus.ACTIVE);
         teacherDto.setPassword(passwordEncoder.encode(teacherDto.getPassword()));
         avatarStorageService.resolveAvatar(teacherDto);

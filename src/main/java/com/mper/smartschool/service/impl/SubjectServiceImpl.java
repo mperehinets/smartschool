@@ -97,4 +97,14 @@ public class SubjectServiceImpl implements SubjectService {
         log.info("IN count - count of subjects: {}", result);
         return result;
     }
+
+    @Override
+    public Collection<SubjectDto> findByStatus(EntityStatus status) {
+        Collection<SubjectDto> result = subjectRepo.findByStatus(status)
+                .stream()
+                .map(subjectMapper::toDto)
+                .collect(Collectors.toList());
+        log.info("IN findByStatus - {} subjects found", result.size());
+        return result;
+    }
 }

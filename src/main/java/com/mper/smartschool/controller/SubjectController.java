@@ -4,6 +4,7 @@ import com.mper.smartschool.dto.ChangeStatusDto;
 import com.mper.smartschool.dto.SubjectDto;
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
+import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.service.SubjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,11 +42,6 @@ public class SubjectController {
         return subjectService.findById(id);
     }
 
-    @GetMapping("/")
-    public SubjectDto findByName(@RequestParam("name") String name) {
-        return subjectService.findByName(name);
-    }
-
     @PutMapping("/change-status/{id}")
     public void changeStatusById(@PathVariable Long id, @RequestBody ChangeStatusDto changeStatusDto) {
         changeStatusDto.setId(id);
@@ -55,5 +51,10 @@ public class SubjectController {
     @GetMapping("/count")
     public Long getCount() {
         return subjectService.getCount();
+    }
+
+    @GetMapping("/")
+    public Collection<SubjectDto> findByStatus(@RequestParam("status") EntityStatus status) {
+        return subjectService.findByStatus(status);
     }
 }

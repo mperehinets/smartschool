@@ -64,7 +64,7 @@ public class PupilServiceImplTest {
                 .name("ROLE_PUPIL")
                 .status(EntityStatus.ACTIVE)
                 .build();
-        Mockito.when(roleRepo.findByName(rolePupil.getName())).thenReturn(Optional.of(rolePupil));
+        Mockito.when(roleRepo.findPupilRole()).thenReturn(rolePupil);
 
         String encodedPassword = "encodedPassword";
 

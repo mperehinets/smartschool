@@ -2,6 +2,7 @@ package com.mper.smartschool.service;
 
 import com.mper.smartschool.dto.ChangeStatusDto;
 import com.mper.smartschool.dto.SubjectDto;
+import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 
 import java.util.Collection;
 
@@ -21,4 +22,6 @@ public interface SubjectService extends FieldValueExistsService {
     SubjectDto findByName(String name);
 
     Long getCount();
+
+    Collection<SubjectDto> findByStatus(EntityStatus status);
 }

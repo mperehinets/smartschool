@@ -4,7 +4,7 @@ import com.mper.smartschool.dto.ChangeStatusDto;
 import com.mper.smartschool.dto.ResetPasswordDto;
 import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.dto.mapper.UserMapper;
-import com.mper.smartschool.entity.Role;
+import com.mper.smartschool.entity.User;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.RoleRepo;
@@ -50,11 +50,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public UserDto create(UserDto userDto) {
-        Role roleUser = roleRepo.findByName("ROLE_USER")
-                .orElseThrow(() -> new NotFoundException("RoleNotFoundException.byName", "ROLE_USER"));
-
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        userDto.setRoles(Collections.singleton(roleUser));
+        userDto.setRoles(Collections.singleton(roleRepo.findUserRole()));
         userDto.setStatus(EntityStatus.ACTIVE);
         avatarStorageService.resolveAvatar(userDto);
 
@@ -68,12 +65,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public UserDto update(UserDto userDto) {
-        UserDto foundUser = findById(userDto.getId());
-        userDto.setEmail(foundUser.getEmail());
-        userDto.setRoles(foundUser.getRoles());
-        userDto.setStatus(foundUser.getStatus());
-        avatarStorageService.resolveAvatar(userDto);
-        UserDto result = userMapper.toDto(userRepo.save(userMapper.toEntity(userDto)));
+        User user = userRepo.findById(userDto.getId())
+                .orElseThrow(() -> new NotFoundException("UserNotFoundException.byId", userDto.getId()));
+        user.setFirstName(userDto.getFirstName());
+        user.setSecondName(userDto.getSecondName());
+        user.setDateBirth(userDto.getDateBirth());
+        user.setAvatarName(avatarStorageService.resolveAvatar(userDto.getAvatarName()));
+        UserDto result = userMapper.toDto(userRepo.save(user));
         log.info("IN update - user: {} successfully updated", result);
         return result;
     }
@@ -103,7 +101,7 @@ public class UserServiceImpl implements UserService {
     public void changeStatusById(ChangeStatusDto changeStatusDto) {
         findById(changeStatusDto.getId());
         userRepo.changeStatusById(changeStatusDto.getId(), changeStatusDto.getNewStatus());
-        log.info("IN changeStatusBuID - user with id: {} successfully got new status: {}",
+        log.info("IN changeStatusByID - user with id: {} successfully got new status: {}",
                 changeStatusDto.getId(),
                 changeStatusDto.getNewStatus());
     }
@@ -120,12 +118,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @PreAuthorize("hasRole('ADMIN') and authentication.principal.id != #id")
     public UserDto giveAdminById(Long id) {
-        UserDto userDto = findById(id);
-        Role roleAdmin = roleRepo.findByName("ROLE_ADMIN")
-                .orElseThrow(() -> new NotFoundException("RoleNotFoundException.byName", "ROLE_ADMIN"));
-        userDto.getRoles().add(roleAdmin);
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("UserNotFoundException.byId", id));
 
-        UserDto result = userMapper.toDto(userRepo.save(userMapper.toEntity(userDto)));
+        user.getRoles().add(roleRepo.findAdminRole());
+
+        UserDto result = userMapper.toDto(userRepo.save(user));
 
         log.info("IN giveAdminById - user: {} successfully got role ADMIN", result);
         return result;
@@ -134,12 +132,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @PreAuthorize("hasRole('ADMIN') and authentication.principal.id != #id")
     public UserDto takeAdminAwayById(Long id) {
-        UserDto userDto = findById(id);
-        Role roleAdmin = roleRepo.findByName("ROLE_ADMIN")
-                .orElseThrow(() -> new NotFoundException("RoleNotFoundException.byName", "ROLE_ADMIN"));
-        userDto.getRoles().remove(roleAdmin);
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("UserNotFoundException.byId", id));
 
-        UserDto result = userMapper.toDto(userRepo.save(userMapper.toEntity(userDto)));
+        user.getRoles().remove(roleRepo.findAdminRole());
+
+        UserDto result = userMapper.toDto(userRepo.save(user));
 
         log.info("IN takeAdminAwayById - user: {} successfully lost role ADMIN", result);
         return result;

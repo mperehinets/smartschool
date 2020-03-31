@@ -66,7 +66,7 @@ public class UserServiceImplTest {
                 .name("ROLE_USER")
                 .status(EntityStatus.ACTIVE)
                 .build();
-        Mockito.when(roleRepo.findByName(roleUser.getName())).thenReturn(Optional.of(roleUser));
+        Mockito.when(roleRepo.findUserRole()).thenReturn(roleUser);
 
         String encodedPassword = "encodedPassword";
 
@@ -106,6 +106,8 @@ public class UserServiceImplTest {
         Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
 
         Mockito.when(userRepo.save(user)).thenReturn(user);
+
+        Mockito.when(avatarStorageService.resolveAvatar(userDto.getAvatarName())).thenReturn(userDto.getAvatarName());
 
         UserDto result = userService.update(userDto);
 
@@ -195,7 +197,7 @@ public class UserServiceImplTest {
                 .name("ROLE_ADMIN")
                 .status(EntityStatus.ACTIVE)
                 .build();
-        Mockito.when(roleRepo.findByName(roleAdmin.getName())).thenReturn(Optional.of(roleAdmin));
+        Mockito.when(roleRepo.findAdminRole()).thenReturn(roleAdmin);
 
         userDto.getRoles().add(roleAdmin);
         User user = userMapper.toEntity(userDto);
@@ -221,7 +223,7 @@ public class UserServiceImplTest {
                 .name("ROLE_ADMIN")
                 .status(EntityStatus.ACTIVE)
                 .build();
-        Mockito.when(roleRepo.findByName(roleAdmin.getName())).thenReturn(Optional.of(roleAdmin));
+        Mockito.when(roleRepo.findAdminRole()).thenReturn(roleAdmin);
 
         userDto.getRoles().remove(roleAdmin);
         User user = userMapper.toEntity(userDto);
@@ -229,7 +231,7 @@ public class UserServiceImplTest {
         Mockito.when(userRepo.save(user)).thenReturn(user);
 
         UserDto result = userService.takeAdminAwayById(userDto.getId());
-
+        System.out.println(result);
         assertEquals(userDto, result);
     }
 

@@ -68,7 +68,7 @@ public class TeacherServiceImplTest {
                 .name("ROLE_TEACHER")
                 .status(EntityStatus.ACTIVE)
                 .build();
-        Mockito.when(roleRepo.findByName(roleTeacher.getName())).thenReturn(Optional.of(roleTeacher));
+        Mockito.when(roleRepo.findTeacherRole()).thenReturn(roleTeacher);
 
         String encodedPassword = "encodedPassword";
 
