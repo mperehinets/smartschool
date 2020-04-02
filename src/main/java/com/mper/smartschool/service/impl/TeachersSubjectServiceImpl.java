@@ -2,6 +2,8 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.TeachersSubjectDto;
 import com.mper.smartschool.dto.mapper.TeachersSubjectMapper;
+import com.mper.smartschool.entity.TeachersSubject;
+import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.TeachersSubjectRepo;
 import com.mper.smartschool.service.TeachersSubjectService;
@@ -10,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -25,15 +26,21 @@ public class TeachersSubjectServiceImpl implements TeachersSubjectService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public TeachersSubjectDto create(TeachersSubjectDto teachersSubjectDto) {
-        teachersSubjectDto.setStartDate(LocalDate.now());
+        TeachersSubject teachersSubject = teachersSubjectMapper.toEntity(teachersSubjectDto);
+
+        TeachersSubject teachersSubjectForSave = teachersSubjectRepo.
+                findByTeacherIdAndSubjectId(teachersSubject.getTeacher().getId(), teachersSubject.getSubject().getId())
+                .orElse(teachersSubject);
+        teachersSubjectForSave.setStatus(EntityStatus.ACTIVE);
+
         TeachersSubjectDto result = teachersSubjectMapper.toDto(teachersSubjectRepo
-                .save(teachersSubjectMapper.toEntity(teachersSubjectDto)));
+                .save(teachersSubjectForSave));
         log.info("IN create - teachersSubject: {} successfully created", result);
         return result;
+
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
     public Collection<TeachersSubjectDto> findAll() {
         Collection<TeachersSubjectDto> result = teachersSubjectRepo.findAll()
                 .stream()
@@ -44,7 +51,6 @@ public class TeachersSubjectServiceImpl implements TeachersSubjectService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
     public TeachersSubjectDto findById(Long id) {
         TeachersSubjectDto result = teachersSubjectMapper.toDto(teachersSubjectRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("TeachersSubjectNotFoundException.byId", id)));
@@ -53,22 +59,16 @@ public class TeachersSubjectServiceImpl implements TeachersSubjectService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        findById(id);
-        teachersSubjectRepo.deleteById(id);
-        log.info("IN deleteById - teachersSubject with id: {} successfully deleted", id);
-    }
-
-    @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public void stopTeachSubjectById(Long id) {
-        TeachersSubjectDto teachersSubjectDto = findById(id);
-        if (teachersSubjectDto.getEndDate() == null) {
-            teachersSubjectRepo.stopTeachSubjectById(id);
-        }
-        log.info("IN stopTeachSubjectById - teachers: {} stopped teach subject: {}. Date: {}",
-                teachersSubjectDto.getTeacher(),
-                teachersSubjectDto.getSubject(),
-                teachersSubjectDto.getEndDate());
+    public TeachersSubjectDto delete(Long teacherId, Long subjectId) {
+        TeachersSubject teachersSubjectForSave = teachersSubjectRepo.
+                findByTeacherIdAndSubjectId(teacherId, subjectId)
+                .orElseThrow(() -> new NotFoundException("TeachersSubjectNotFoundException.byTeacherAndSubject",
+                        teacherId + ", " + subjectId));
+        teachersSubjectForSave.setStatus(EntityStatus.DELETED);
+
+        TeachersSubjectDto result = teachersSubjectMapper.toDto(teachersSubjectRepo.save(teachersSubjectForSave));
+        log.info("IN delete - teachersSubject: {} successfully got deleted status", result);
+        return result;
     }
 }

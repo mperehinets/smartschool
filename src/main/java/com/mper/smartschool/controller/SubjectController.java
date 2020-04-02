@@ -57,4 +57,9 @@ public class SubjectController {
     public Collection<SubjectDto> findByStatus(@RequestParam("status") EntityStatus status) {
         return subjectService.findByStatus(status);
     }
+
+    @GetMapping("/by-teacher/{id}")
+    public Collection<SubjectDto> findByTeacherId(@PathVariable Long id) {
+        return subjectService.findByTeacherId(id);
+    }
 }

@@ -37,7 +37,7 @@ public class User extends BaseEntity {
     @Column(name = "avatar")
     private String avatarName;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "users_has_roles",
             joinColumns = {@JoinColumn(name = "user", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role", referencedColumnName = "id")})

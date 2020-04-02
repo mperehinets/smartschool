@@ -49,6 +49,7 @@ class TeacherControllerTest {
     @Test
     public void create_return201_ifInputsIsValid() throws Exception {
         teacherDto.setId(null);
+        teacherDto.setPassword("password");
         Mockito.when(userService.findByEmail(teacherDto.getEmail())).thenThrow(new NotFoundException("", null));
         mockMvc.perform(post("/smartschool/teachers")
                 .contentType(MediaType.APPLICATION_JSON)

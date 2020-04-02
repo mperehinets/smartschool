@@ -24,4 +24,6 @@ public interface SubjectService extends FieldValueExistsService {
     Long getCount();
 
     Collection<SubjectDto> findByStatus(EntityStatus status);
+
+    Collection<SubjectDto> findByTeacherId(Long teacherId);
 }

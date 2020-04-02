@@ -12,7 +12,6 @@ public interface TeachersSubjectService {
 
     TeachersSubjectDto findById(Long id);
 
-    void deleteById(Long id);
-
-    void stopTeachSubjectById(Long id);
+    TeachersSubjectDto delete(Long teacherId, Long subjectId);
 }
+

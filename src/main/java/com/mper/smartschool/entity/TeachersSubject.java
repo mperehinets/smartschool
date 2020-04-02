@@ -1,12 +1,12 @@
 package com.mper.smartschool.entity;
 
+import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -23,21 +23,18 @@ public class TeachersSubject extends BaseEntity {
     @JoinColumn(name = "subject", referencedColumnName = "id")
     private Subject subject;
 
-    @Column(name = "start_date")
-    private LocalDate startDate;
-
-    @Column(name = "end_date")
-    private LocalDate endDate;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private EntityStatus status;
 
     public TeachersSubject() {
     }
 
     @Builder
-    public TeachersSubject(Long id, Teacher teacher, Subject subject, LocalDate startDate, LocalDate endDate) {
+    public TeachersSubject(Long id, Teacher teacher, Subject subject, EntityStatus status) {
         super(id);
         this.teacher = teacher;
         this.subject = subject;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.status = status;
     }
 }

@@ -107,4 +107,14 @@ public class SubjectServiceImpl implements SubjectService {
         log.info("IN findByStatus - {} subjects found", result.size());
         return result;
     }
+
+    @Override
+    public Collection<SubjectDto> findByTeacherId(Long teacherId) {
+        Collection<SubjectDto> result = subjectRepo.findByTeacherIdAndStatus(teacherId, EntityStatus.ACTIVE)
+                .stream()
+                .map(subjectMapper::toDto)
+                .collect(Collectors.toList());
+        log.info("IN findByStatus - {} subjects found", result.size());
+        return result;
+    }
 }

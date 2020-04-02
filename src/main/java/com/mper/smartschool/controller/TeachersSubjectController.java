@@ -12,7 +12,7 @@ import java.util.Collection;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/smartschool/teachersSubjects")
+@RequestMapping("/smartschool/teachers-subjects")
 public class TeachersSubjectController {
 
     private final TeachersSubjectService teachersSubjectService;
@@ -33,13 +33,8 @@ public class TeachersSubjectController {
         return teachersSubjectService.findById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Long id) {
-        teachersSubjectService.deleteById(id);
-    }
-
-    @PutMapping("/stopTeachSubject/{id}")
-    public void stopTeachSubjectById(@PathVariable Long id) {
-        teachersSubjectService.stopTeachSubjectById(id);
+    @DeleteMapping("/{teacherId}/delete-subject/{subjectId}")
+    public TeachersSubjectDto delete(@PathVariable Long teacherId, @PathVariable Long subjectId) {
+        return teachersSubjectService.delete(teacherId, subjectId);
     }
 }

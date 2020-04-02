@@ -8,16 +8,21 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 public interface SubjectRepo extends JpaRepository<Subject, Long> {
+
+    Optional<Subject> findByName(String name);
+
+    Collection<Subject> findByStatus(EntityStatus status);
+
     @Transactional
     @Modifying
     @Query("update Subject set status = :status where id = :id")
     int changeStatusById(@Param("id") Long id, @Param("status") EntityStatus status);
 
-    Optional<Subject> findByName(String name);
-
-    List<Subject> findByStatus(EntityStatus status);
+    @Query("select ts.subject from TeachersSubject ts where ts.teacher.id = :teacherId and ts.status = :status")
+    Collection<Subject> findByTeacherIdAndStatus(@Param("teacherId") Long teacherId,
+                                                 @Param("status") EntityStatus status);
 }

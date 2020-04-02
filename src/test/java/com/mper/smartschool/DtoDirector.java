@@ -35,7 +35,6 @@ public final class DtoDirector {
                 .secondName("Teacher")
                 .dateBirth(LocalDate.of(2000, 12, 19))
                 .email("teacher" + id + "@gmail.com")
-                .password("teacherPassword")
                 .education("Teacher")
                 .avatarName("some-avatar.png")
                 .roles(null)
@@ -84,8 +83,7 @@ public final class DtoDirector {
                 .id(id)
                 .subject(makeTestSubjectDtoById(id))
                 .teacher(makeTestTeacherDtoById(id))
-                .startDate(LocalDate.of(2015, 1, 20))
-                .endDate(null)
+                .status(EntityStatus.ACTIVE)
                 .build();
     }
 

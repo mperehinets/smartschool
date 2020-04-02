@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -92,9 +91,11 @@ public class TeacherServiceImplTest {
 
         assertEquals(result.getStatus(), EntityStatus.ACTIVE);
 
-        assertEquals(result.getRoles(), Stream.of(roleTeacher).collect(Collectors.toSet()));
-
-        assertThat(result).isEqualToIgnoringGivenFields(teacherDto, "id", "roles", "status");
+        assertThat(result).isEqualToIgnoringGivenFields(teacherDto,
+                "id",
+                "password",
+                "roles",
+                "status");
     }
 
     @Test
@@ -106,7 +107,7 @@ public class TeacherServiceImplTest {
 
         TeacherDto result = teacherService.update(teacherDto);
 
-        assertThat(result).isEqualToIgnoringGivenFields(teacherDto, "email", "password");
+        assertEquals(result, teacherDto);
     }
 
     @Test
