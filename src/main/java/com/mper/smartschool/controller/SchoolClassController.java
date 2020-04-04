@@ -13,7 +13,7 @@ import java.util.Collection;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/smartschool/schoolClasses")
+@RequestMapping("/smartschool/school-classes")
 public class SchoolClassController {
 
     private final SchoolClassService schoolClassService;
@@ -44,5 +44,15 @@ public class SchoolClassController {
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id) {
         schoolClassService.deleteById(id);
+    }
+
+    @GetMapping("/by-number/{classNumber}")
+    public Collection<SchoolClassDto> findByNumber(@PathVariable("classNumber") Integer number) {
+        return schoolClassService.findByNumber(number);
+    }
+
+    @GetMapping("/count")
+    public Long getCount() {
+        return schoolClassService.getCount();
     }
 }

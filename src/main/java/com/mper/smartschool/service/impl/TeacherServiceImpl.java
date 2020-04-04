@@ -58,7 +58,6 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public Collection<TeacherDto> findAll() {
         Collection<TeacherDto> result = teacherRepo.findAll()
                 .stream()
@@ -77,10 +76,20 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public Long getCount() {
         Long result = teacherRepo.count();
         log.info("IN count - count of teachers: {}", result);
+        return result;
+    }
+
+    @Override
+    public Collection<TeacherDto> findFree() {
+        System.out.println(teacherRepo.findFree());
+        Collection<TeacherDto> result = teacherRepo.findFree()
+                .stream()
+                .map(teacherMapper::toDto)
+                .collect(Collectors.toList());
+        log.info("IN findFree - {} teachers found", result.size());
         return result;
     }
 }

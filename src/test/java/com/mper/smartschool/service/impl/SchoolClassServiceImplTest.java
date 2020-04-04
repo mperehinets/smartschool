@@ -5,7 +5,6 @@ import com.mper.smartschool.dto.SchoolClassDto;
 import com.mper.smartschool.dto.mapper.SchoolClassMapper;
 import com.mper.smartschool.dto.mapper.SchoolClassMapperImpl;
 import com.mper.smartschool.entity.SchoolClass;
-import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.entity.modelsEnum.SchoolClassInitial;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.exception.SchoolFilledByClassesException;
@@ -47,8 +46,6 @@ public class SchoolClassServiceImplTest {
     @Test
     public void create_success() {
         schoolClassDto.setId(null);
-        schoolClassDto.setStatus(null);
-        schoolClassDto.setSeason(null);
         schoolClassDto.setInitial(null);
 
         LocalDate now = LocalDate.now();
@@ -56,16 +53,12 @@ public class SchoolClassServiceImplTest {
 
         SchoolClass lastSchoolClass = schoolClassMapper.toEntity(schoolClassDto);
         lastSchoolClass.setInitial(SchoolClassInitial.A);
-        lastSchoolClass.setSeason(currentSeason);
-        lastSchoolClass.setStatus(EntityStatus.ACTIVE);
         lastSchoolClass.setId(5L);
         Mockito.when(schoolClassRepo
-                .lastSchoolClassBySeasonAndNumber(currentSeason, schoolClassDto.getNumber()))
+                .findTop1ByNumberOrderByInitialDesc(schoolClassDto.getNumber()))
                 .thenReturn(lastSchoolClass);
 
         SchoolClass schoolClass = schoolClassMapper.toEntity(schoolClassDto);
-        schoolClass.setStatus(EntityStatus.ACTIVE);
-        schoolClass.setSeason(currentSeason);
         schoolClass.setInitial(SchoolClassInitial.B);
         Mockito.when(schoolClassRepo.save(schoolClass)).thenAnswer(invocationOnMock -> {
             SchoolClass returnedSchoolClass = invocationOnMock.getArgument(0);
@@ -77,11 +70,7 @@ public class SchoolClassServiceImplTest {
 
         assertNotNull(result.getId());
 
-        assertEquals(result.getStatus(), EntityStatus.ACTIVE);
-
         assertEquals(result.getInitial(), SchoolClassInitial.B);
-
-        assertEquals(result.getSeason(), currentSeason);
 
         assertThat(result).isEqualToIgnoringGivenFields(schoolClassDto,
                 "id");
@@ -92,15 +81,12 @@ public class SchoolClassServiceImplTest {
         schoolClassDto.setId(null);
 
         LocalDate now = LocalDate.now();
-        String currentSeason = now.getYear() + "-" + (now.getYear() + 1);
 
         SchoolClass lastSchoolClass = schoolClassMapper.toEntity(schoolClassDto);
         lastSchoolClass.setInitial(SchoolClassInitial.F);
-        lastSchoolClass.setSeason(currentSeason);
-        lastSchoolClass.setStatus(EntityStatus.ACTIVE);
         lastSchoolClass.setId(5L);
         Mockito.when(schoolClassRepo
-                .lastSchoolClassBySeasonAndNumber(currentSeason, schoolClassDto.getNumber()))
+                .findTop1ByNumberOrderByInitialDesc(schoolClassDto.getNumber()))
                 .thenReturn(lastSchoolClass);
 
         assertThrows(SchoolFilledByClassesException.class, () -> schoolClassService.create(schoolClassDto));
@@ -157,7 +143,7 @@ public class SchoolClassServiceImplTest {
         SchoolClass schoolClass = schoolClassMapper.toEntity(schoolClassDto);
         Mockito.when(schoolClassRepo.findById(schoolClassDto.getId())).thenReturn(Optional.of(schoolClass));
 
-        Mockito.when(schoolClassRepo.setDeletedStatusById(schoolClass.getId())).thenReturn(1);
+        Mockito.doNothing().when(schoolClassRepo).deleteById(schoolClass.getId());
 
         assertDoesNotThrow(() -> schoolClassService.deleteById(schoolClassDto.getId()));
     }

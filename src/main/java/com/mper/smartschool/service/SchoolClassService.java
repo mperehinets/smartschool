@@ -4,7 +4,7 @@ import com.mper.smartschool.dto.SchoolClassDto;
 
 import java.util.Collection;
 
-public interface SchoolClassService {
+public interface SchoolClassService extends FieldValueExistsService {
 
     SchoolClassDto create(SchoolClassDto schoolClassDto);
 
@@ -15,4 +15,11 @@ public interface SchoolClassService {
     SchoolClassDto findById(Long id);
 
     void deleteById(Long id);
+
+    //Following method without tests
+    Collection<SchoolClassDto> findByNumber(Integer number);
+
+    SchoolClassDto findByTeacherId(Long teacherId);
+
+    Long getCount();
 }

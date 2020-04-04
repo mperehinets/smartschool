@@ -16,4 +16,6 @@ public interface TeacherService {
 
     //Following methods without tests
     Long getCount();
+
+    Collection<TeacherDto> findFree();
 }

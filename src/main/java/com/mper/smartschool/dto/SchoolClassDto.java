@@ -2,8 +2,9 @@ package com.mper.smartschool.dto;
 
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
-import com.mper.smartschool.entity.modelsEnum.EntityStatus;
+import com.mper.smartschool.dto.validator.unique.Unique;
 import com.mper.smartschool.entity.modelsEnum.SchoolClassInitial;
+import com.mper.smartschool.service.SchoolClassService;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,13 +29,13 @@ public class SchoolClassDto extends BaseDto {
 
     private SchoolClassInitial initial;
 
-    private String season;
-
     @NotNull(groups = {OnCreate.class, OnUpdate.class},
             message = "{schoolClassDto.classTeacher.notnull}")
+    @Unique(groups = {OnCreate.class},
+            service = SchoolClassService.class,
+            fieldName = "classTeacher",
+            message = "{schoolClassDto.classTeacher.unique}")
     private TeacherDto classTeacher;
-
-    private EntityStatus status;
 
     public SchoolClassDto() {
     }
@@ -43,14 +44,10 @@ public class SchoolClassDto extends BaseDto {
     public SchoolClassDto(Long id,
                           Integer number,
                           SchoolClassInitial initial,
-                          String season,
-                          TeacherDto classTeacher,
-                          EntityStatus status) {
+                          TeacherDto classTeacher) {
         super(id);
         this.number = number;
         this.initial = initial;
-        this.season = season;
         this.classTeacher = classTeacher;
-        this.status = status;
     }
 }

@@ -58,8 +58,8 @@ public class SubjectController {
         return subjectService.findByStatus(status);
     }
 
-    @GetMapping("/by-teacher/{id}")
-    public Collection<SubjectDto> findByTeacherId(@PathVariable Long id) {
-        return subjectService.findByTeacherId(id);
+    @GetMapping("/by-teacher/{teacherId}")
+    public Collection<SubjectDto> findByTeacherId(@PathVariable("teacherId") Long teacherId) {
+        return subjectService.findByTeacherId(teacherId);
     }
 }

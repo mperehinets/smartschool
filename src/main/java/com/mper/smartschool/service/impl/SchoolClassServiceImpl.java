@@ -1,8 +1,8 @@
 package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.SchoolClassDto;
+import com.mper.smartschool.dto.TeacherDto;
 import com.mper.smartschool.dto.mapper.SchoolClassMapper;
-import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.entity.modelsEnum.SchoolClassInitial;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.exception.SchoolFilledByClassesException;
@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -26,21 +25,29 @@ public class SchoolClassServiceImpl implements SchoolClassService {
     private final SchoolClassMapper schoolClassMapper;
 
     @Override
+    public boolean fieldValueExists(Object value, String fieldName) {
+        try {
+            if (fieldName.equals("classTeacher")) {
+                findByTeacherId(((TeacherDto) value).getId());
+                return true;
+            }
+            throw new UnsupportedOperationException("Field name not supported");
+        } catch (NotFoundException ex) {
+            return false;
+        }
+    }
+
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     public SchoolClassDto create(SchoolClassDto schoolClassDto) {
-        String currentSeason = getCurrentSeason();
-
         SchoolClassDto lastSchoolClass = schoolClassMapper.toDto(schoolClassRepo
-                .lastSchoolClassBySeasonAndNumber(currentSeason, schoolClassDto.getNumber()));
+                .findTop1ByNumberOrderByInitialDesc(schoolClassDto.getNumber()));
         if (lastSchoolClass == null) {
             schoolClassDto.setInitial(SchoolClassInitial.A);
         } else {
             schoolClassDto.setInitial(lastSchoolClass.getInitial().nextInitial()
                     .orElseThrow(() -> new SchoolFilledByClassesException(schoolClassDto.getNumber())));
         }
-
-        schoolClassDto.setSeason(currentSeason);
-        schoolClassDto.setStatus(EntityStatus.ACTIVE);
 
         SchoolClassDto result = schoolClassMapper.toDto(schoolClassRepo
                 .save(schoolClassMapper.toEntity(schoolClassDto)));
@@ -51,9 +58,11 @@ public class SchoolClassServiceImpl implements SchoolClassService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public SchoolClassDto update(SchoolClassDto schoolClassDto) {
-        findById(schoolClassDto.getId());
+        SchoolClassDto schoolClassDtoForSave = findById(schoolClassDto.getId());
+        schoolClassDtoForSave.setClassTeacher(schoolClassDto.getClassTeacher());
+
         SchoolClassDto result = schoolClassMapper.toDto(schoolClassRepo
-                .save(schoolClassMapper.toEntity(schoolClassDto)));
+                .save(schoolClassMapper.toEntity(schoolClassDtoForSave)));
         log.info("IN update - schoolClass: {} successfully updated", result);
         return result;
     }
@@ -80,12 +89,32 @@ public class SchoolClassServiceImpl implements SchoolClassService {
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteById(Long id) {
         findById(id);
-        schoolClassRepo.setDeletedStatusById(id);
+        schoolClassRepo.deleteById(id);
         log.info("IN deleteById - schoolClass with id: {} successfully deleted", id);
     }
 
-    private String getCurrentSeason() {
-        LocalDate now = LocalDate.now();
-        return now.getYear() + "-" + (now.getYear() + 1);
+    @Override
+    public Collection<SchoolClassDto> findByNumber(Integer number) {
+        Collection<SchoolClassDto> result = schoolClassRepo.findByNumber(number)
+                .stream()
+                .map(schoolClassMapper::toDto)
+                .collect(Collectors.toList());
+        log.info("IN findByNumber - {} schoolClasses found", result.size());
+        return result;
+    }
+
+    @Override
+    public SchoolClassDto findByTeacherId(Long teacherId) {
+        SchoolClassDto result = schoolClassMapper.toDto(schoolClassRepo.findByTeacherId(teacherId)
+                .orElseThrow(() -> new NotFoundException("SchoolClassNotFoundException.byTeacherId", teacherId)));
+        log.info("IN findByTeacherId - schoolClass: {} found by id: {}", result, teacherId);
+        return result;
+    }
+
+    @Override
+    public Long getCount() {
+        Long result = schoolClassRepo.count();
+        log.info("IN count - count of schoolClasses: {}", result);
+        return result;
     }
 }

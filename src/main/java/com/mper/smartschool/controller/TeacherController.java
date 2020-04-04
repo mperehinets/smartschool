@@ -40,8 +40,15 @@ public class TeacherController {
         return teacherService.findById(id);
     }
 
+    //Following methods without tests
     @GetMapping("/count")
     public Long getCount() {
         return teacherService.getCount();
+    }
+
+    //Following methods without tests
+    @GetMapping("/free")
+    public Collection<TeacherDto> findFree() {
+        return teacherService.findFree();
     }
 }

@@ -2,22 +2,17 @@ package com.mper.smartschool.repository;
 
 import com.mper.smartschool.entity.SchoolClass;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
-import javax.transaction.Transactional;
+import java.util.Collection;
+import java.util.Optional;
 
 public interface SchoolClassRepo extends JpaRepository<SchoolClass, Long> {
 
-    SchoolClass findTop1BySeasonAndNumberOrderByInitialDesc(String season, Integer number);
+    SchoolClass findTop1ByNumberOrderByInitialDesc(Integer number);
 
-    default SchoolClass lastSchoolClassBySeasonAndNumber(String season, Integer number) {
-        return findTop1BySeasonAndNumberOrderByInitialDesc(season, number);
-    }
+    Collection<SchoolClass> findByNumber(Integer number);
 
-    @Transactional
-    @Modifying
-    @Query("update SchoolClass set status = 'DELETED' where id = :id")
-    int setDeletedStatusById(@Param("id") Long id);
+    @Query("select c from SchoolClass c where c.classTeacher.id = :teacherId")
+    Optional<SchoolClass> findByTeacherId(Long teacherId);
 }

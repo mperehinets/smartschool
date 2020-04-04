@@ -91,7 +91,6 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public Long getCount() {
         Long result = subjectRepo.count();
         log.info("IN count - count of subjects: {}", result);

@@ -64,9 +64,7 @@ public final class DtoDirector {
                 .id(id)
                 .number(new Random().nextInt(11) + 1)
                 .initial(SchoolClassInitial.A)
-                .season(now.getYear() + "-" + (now.getYear() + 1))
                 .classTeacher(makeTestTeacherDtoById(id))
-                .status(EntityStatus.ACTIVE)
                 .build();
     }
 

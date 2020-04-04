@@ -160,7 +160,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public Long getCount() {
         Long result = userRepo.count();
         log.info("IN count - count of users: {}", result);
