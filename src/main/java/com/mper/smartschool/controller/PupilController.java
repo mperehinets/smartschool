@@ -44,4 +44,9 @@ public class PupilController {
     public void deleteById(@PathVariable Long id) {
         pupilService.deleteById(id);
     }
+
+    @GetMapping("/count")
+    public Long getCount() {
+        return pupilService.getCount();
+    }
 }

@@ -15,4 +15,6 @@ public interface PupilService {
     PupilDto findById(Long id);
 
     void deleteById(Long id);
+
+    Long getCount();
 }

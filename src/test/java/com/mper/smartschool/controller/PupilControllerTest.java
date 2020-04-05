@@ -3,6 +3,7 @@ package com.mper.smartschool.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mper.smartschool.DtoDirector;
 import com.mper.smartschool.dto.PupilDto;
+import com.mper.smartschool.dto.SchoolClassDto;
 import com.mper.smartschool.entity.Role;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.service.PupilService;
@@ -49,6 +50,7 @@ class PupilControllerTest {
     @Test
     public void create_return201_ifInputsIsValid() throws Exception {
         pupilDto.setId(null);
+        pupilDto.setSchoolClass(new SchoolClassDto());
         Mockito.when(userService.findByEmail(pupilDto.getEmail())).thenThrow(new NotFoundException("", null));
         mockMvc.perform(post("/smartschool/pupils")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -168,6 +170,7 @@ class PupilControllerTest {
     @Test
     public void update_return200_ifInputsIsValid() throws Exception {
         pupilDto.setRoles(Collections.singleton(new Role()));
+        pupilDto.setSchoolClass(new SchoolClassDto());
         mockMvc.perform(put("/smartschool/pupils/{id}", pupilDto.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(pupilDto)))
@@ -178,6 +181,7 @@ class PupilControllerTest {
     @Test
     public void update_return404_ifIdNotExist() throws Exception {
         pupilDto.setRoles(Collections.singleton(new Role()));
+        pupilDto.setSchoolClass(new SchoolClassDto());
         pupilDto.setId(Long.MAX_VALUE);
         Mockito.when(pupilService.update(pupilDto)).thenThrow(new NotFoundException("", null));
         mockMvc.perform(put("/smartschool/pupils/{id}", pupilDto.getId())

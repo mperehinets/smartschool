@@ -90,7 +90,10 @@ public class PupilServiceImplTest {
 
         assertEquals(result.getRoles(), Stream.of(rolePupil).collect(Collectors.toSet()));
 
-        assertThat(result).isEqualToIgnoringGivenFields(pupilDto, "id", "roles", "status");
+        assertThat(result).isEqualToIgnoringGivenFields(pupilDto,
+                "id",
+                "roles",
+                "status");
     }
 
     @Test

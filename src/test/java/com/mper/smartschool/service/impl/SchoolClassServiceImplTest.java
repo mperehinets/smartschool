@@ -8,6 +8,7 @@ import com.mper.smartschool.entity.SchoolClass;
 import com.mper.smartschool.entity.modelsEnum.SchoolClassInitial;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.exception.SchoolFilledByClassesException;
+import com.mper.smartschool.repository.PupilRepo;
 import com.mper.smartschool.repository.SchoolClassRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,9 @@ public class SchoolClassServiceImplTest {
     @Mock
     private SchoolClassRepo schoolClassRepo;
 
+    @Mock
+    private PupilRepo pupilRepo;
+
     private SchoolClassMapper schoolClassMapper = new SchoolClassMapperImpl();
 
     private SchoolClassServiceImpl schoolClassService;
@@ -39,7 +43,7 @@ public class SchoolClassServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        schoolClassService = new SchoolClassServiceImpl(schoolClassRepo, schoolClassMapper);
+        schoolClassService = new SchoolClassServiceImpl(schoolClassRepo, schoolClassMapper, pupilRepo);
         schoolClassDto = DtoDirector.makeTestSchoolClassDtoById(1L);
     }
 
@@ -119,7 +123,7 @@ public class SchoolClassServiceImplTest {
 
         Collection<SchoolClassDto> result = schoolClassService.findAll();
 
-        assertEquals(result, schoolClassesDto);
+        assertEquals(result, schoolClassesDto.stream().peek(item -> item.setPupilsCount(0)).collect(Collectors.toList()));
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.PupilDto;
+import com.mper.smartschool.dto.TeacherDto;
 import com.mper.smartschool.dto.mapper.PupilMapper;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.exception.NotFoundException;
@@ -45,9 +46,12 @@ public class PupilServiceImpl implements PupilService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN') or hasRole('PUPIL') and authentication.principal.id == #pupilDto.id")
+    @PreAuthorize("hasRole('ADMIN')")
     public PupilDto update(PupilDto pupilDto) {
-        pupilDto.setRoles(findById(pupilDto.getId()).getRoles());
+        PupilDto foundPupil = findById(pupilDto.getId());
+        pupilDto.setEmail(foundPupil.getEmail());
+        pupilDto.setRoles(foundPupil.getRoles());
+        pupilDto.setStatus(foundPupil.getStatus());
         avatarStorageService.resolveAvatar(pupilDto);
         PupilDto result = pupilMapper.toDto(pupilRepo.save(pupilMapper.toEntity(pupilDto)));
         log.info("IN update - pupil: {} successfully updated", result);
@@ -79,5 +83,12 @@ public class PupilServiceImpl implements PupilService {
         pupilDto.setStatus(EntityStatus.DELETED);
         pupilRepo.save(pupilMapper.toEntity(pupilDto));
         log.info("IN deleteById - pupil with id: {} successfully deleted", id);
+    }
+
+    @Override
+    public Long getCount() {
+        Long result = pupilRepo.count();
+        log.info("IN count - count of pupils: {}", result);
+        return result;
     }
 }

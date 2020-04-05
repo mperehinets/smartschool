@@ -50,7 +50,7 @@ public final class DtoDirector {
                 .dateBirth(LocalDate.of(2000, 12, 17))
                 .email("pupil" + id + "@gmail.com")
                 .password("pupilPassword")
-                .schoolClass(makeTestSchoolClassDtoById(id + 1))
+                .schoolClass(null)
                 .signedPersons(new HashSet<>())
                 .avatarName("some-avatar.png")
                 .roles(null)
@@ -59,7 +59,6 @@ public final class DtoDirector {
     }
 
     public static SchoolClassDto makeTestSchoolClassDtoById(Long id) {
-        LocalDate now = LocalDate.now();
         return SchoolClassDto.builder()
                 .id(id)
                 .number(new Random().nextInt(11) + 1)

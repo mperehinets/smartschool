@@ -37,6 +37,8 @@ public class SchoolClassDto extends BaseDto {
             message = "{schoolClassDto.classTeacher.unique}")
     private TeacherDto classTeacher;
 
+    private Integer pupilsCount;
+
     public SchoolClassDto() {
     }
 
@@ -44,10 +46,12 @@ public class SchoolClassDto extends BaseDto {
     public SchoolClassDto(Long id,
                           Integer number,
                           SchoolClassInitial initial,
-                          TeacherDto classTeacher) {
+                          TeacherDto classTeacher,
+                          Integer pupilsCount) {
         super(id);
         this.number = number;
         this.initial = initial;
         this.classTeacher = classTeacher;
+        this.pupilsCount = pupilsCount;
     }
 }

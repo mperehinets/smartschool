@@ -6,6 +6,7 @@ import com.mper.smartschool.dto.mapper.SchoolClassMapper;
 import com.mper.smartschool.entity.modelsEnum.SchoolClassInitial;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.exception.SchoolFilledByClassesException;
+import com.mper.smartschool.repository.PupilRepo;
 import com.mper.smartschool.repository.SchoolClassRepo;
 import com.mper.smartschool.service.SchoolClassService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class SchoolClassServiceImpl implements SchoolClassService {
 
     private final SchoolClassRepo schoolClassRepo;
     private final SchoolClassMapper schoolClassMapper;
+    private final PupilRepo pupilRepo;
 
     @Override
     public boolean fieldValueExists(Object value, String fieldName) {
@@ -72,6 +74,7 @@ public class SchoolClassServiceImpl implements SchoolClassService {
         Collection<SchoolClassDto> result = schoolClassRepo.findAll()
                 .stream()
                 .map(schoolClassMapper::toDto)
+                .peek(item -> item.setPupilsCount(pupilRepo.countBySchoolClass(schoolClassMapper.toEntity(item))))
                 .collect(Collectors.toList());
         log.info("IN findAll - {} schoolClasses found", result.size());
         return result;
