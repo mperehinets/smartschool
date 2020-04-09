@@ -15,4 +15,11 @@ public interface TemplateScheduleService {
     TemplateScheduleDto findById(Long id);
 
     void deleteById(Long id);
+
+    //Following methods without tests
+    Collection<TemplateScheduleDto> findByClassNumber(Integer classNumber);
+
+    Long getCount();
+
+    Collection<TemplateScheduleDto> update(Collection<TemplateScheduleDto> templatesScheduleDto);
 }

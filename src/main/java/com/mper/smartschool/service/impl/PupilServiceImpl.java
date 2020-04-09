@@ -1,7 +1,6 @@
 package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.PupilDto;
-import com.mper.smartschool.dto.TeacherDto;
 import com.mper.smartschool.dto.mapper.PupilMapper;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.exception.NotFoundException;

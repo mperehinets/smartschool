@@ -2,6 +2,7 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.TemplateScheduleDto;
 import com.mper.smartschool.dto.mapper.TemplateScheduleMapper;
+import com.mper.smartschool.entity.TemplateSchedule;
 import com.mper.smartschool.exception.DayFilledByLessonsException;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.TemplateScheduleRepo;
@@ -71,5 +72,37 @@ public class TemplateScheduleServiceImpl implements TemplateScheduleService {
         findById(id);
         templateScheduleRepo.deleteById(id);
         log.info("IN deleteById - templateSchedule with id: {} successfully deleted", id);
+    }
+
+    @Override
+    public Collection<TemplateScheduleDto> findByClassNumber(Integer classNumber) {
+        Collection<TemplateScheduleDto> result = templateScheduleRepo.findByClassNumber(classNumber)
+                .stream()
+                .map(templateScheduleMapper::toDto)
+                .collect(Collectors.toList());
+        log.info("IN findByClassNumber - {} templateSchedules found", result.size());
+        return result;
+    }
+
+    @Override
+    public Long getCount() {
+        Long result = templateScheduleRepo.count();
+        log.info("IN count - count of templates of schedule: {}", result);
+        return result;
+    }
+
+    @Override
+    public Collection<TemplateScheduleDto> update(Collection<TemplateScheduleDto> templatesScheduleDto) {
+        templatesScheduleDto.forEach(item -> findById(item.getId()));
+        Collection<TemplateSchedule> templatesSchedule = templatesScheduleDto
+                .stream()
+                .map(templateScheduleMapper::toEntity)
+                .collect(Collectors.toList());
+        Collection<TemplateScheduleDto> result = templateScheduleRepo.saveAll(templatesSchedule)
+                .stream()
+                .map(templateScheduleMapper::toDto)
+                .collect(Collectors.toList());
+        log.info("IN update - templateSchedule: {} successfully updated", result);
+        return result;
     }
 }

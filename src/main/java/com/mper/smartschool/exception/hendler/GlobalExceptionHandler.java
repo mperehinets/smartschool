@@ -22,10 +22,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.*;
 
 @ControllerAdvice
 @Slf4j
@@ -136,6 +135,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
         log.error("Bad request. Errors: {}", errors);
         return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handle(ConstraintViolationException constraintViolationException) {
+        Set<ConstraintViolation<?>> violations = constraintViolationException.getConstraintViolations();
+
+        List<String> errors = new ArrayList<>();
+        violations.forEach(violation -> errors.add(violation.getMessage()));
+        ApiError apiError = ApiError.builder()
+                .message("Invalid arguments")
+                .status(HttpStatus.BAD_REQUEST)
+                .errors(errors)
+                .build();
+        return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
     @ExceptionHandler({Exception.class})

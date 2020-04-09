@@ -9,11 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
+@Validated({OnUpdate.class})
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/smartschool/templateSchedules")
+@RequestMapping("/smartschool/templates-schedule")
 public class TemplateScheduleController {
 
     private final TemplateScheduleService templateScheduleService;
@@ -44,5 +46,22 @@ public class TemplateScheduleController {
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id) {
         templateScheduleService.deleteById(id);
+    }
+
+    //Following methods without tests
+    @GetMapping("/by-class-number/{classNumber}")
+    public Collection<TemplateScheduleDto> findById(@PathVariable Integer classNumber) {
+        return templateScheduleService.findByClassNumber(classNumber);
+    }
+
+    @GetMapping("/count")
+    public Long getCount() {
+        return templateScheduleService.getCount();
+    }
+
+    @PutMapping
+    public Collection<TemplateScheduleDto> update(@RequestBody
+                                                          Collection<@Valid TemplateScheduleDto> templatesScheduleDto) {
+        return templateScheduleService.update(templatesScheduleDto);
     }
 }

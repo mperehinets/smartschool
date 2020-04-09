@@ -42,7 +42,7 @@ class TemplateScheduleControllerTest {
     @Test
     public void create_return201_ifInputsIsValid() throws Exception {
         templateScheduleDto.setId(null);
-        mockMvc.perform(post("/smartschool/templateSchedules")
+        mockMvc.perform(post("/smartschool/templates-schedule")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(templateScheduleDto)))
                 .andExpect(status().isCreated());
@@ -51,7 +51,7 @@ class TemplateScheduleControllerTest {
 
     @Test
     public void create_return400_ifIdIsNotNull() throws Exception {
-        mockMvc.perform(post("/smartschool/templateSchedules")
+        mockMvc.perform(post("/smartschool/templates-schedule")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(templateScheduleDto)))
                 .andExpect(status().isBadRequest());
@@ -61,7 +61,7 @@ class TemplateScheduleControllerTest {
     public void create_return400_ifClassNumberIsFewerThenMin() throws Exception {
         templateScheduleDto.setId(null);
         templateScheduleDto.setClassNumber(0);
-        mockMvc.perform(post("/smartschool/templateSchedules")
+        mockMvc.perform(post("/smartschool/templates-schedule")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(templateScheduleDto)))
                 .andExpect(status().isBadRequest());
@@ -71,7 +71,7 @@ class TemplateScheduleControllerTest {
     public void create_return400_ifClassNumberIsMoreThenMax() throws Exception {
         templateScheduleDto.setId(null);
         templateScheduleDto.setClassNumber(12);
-        mockMvc.perform(post("/smartschool/templateSchedules")
+        mockMvc.perform(post("/smartschool/templates-schedule")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(templateScheduleDto)))
                 .andExpect(status().isBadRequest());
@@ -81,7 +81,7 @@ class TemplateScheduleControllerTest {
     public void create_return400_ifLessonNumberIsFewerThenMin() throws Exception {
         templateScheduleDto.setId(null);
         templateScheduleDto.setLessonNumber(0);
-        mockMvc.perform(post("/smartschool/templateSchedules")
+        mockMvc.perform(post("/smartschool/templates-schedule")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(templateScheduleDto)))
                 .andExpect(status().isBadRequest());
@@ -91,7 +91,7 @@ class TemplateScheduleControllerTest {
     public void create_return400_ifLessonNumberIsMoreThenMax() throws Exception {
         templateScheduleDto.setId(null);
         templateScheduleDto.setLessonNumber(11);
-        mockMvc.perform(post("/smartschool/templateSchedules")
+        mockMvc.perform(post("/smartschool/templates-schedule")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(templateScheduleDto)))
                 .andExpect(status().isBadRequest());
@@ -101,7 +101,7 @@ class TemplateScheduleControllerTest {
     public void create_return400_ifSubjectIsNull() throws Exception {
         templateScheduleDto.setId(null);
         templateScheduleDto.setSubject(null);
-        mockMvc.perform(post("/smartschool/templateSchedules")
+        mockMvc.perform(post("/smartschool/templates-schedule")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(templateScheduleDto)))
                 .andExpect(status().isBadRequest());
@@ -112,7 +112,7 @@ class TemplateScheduleControllerTest {
         templateScheduleDto.setId(null);
         Mockito.when(templateScheduleService.create(templateScheduleDto))
                 .thenThrow(new DayFilledByLessonsException(templateScheduleDto.getDayOfWeek()));
-        mockMvc.perform(post("/smartschool/templateSchedules")
+        mockMvc.perform(post("/smartschool/templates-schedule")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(templateScheduleDto)))
                 .andExpect(status().isForbidden());
@@ -120,7 +120,7 @@ class TemplateScheduleControllerTest {
 
     @Test
     public void update_return200_ifInputsIsValid() throws Exception {
-        mockMvc.perform(put("/smartschool/templateSchedules/{id}", templateScheduleDto.getId())
+        mockMvc.perform(put("/smartschool/templates-schedule/{id}", templateScheduleDto.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(templateScheduleDto)))
                 .andExpect(status().isOk());
@@ -131,7 +131,7 @@ class TemplateScheduleControllerTest {
     public void update_return404_ifIdNotExist() throws Exception {
         templateScheduleDto.setId(Long.MAX_VALUE);
         Mockito.when(templateScheduleService.update(templateScheduleDto)).thenThrow(new NotFoundException("", null));
-        mockMvc.perform(put("/smartschool/templateSchedules/{id}", templateScheduleDto.getId())
+        mockMvc.perform(put("/smartschool/templates-schedule/{id}", templateScheduleDto.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(templateScheduleDto)))
                 .andExpect(status().isNotFound());
@@ -139,7 +139,7 @@ class TemplateScheduleControllerTest {
 
     @Test
     public void update_return400_ifIdIsNull() throws Exception {
-        mockMvc.perform(put("/smartschool/templateSchedules/null")
+        mockMvc.perform(put("/smartschool/templates-schedule/null")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(templateScheduleDto)))
                 .andExpect(status().isBadRequest());
@@ -149,7 +149,7 @@ class TemplateScheduleControllerTest {
     public void update_return400_ifLessonNumberIsFewerThenMin() throws Exception {
         templateScheduleDto.setId(null);
         templateScheduleDto.setLessonNumber(0);
-        mockMvc.perform(post("/smartschool/templateSchedules")
+        mockMvc.perform(post("/smartschool/templates-schedule")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(templateScheduleDto)))
                 .andExpect(status().isBadRequest());
@@ -159,7 +159,7 @@ class TemplateScheduleControllerTest {
     public void update_return400_ifLessonNumberIsMoreThenMax() throws Exception {
         templateScheduleDto.setId(null);
         templateScheduleDto.setLessonNumber(11);
-        mockMvc.perform(post("/smartschool/templateSchedules")
+        mockMvc.perform(post("/smartschool/templates-schedule")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(templateScheduleDto)))
                 .andExpect(status().isBadRequest());
@@ -168,7 +168,7 @@ class TemplateScheduleControllerTest {
     @Test
     public void update_return400_ifSubjectIsNull() throws Exception {
         templateScheduleDto.setSubject(null);
-        mockMvc.perform(put("/smartschool/templateSchedules/{id}", templateScheduleDto.getId())
+        mockMvc.perform(put("/smartschool/templates-schedule/{id}", templateScheduleDto.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(templateScheduleDto)))
                 .andExpect(status().isBadRequest());
@@ -176,7 +176,7 @@ class TemplateScheduleControllerTest {
 
     @Test
     public void findAll_return200() throws Exception {
-        mockMvc.perform(get("/smartschool/templateSchedules")
+        mockMvc.perform(get("/smartschool/templates-schedule")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         Mockito.verify(templateScheduleService, Mockito.times(1)).findAll();
@@ -184,7 +184,7 @@ class TemplateScheduleControllerTest {
 
     @Test
     public void findById_return200_ifInputsIsValid() throws Exception {
-        mockMvc.perform(get("/smartschool/templateSchedules/{id}", templateScheduleDto.getId())
+        mockMvc.perform(get("/smartschool/templates-schedule/{id}", templateScheduleDto.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         Mockito.verify(templateScheduleService, Mockito.times(1))
@@ -194,14 +194,14 @@ class TemplateScheduleControllerTest {
     @Test
     public void findById_return404_ifInputIdNotExist() throws Exception {
         Mockito.when(templateScheduleService.findById(Long.MAX_VALUE)).thenThrow(new NotFoundException("", null));
-        mockMvc.perform(get("/smartschool/templateSchedules/{id}", Long.MAX_VALUE)
+        mockMvc.perform(get("/smartschool/templates-schedule/{id}", Long.MAX_VALUE)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void deleteById_return200_ifInputsValid() throws Exception {
-        mockMvc.perform(delete("/smartschool/templateSchedules/{id}", templateScheduleDto.getId())
+        mockMvc.perform(delete("/smartschool/templates-schedule/{id}", templateScheduleDto.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         Mockito.verify(templateScheduleService, Mockito.times(1))
@@ -211,7 +211,7 @@ class TemplateScheduleControllerTest {
     @Test
     public void deleteById_return404_ifInputIdNotExist() throws Exception {
         Mockito.doThrow(new NotFoundException("", null)).when(templateScheduleService).deleteById(Long.MAX_VALUE);
-        mockMvc.perform(delete("/smartschool/templateSchedules/{id}", Long.MAX_VALUE)
+        mockMvc.perform(delete("/smartschool/templates-schedule/{id}", Long.MAX_VALUE)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
