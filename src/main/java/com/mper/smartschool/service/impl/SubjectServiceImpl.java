@@ -113,7 +113,17 @@ public class SubjectServiceImpl implements SubjectService {
                 .stream()
                 .map(subjectMapper::toDto)
                 .collect(Collectors.toList());
-        log.info("IN findByStatus - {} subjects found", result.size());
+        log.info("IN findByTeacherId - {} subjects found", result.size());
+        return result;
+    }
+
+    @Override
+    public Collection<SubjectDto> findByClassNumber(Integer classNumber) {
+        Collection<SubjectDto> result = subjectRepo.findByClassNumber(classNumber)
+                .stream()
+                .map(subjectMapper::toDto)
+                .collect(Collectors.toList());
+        log.info("IN findByClassNumber - {} subjects found", result.size());
         return result;
     }
 }

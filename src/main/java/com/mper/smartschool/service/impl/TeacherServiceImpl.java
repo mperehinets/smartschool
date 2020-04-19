@@ -6,6 +6,7 @@ import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.RoleRepo;
 import com.mper.smartschool.repository.TeacherRepo;
+import com.mper.smartschool.repository.TeachersSubjectRepo;
 import com.mper.smartschool.service.AvatarStorageService;
 import com.mper.smartschool.service.TeacherService;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,7 @@ public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepo teacherRepo;
     private final TeacherMapper teacherMapper;
     private final RoleRepo roleRepo;
+    private final TeachersSubjectRepo teachersSubjectRepo;
     private final PasswordEncoder passwordEncoder;
     private final AvatarStorageService avatarStorageService;
 
@@ -62,6 +64,8 @@ public class TeacherServiceImpl implements TeacherService {
         Collection<TeacherDto> result = teacherRepo.findAll()
                 .stream()
                 .map(teacherMapper::toDto)
+                .peek(item -> item.setSubjectsCount(teachersSubjectRepo
+                        .countByTeacherAndStatus(teacherMapper.toEntity(item), EntityStatus.ACTIVE)))
                 .collect(Collectors.toList());
         log.info("IN findAll - {} teachers found", result.size());
         return result;
@@ -84,12 +88,21 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public Collection<TeacherDto> findFree() {
-        System.out.println(teacherRepo.findFree());
         Collection<TeacherDto> result = teacherRepo.findFree()
                 .stream()
                 .map(teacherMapper::toDto)
                 .collect(Collectors.toList());
         log.info("IN findFree - {} teachers found", result.size());
+        return result;
+    }
+
+    @Override
+    public Collection<TeacherDto> findBySubjectId(Long subjectId) {
+        Collection<TeacherDto> result = teacherRepo.findBySubjectId(subjectId)
+                .stream()
+                .map(teacherMapper::toDto)
+                .collect(Collectors.toList());
+        log.info("IN findBySubjectId - {} teachers found", result.size());
         return result;
     }
 }

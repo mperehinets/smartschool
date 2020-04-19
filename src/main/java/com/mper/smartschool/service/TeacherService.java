@@ -18,4 +18,6 @@ public interface TeacherService {
     Long getCount();
 
     Collection<TeacherDto> findFree();
+
+    Collection<TeacherDto> findBySubjectId(Long subjectId);
 }

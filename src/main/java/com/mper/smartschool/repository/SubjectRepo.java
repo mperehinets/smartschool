@@ -25,4 +25,9 @@ public interface SubjectRepo extends JpaRepository<Subject, Long> {
     @Query("select ts.subject from TeachersSubject ts where ts.teacher.id = :teacherId and ts.status = :status")
     Collection<Subject> findByTeacherIdAndStatus(@Param("teacherId") Long teacherId,
                                                  @Param("status") EntityStatus status);
+
+    @Query("select distinct (s) from Subject s" +
+            " join TemplateSchedule ts on ts.subject = s" +
+            " where ts.classNumber = :classNumber")
+    Collection<Subject> findByClassNumber(@Param("classNumber") Integer classNumber);
 }

@@ -1,6 +1,7 @@
 package com.mper.smartschool.dto;
 
 import com.mper.smartschool.dto.transfer.OnCreate;
+import com.mper.smartschool.dto.transfer.OnGenerateSchedule;
 import com.mper.smartschool.dto.transfer.OnUpdate;
 import lombok.Builder;
 import lombok.Data;
@@ -17,29 +18,29 @@ import java.time.DayOfWeek;
 @ToString(callSuper = true)
 public class TemplateScheduleDto extends BaseDto {
 
-    @Min(groups = {OnCreate.class},
+    @Min(groups = {OnCreate.class, OnGenerateSchedule.class},
             value = 1,
             message = "{templateScheduleDto.classNumber.min}")
-    @Max(groups = {OnCreate.class},
+    @Max(groups = {OnCreate.class, OnGenerateSchedule.class},
             value = 11,
             message = "{templateScheduleDto.classNumber.max}")
     private Integer classNumber;
 
-    @NotNull(groups = {OnCreate.class},
+    @NotNull(groups = {OnCreate.class, OnGenerateSchedule.class},
             message = "{templateScheduleDto.dayOfWeek.notnull}")
     private DayOfWeek dayOfWeek;
 
-    @Min(groups = {OnCreate.class, OnUpdate.class},
+    @Min(groups = {OnCreate.class, OnUpdate.class, OnGenerateSchedule.class},
             value = 1,
             message = "{templateScheduleDto.lessonNumber.min}")
-    @Max(groups = {OnCreate.class, OnUpdate.class},
+    @Max(groups = {OnCreate.class, OnUpdate.class, OnGenerateSchedule.class},
             value = 10,
             message = "{templateScheduleDto.lessonNumber.max}")
     private Integer lessonNumber;
 
-    @NotNull(groups = {OnCreate.class, OnUpdate.class},
+    @NotNull(groups = {OnCreate.class, OnUpdate.class, OnGenerateSchedule.class},
             message = "{templateScheduleDto.subject.notnull}")
-    private SubjectDto subject;
+    private TeachersSubjectDto teachersSubject;
 
     public TemplateScheduleDto() {
     }
@@ -49,11 +50,11 @@ public class TemplateScheduleDto extends BaseDto {
                                Integer classNumber,
                                DayOfWeek dayOfWeek,
                                Integer lessonNumber,
-                               SubjectDto subject) {
+                               TeachersSubjectDto teachersSubject) {
         super(id);
         this.classNumber = classNumber;
         this.dayOfWeek = dayOfWeek;
         this.lessonNumber = lessonNumber;
-        this.subject = subject;
+        this.teachersSubject = teachersSubject;
     }
 }

@@ -48,6 +48,7 @@ public class SubjectController {
         subjectService.changeStatusById(changeStatusDto);
     }
 
+    //Following methods without tests
     @GetMapping("/count")
     public Long getCount() {
         return subjectService.getCount();
@@ -61,5 +62,10 @@ public class SubjectController {
     @GetMapping("/by-teacher/{teacherId}")
     public Collection<SubjectDto> findByTeacherId(@PathVariable("teacherId") Long teacherId) {
         return subjectService.findByTeacherId(teacherId);
+    }
+
+    @GetMapping("/by-class-number/{classNumber}")
+    public Collection<SubjectDto> findByClassNumber(@PathVariable("classNumber") Integer classNumber) {
+        return subjectService.findByClassNumber(classNumber);
     }
 }

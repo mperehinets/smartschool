@@ -37,4 +37,10 @@ public class TeachersSubjectController {
     public TeachersSubjectDto delete(@PathVariable Long teacherId, @PathVariable Long subjectId) {
         return teachersSubjectService.delete(teacherId, subjectId);
     }
+
+    //Following methods without tests
+    @GetMapping("/by-teacher-and-subject/{teacherId}/{subjectId}")
+    public TeachersSubjectDto findByTeacherIdAndSubjectId(@PathVariable Long teacherId, @PathVariable Long subjectId) {
+        return teachersSubjectService.findByTeacherIdAndSubjectId(teacherId, subjectId);
+    }
 }

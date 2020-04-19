@@ -46,9 +46,13 @@ public class TeacherController {
         return teacherService.getCount();
     }
 
-    //Following methods without tests
     @GetMapping("/free")
     public Collection<TeacherDto> findFree() {
         return teacherService.findFree();
+    }
+
+    @GetMapping("/by-subject/{subjectId}")
+    public Collection<TeacherDto> findBySubjectId(@PathVariable("subjectId") Long subjectId) {
+        return teacherService.findBySubjectId(subjectId);
     }
 }

@@ -100,7 +100,7 @@ class TemplateScheduleControllerTest {
     @Test
     public void create_return400_ifSubjectIsNull() throws Exception {
         templateScheduleDto.setId(null);
-        templateScheduleDto.setSubject(null);
+        templateScheduleDto.setTeachersSubject(null);
         mockMvc.perform(post("/smartschool/templates-schedule")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(templateScheduleDto)))
@@ -167,7 +167,7 @@ class TemplateScheduleControllerTest {
 
     @Test
     public void update_return400_ifSubjectIsNull() throws Exception {
-        templateScheduleDto.setSubject(null);
+        templateScheduleDto.setTeachersSubject(null);
         mockMvc.perform(put("/smartschool/templates-schedule/{id}", templateScheduleDto.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(templateScheduleDto)))

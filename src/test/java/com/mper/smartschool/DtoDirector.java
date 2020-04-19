@@ -98,7 +98,9 @@ public final class DtoDirector {
                 .classNumber(new Random().nextInt(11) + 1)
                 .dayOfWeek(DayOfWeek.FRIDAY)
                 .lessonNumber(new Random().nextInt(7) + 1)
-                .subject(makeTestSubjectDtoById(id))
+                .teachersSubject(TeachersSubjectDto.builder()
+                        .subject(makeTestSubjectDtoById(id))
+                        .build())
                 .build();
     }
 
