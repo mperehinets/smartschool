@@ -46,8 +46,11 @@ public class TeachersSubjectServiceImplTest {
         teachersSubjectDto.setId(null);
         TeachersSubject teachersSubject = teachersSubjectMapper.toEntity(teachersSubjectDto);
 
-        Mockito.when(teachersSubjectRepo.findByTeacherIdAndSubjectId(teachersSubject.getTeacher().getId(),
-                teachersSubject.getSubject().getId())).thenReturn(Optional.of(teachersSubject));
+        Mockito.when(teachersSubjectRepo.findByTeacherIdAndSubjectIdAndStatuses(teachersSubject.getTeacher().getId(),
+                teachersSubject.getSubject().getId(),
+                EntityStatus.ACTIVE,
+                EntityStatus.EXCLUDED,
+                EntityStatus.DELETED)).thenReturn(Optional.of(teachersSubject));
 
         Mockito.when(teachersSubjectRepo.save(teachersSubject)).thenAnswer(invocationOnMock -> {
             TeachersSubject returnedTeachersSubject = invocationOnMock.getArgument(0);
@@ -96,7 +99,9 @@ public class TeachersSubjectServiceImplTest {
         TeachersSubject teachersSubject = teachersSubjectMapper.toEntity(teachersSubjectDto);
         Long teacherId = teachersSubjectDto.getTeacher().getId();
         Long subjectId = teachersSubjectDto.getSubject().getId();
-        Mockito.when(teachersSubjectRepo.findByTeacherIdAndSubjectId(teacherId, subjectId))
+        Mockito.when(teachersSubjectRepo.findByTeacherIdAndSubjectIdAndStatuses(teacherId,
+                subjectId,
+                EntityStatus.ACTIVE))
                 .thenReturn(Optional.of(teachersSubject));
 
         teachersSubject.setStatus(EntityStatus.DELETED);
@@ -116,7 +121,9 @@ public class TeachersSubjectServiceImplTest {
         Long teacherId = teachersSubjectDto.getTeacher().getId();
         Long subjectId = teachersSubjectDto.getSubject().getId();
 
-        Mockito.when(teachersSubjectRepo.findByTeacherIdAndSubjectId(teacherId, subjectId))
+        Mockito.when(teachersSubjectRepo.findByTeacherIdAndSubjectIdAndStatuses(teacherId,
+                subjectId,
+                EntityStatus.ACTIVE))
                 .thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> teachersSubjectService.delete(teacherId, subjectId));
     }

@@ -29,7 +29,11 @@ public class TeachersSubjectServiceImpl implements TeachersSubjectService {
         TeachersSubject teachersSubject = teachersSubjectMapper.toEntity(teachersSubjectDto);
 
         TeachersSubject teachersSubjectForSave = teachersSubjectRepo.
-                findByTeacherIdAndSubjectId(teachersSubject.getTeacher().getId(), teachersSubject.getSubject().getId())
+                findByTeacherIdAndSubjectIdAndStatuses(teachersSubject.getTeacher().getId(),
+                        teachersSubject.getSubject().getId(),
+                        EntityStatus.ACTIVE,
+                        EntityStatus.EXCLUDED,
+                        EntityStatus.DELETED)
                 .orElse(teachersSubject);
         teachersSubjectForSave.setStatus(EntityStatus.ACTIVE);
 
@@ -62,13 +66,27 @@ public class TeachersSubjectServiceImpl implements TeachersSubjectService {
     @PreAuthorize("hasRole('ADMIN')")
     public TeachersSubjectDto delete(Long teacherId, Long subjectId) {
         TeachersSubject teachersSubjectForSave = teachersSubjectRepo.
-                findByTeacherIdAndSubjectId(teacherId, subjectId)
+                findByTeacherIdAndSubjectIdAndStatuses(teacherId, subjectId, EntityStatus.ACTIVE)
                 .orElseThrow(() -> new NotFoundException("TeachersSubjectNotFoundException.byTeacherAndSubject",
                         teacherId + ", " + subjectId));
         teachersSubjectForSave.setStatus(EntityStatus.DELETED);
 
         TeachersSubjectDto result = teachersSubjectMapper.toDto(teachersSubjectRepo.save(teachersSubjectForSave));
         log.info("IN delete - teachersSubject: {} successfully got deleted status", result);
+        return result;
+    }
+
+    @Override
+    public TeachersSubjectDto findByTeacherIdAndSubjectId(Long teacherId, Long subjectId) {
+        TeachersSubjectDto result = teachersSubjectMapper
+                .toDto(teachersSubjectRepo
+                        .findByTeacherIdAndSubjectIdAndStatuses(teacherId, subjectId, EntityStatus.ACTIVE)
+                        .orElseThrow(() -> new NotFoundException("TeachersSubjectNotFoundException.byTeacherAndSubject",
+                                teacherId + ", " + subjectId)));
+        log.info("IN findByTeacherIdAndSubjectId - teachersSubject: {} found by teacherId: {} and subjectId: {}",
+                result,
+                teacherId,
+                subjectId);
         return result;
     }
 }

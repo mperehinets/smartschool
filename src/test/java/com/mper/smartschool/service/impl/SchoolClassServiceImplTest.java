@@ -123,7 +123,9 @@ public class SchoolClassServiceImplTest {
 
         Collection<SchoolClassDto> result = schoolClassService.findAll();
 
-        assertEquals(result, schoolClassesDto.stream().peek(item -> item.setPupilsCount(0)).collect(Collectors.toList()));
+        assertEquals(result, schoolClassesDto
+                .stream()
+                .peek(item -> item.setPupilsCount(0)).collect(Collectors.toList()));
     }
 
     @Test

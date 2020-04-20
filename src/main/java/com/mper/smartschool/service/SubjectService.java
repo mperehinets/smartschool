@@ -26,4 +26,6 @@ public interface SubjectService extends FieldValueExistsService {
     Collection<SubjectDto> findByStatus(EntityStatus status);
 
     Collection<SubjectDto> findByTeacherId(Long teacherId);
+
+    Collection<SubjectDto> findByClassNumber(Integer classNumber);
 }

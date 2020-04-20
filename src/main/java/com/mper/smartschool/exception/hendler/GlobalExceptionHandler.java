@@ -1,9 +1,7 @@
 package com.mper.smartschool.exception.hendler;
 
-import com.mper.smartschool.exception.DayFilledByLessonsException;
-import com.mper.smartschool.exception.NotFoundException;
-import com.mper.smartschool.exception.SchoolFilledByClassesException;
-import com.mper.smartschool.exception.WrongImageTypeException;
+import com.mper.smartschool.dto.ScheduleDto;
+import com.mper.smartschool.exception.*;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -149,6 +147,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .errors(errors)
                 .build();
         return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
+    @ExceptionHandler({TeacherIsBusyException.class})
+    public ResponseEntity<ApiError> handleWrongImageTypeException(TeacherIsBusyException ex, Locale locale) {
+        ScheduleDto scheduleDto = ex.getScheduleDto();
+        Object[] args = {
+                scheduleDto.getTeachersSubject().getTeacher().getFirstName(),
+                scheduleDto.getTeachersSubject().getTeacher().getSecondName(),
+                scheduleDto.getDate().getDayOfWeek(), scheduleDto.getDate(),
+                scheduleDto.getLessonNumber()
+        };
+        String errorMessage = messageSource.getMessage("TeacherIsBusyException", args, locale);
+
+        ApiError apiError = ApiError.builder()
+                .message(errorMessage)
+                .status(HttpStatus.BAD_REQUEST)
+                .errors(Collections.singletonList(errorMessage))
+                .build();
+        log.error("Teacher is busy, thrown:", ex);
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     @ExceptionHandler({Exception.class})

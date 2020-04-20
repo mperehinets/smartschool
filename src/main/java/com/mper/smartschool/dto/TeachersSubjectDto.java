@@ -1,7 +1,6 @@
 package com.mper.smartschool.dto;
 
 import com.mper.smartschool.dto.transfer.OnCreate;
-import com.mper.smartschool.dto.transfer.OnDelete;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import lombok.Builder;
 import lombok.Data;
@@ -14,11 +13,11 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class TeachersSubjectDto extends BaseDto {
-    @NotNull(groups = {OnCreate.class, OnDelete.class},
+    @NotNull(groups = {OnCreate.class},
             message = "{teachersSubjectDto.teacher.notnull}")
     private TeacherDto teacher;
 
-    @NotNull(groups = {OnCreate.class, OnDelete.class},
+    @NotNull(groups = {OnCreate.class},
             message = "{teachersSubjectDto.subject.notnull}")
     private SubjectDto subject;
 

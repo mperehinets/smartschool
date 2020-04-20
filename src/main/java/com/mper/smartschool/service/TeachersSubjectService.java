@@ -13,5 +13,8 @@ public interface TeachersSubjectService {
     TeachersSubjectDto findById(Long id);
 
     TeachersSubjectDto delete(Long teacherId, Long subjectId);
+
+    //Following methods without tests
+    TeachersSubjectDto findByTeacherIdAndSubjectId(Long teacherId, Long subjectId);
 }
 

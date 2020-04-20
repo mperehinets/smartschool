@@ -23,6 +23,8 @@ public class TeacherDto extends UserDto {
             message = "{teacherDto.education.pattern}")
     private String education;
 
+    private Integer subjectsCount;
+
     public TeacherDto() {
     }
 
@@ -36,8 +38,10 @@ public class TeacherDto extends UserDto {
                       String avatarName,
                       Set<Role> roles,
                       EntityStatus status,
-                      String education) {
+                      String education,
+                      Integer subjectsCount) {
         super(id, firstName, secondName, email, password, dateBirth, avatarName, roles, status);
         this.education = education;
+        this.subjectsCount = subjectsCount;
     }
 }
