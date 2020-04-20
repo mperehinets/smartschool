@@ -2,14 +2,13 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.GenerateScheduleDto;
 import com.mper.smartschool.dto.ScheduleDto;
-import com.mper.smartschool.dto.SchoolClassDto;
 import com.mper.smartschool.dto.TemplateScheduleDto;
 import com.mper.smartschool.dto.mapper.ScheduleMapper;
 import com.mper.smartschool.dto.mapper.SchoolClassMapper;
 import com.mper.smartschool.dto.mapper.TeachersSubjectMapper;
 import com.mper.smartschool.entity.Schedule;
 import com.mper.smartschool.exception.NotFoundException;
-import com.mper.smartschool.exception.TeacherIsBusyException;
+import com.mper.smartschool.exception.TeachersIsBusyException;
 import com.mper.smartschool.repository.ScheduleRepo;
 import com.mper.smartschool.service.ScheduleService;
 import com.mper.smartschool.service.SchoolClassService;
@@ -85,6 +84,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         //Check if schoolClass exists
         schoolClassService.findById(generateScheduleDto.getSchoolClass().getId());
         Collection<Schedule> result = new ArrayList<>();
+        Collection<TemplateScheduleDto> invalidSchedules = new ArrayList<>();
         //Check if start date is correct
         LocalDate minGenerationDate = this.findMinGenerationDateByClassId(generateScheduleDto.getSchoolClass().getId());
         if (minGenerationDate.isAfter(generateScheduleDto.getStartDate())) {
@@ -96,20 +96,36 @@ public class ScheduleServiceImpl implements ScheduleService {
              date = date.plusDays(1)) {
             //Check if weekday
             if (date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY) {
+                //Make finalDate for lambda expression
                 final LocalDate finalDate = date;
                 //Template schedule for current date
-                Collection<TemplateScheduleDto> templatesScheduleDtoForCurrentDate =
-                        generateScheduleDto.getTemplatesSchedule()
-                                .stream()
-                                .filter(item -> item.getDayOfWeek() == finalDate.getDayOfWeek())
-                                .collect(Collectors.toList());
-                result.addAll(this.templatesScheduleDtoToSchedules(templatesScheduleDtoForCurrentDate,
-                        generateScheduleDto.getSchoolClass(),
-                        date));
+                generateScheduleDto.getTemplatesSchedule()
+                        .stream()
+                        .filter(template -> template.getDayOfWeek() == finalDate.getDayOfWeek())
+                        .forEach(template -> {
+                            //Check if teachersSubject exists
+                            teachersSubjectService.findById(template.getTeachersSubject().getId());
+                            //Check if teacher can hold lesson
+                            if (this.canTeacherHoldLesson(template, finalDate)) {
+                                result.add(Schedule.builder()
+                                        .lessonNumber(template.getLessonNumber())
+                                        .teachersSubject(teachersSubjectMapper.toEntity(template.getTeachersSubject()))
+                                        .schoolClass(schoolClassMapper.toEntity(generateScheduleDto.getSchoolClass()))
+                                        .date(finalDate)
+                                        .build());
+                            } else if (!invalidSchedules.contains(template)) {
+                                invalidSchedules.add(template);
+                            }
+                        });
             }
 
         }
-        scheduleRepo.saveAll(result);
+        //Check if all schedules is valid
+        if (invalidSchedules.isEmpty()) {
+            scheduleRepo.saveAll(result);
+        } else {
+            throw new TeachersIsBusyException(invalidSchedules);
+        }
         log.info("IN generateSchedule - schedule for class: {} successfully generated, startDate: {}, endDate: {}",
                 generateScheduleDto.getSchoolClass(),
                 generateScheduleDto.getStartDate(),
@@ -117,14 +133,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public void canTeacherHoldLesson(ScheduleDto scheduleDto) {
+    public Boolean canTeacherHoldLesson(TemplateScheduleDto templateScheduleDto, LocalDate date) {
         Schedule schedule = this.scheduleRepo.findByTeacherIdAndDateAndLessonNumber(
-                scheduleDto.getTeachersSubject().getTeacher().getId(),
-                scheduleDto.getDate(),
-                scheduleDto.getLessonNumber());
-        if (schedule != null) {
-            throw new TeacherIsBusyException(scheduleDto);
-        }
+                templateScheduleDto.getTeachersSubject().getTeacher().getId(),
+                date,
+                templateScheduleDto.getLessonNumber());
+        return schedule == null;
     }
 
     @Override
@@ -139,28 +153,6 @@ public class ScheduleServiceImpl implements ScheduleService {
             result = schedule.getDate().plusDays(1);
         }
         log.info("IN findLastScheduleDateByClassId - min date found: {}", result);
-        return result;
-    }
-
-    private Collection<Schedule> templatesScheduleDtoToSchedules(Collection<TemplateScheduleDto> templatesScheduleDto,
-                                                                 SchoolClassDto currentSchoolClassDto,
-                                                                 LocalDate currentDate) {
-        Collection<Schedule> result = new ArrayList<>();
-        for (TemplateScheduleDto template : templatesScheduleDto) {
-            //Check if teachersSubject exists
-            teachersSubjectService.findById(template.getTeachersSubject().getId());
-
-            ScheduleDto scheduleDto = ScheduleDto.builder()
-                    .lessonNumber(template.getLessonNumber())
-                    .teachersSubject(template.getTeachersSubject())
-                    .schoolClass(currentSchoolClassDto)
-                    .date(currentDate)
-                    .build();
-
-            //Check if teacher can hold lesson
-            this.canTeacherHoldLesson(scheduleDto);
-            result.add(scheduleMapper.toEntity(scheduleDto));
-        }
         return result;
     }
 }

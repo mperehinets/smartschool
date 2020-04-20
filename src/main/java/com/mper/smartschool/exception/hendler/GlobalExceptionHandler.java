@@ -1,6 +1,6 @@
 package com.mper.smartschool.exception.hendler;
 
-import com.mper.smartschool.dto.ScheduleDto;
+import com.mper.smartschool.dto.TemplateScheduleDto;
 import com.mper.smartschool.exception.*;
 import lombok.Builder;
 import lombok.Data;
@@ -149,28 +149,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
-    @ExceptionHandler({TeacherIsBusyException.class})
-    public ResponseEntity<ApiError> handleWrongImageTypeException(TeacherIsBusyException ex, Locale locale) {
-        ScheduleDto scheduleDto = ex.getScheduleDto();
-        Object[] args = {
-                scheduleDto.getTeachersSubject().getTeacher().getFirstName(),
-                scheduleDto.getTeachersSubject().getTeacher().getSecondName(),
-                scheduleDto.getDate().getDayOfWeek(), scheduleDto.getDate(),
-                scheduleDto.getLessonNumber()
-        };
-        String errorMessage = messageSource.getMessage("TeacherIsBusyException", args, locale);
+    @ExceptionHandler({TeachersIsBusyException.class})
+    public ResponseEntity<ApiError> handleTeachersIsBusyException(TeachersIsBusyException ex, Locale locale) {
+        Collection<TemplateScheduleDto> invalidSchedulesDto = ex.getInvalidTemplatesScheduleDto();
+        String errorMessage = messageSource
+                .getMessage("GenerateScheduleTeacherIsBusyException", null, locale);
 
         ApiError apiError = ApiError.builder()
                 .message(errorMessage)
                 .status(HttpStatus.BAD_REQUEST)
                 .errors(Collections.singletonList(errorMessage))
+                .payload(invalidSchedulesDto)
                 .build();
-        log.error("Teacher is busy, thrown:", ex);
+        log.error("Teachers is busy, thrown:", ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     @ExceptionHandler({Exception.class})
-    public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
+    public ResponseEntity<Object> handleAll(Exception ex) {
         ApiError apiError = ApiError.builder()
                 .message(ex.getLocalizedMessage())
                 .status(HttpStatus.BAD_REQUEST)
@@ -185,6 +181,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public static class ApiError {
         private HttpStatus status;
         private String message;
-        private List<String> errors;
+        private Collection<?> errors;
+        private Object payload;
     }
 }

@@ -89,4 +89,11 @@ public class TeachersSubjectServiceImpl implements TeachersSubjectService {
                 subjectId);
         return result;
     }
+
+    @Override
+    public Integer countByTeacherId(Long teacherId) {
+        Integer result = teachersSubjectRepo.countByTeacherIdAndStatus(teacherId, EntityStatus.ACTIVE);
+        log.info("IN countByTeacherId - {} found", result);
+        return result;
+    }
 }

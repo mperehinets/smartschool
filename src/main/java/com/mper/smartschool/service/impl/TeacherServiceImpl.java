@@ -65,7 +65,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .stream()
                 .map(teacherMapper::toDto)
                 .peek(item -> item.setSubjectsCount(teachersSubjectRepo
-                        .countByTeacherAndStatus(teacherMapper.toEntity(item), EntityStatus.ACTIVE)))
+                        .countByTeacherIdAndStatus(item.getId(), EntityStatus.ACTIVE)))
                 .collect(Collectors.toList());
         log.info("IN findAll - {} teachers found", result.size());
         return result;

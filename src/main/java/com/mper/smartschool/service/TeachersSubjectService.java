@@ -16,5 +16,7 @@ public interface TeachersSubjectService {
 
     //Following methods without tests
     TeachersSubjectDto findByTeacherIdAndSubjectId(Long teacherId, Long subjectId);
+
+    Integer countByTeacherId(Long teacherId);
 }
 

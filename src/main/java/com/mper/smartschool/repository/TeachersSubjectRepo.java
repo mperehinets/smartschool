@@ -1,6 +1,5 @@
 package com.mper.smartschool.repository;
 
-import com.mper.smartschool.entity.Teacher;
 import com.mper.smartschool.entity.TeachersSubject;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,5 +16,6 @@ public interface TeachersSubjectRepo extends JpaRepository<TeachersSubject, Long
                                                                      @Param("subjectId") Long subjectId,
                                                                      @Param("statuses") EntityStatus... statuses);
 
-    Integer countByTeacherAndStatus(Teacher teacher, EntityStatus status);
+    @Query("select count(ts) from TeachersSubject ts where ts.teacher.id = :teacherId and ts.status = :status")
+    Integer countByTeacherIdAndStatus(@Param("teacherId") Long teacherId, @Param("status") EntityStatus status);
 }

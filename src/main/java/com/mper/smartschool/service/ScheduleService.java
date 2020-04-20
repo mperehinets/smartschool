@@ -2,6 +2,7 @@ package com.mper.smartschool.service;
 
 import com.mper.smartschool.dto.GenerateScheduleDto;
 import com.mper.smartschool.dto.ScheduleDto;
+import com.mper.smartschool.dto.TemplateScheduleDto;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -21,7 +22,7 @@ public interface ScheduleService {
     //Following methods without tests
     void generateSchedule(GenerateScheduleDto generateScheduleDto);
 
-    void canTeacherHoldLesson(ScheduleDto scheduleDto);
+    Boolean canTeacherHoldLesson(TemplateScheduleDto templateScheduleDto, LocalDate date);
 
     LocalDate findMinGenerationDateByClassId(Long classId);
 }

@@ -43,4 +43,9 @@ public class TeachersSubjectController {
     public TeachersSubjectDto findByTeacherIdAndSubjectId(@PathVariable Long teacherId, @PathVariable Long subjectId) {
         return teachersSubjectService.findByTeacherIdAndSubjectId(teacherId, subjectId);
     }
+
+    @GetMapping("/count-by-teacher/{teacherId}")
+    public Integer countByTeacherId(@PathVariable Long teacherId) {
+        return teachersSubjectService.countByTeacherId(teacherId);
+    }
 }
