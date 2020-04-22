@@ -3,10 +3,12 @@ package com.mper.smartschool.service.impl;
 import com.mper.smartschool.dto.SchoolClassDto;
 import com.mper.smartschool.dto.TeacherDto;
 import com.mper.smartschool.dto.mapper.SchoolClassMapper;
+import com.mper.smartschool.entity.Schedule;
 import com.mper.smartschool.entity.modelsEnum.SchoolClassInitial;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.exception.SchoolFilledByClassesException;
 import com.mper.smartschool.repository.PupilRepo;
+import com.mper.smartschool.repository.ScheduleRepo;
 import com.mper.smartschool.repository.SchoolClassRepo;
 import com.mper.smartschool.service.SchoolClassService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class SchoolClassServiceImpl implements SchoolClassService {
     private final SchoolClassRepo schoolClassRepo;
     private final SchoolClassMapper schoolClassMapper;
     private final PupilRepo pupilRepo;
+    private final ScheduleRepo scheduleRepo;
 
     @Override
     public boolean fieldValueExists(Object value, String fieldName) {
@@ -75,6 +78,14 @@ public class SchoolClassServiceImpl implements SchoolClassService {
                 .stream()
                 .map(schoolClassMapper::toDto)
                 .peek(item -> item.setPupilsCount(pupilRepo.countBySchoolClass(schoolClassMapper.toEntity(item))))
+                .peek(item -> {
+                    Schedule lastSchedule = scheduleRepo.findFirstBySchoolClassIdOrderByDateDesc(item.getId());
+                    if (lastSchedule == null) {
+                        item.setLastScheduleDate(null);
+                    } else {
+                        item.setLastScheduleDate(lastSchedule.getDate());
+                    }
+                })
                 .collect(Collectors.toList());
         log.info("IN findAll - {} schoolClasses found", result.size());
         return result;

@@ -1,9 +1,7 @@
 package com.mper.smartschool.controller;
 
-import com.mper.smartschool.dto.GenerateScheduleDto;
 import com.mper.smartschool.dto.ScheduleDto;
 import com.mper.smartschool.dto.transfer.OnCreate;
-import com.mper.smartschool.dto.transfer.OnGenerateSchedule;
 import com.mper.smartschool.dto.transfer.OnUpdate;
 import com.mper.smartschool.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.Collection;
 
 @RestController
@@ -48,14 +45,8 @@ public class ScheduleController {
         scheduleService.deleteById(id);
     }
 
-    //Following methods without tests
-    @PostMapping("/generate-schedule")
-    public void generateSchedule(@Validated(OnGenerateSchedule.class) @RequestBody GenerateScheduleDto generateScheduleDto) {
-        this.scheduleService.generateSchedule(generateScheduleDto);
-    }
-
-    @GetMapping("/min-generation-date-by-class/{classId}")
-    public LocalDate findMinGenerationDateByClassId(@PathVariable Long classId) {
-        return scheduleService.findMinGenerationDateByClassId(classId);
+    @GetMapping("/last-by-class/{classId}")
+    public ScheduleDto findLastByClassId(@PathVariable Long classId) {
+        return scheduleService.findLastByClassId(classId);
     }
 }

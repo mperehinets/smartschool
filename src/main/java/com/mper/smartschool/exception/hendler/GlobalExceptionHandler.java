@@ -149,19 +149,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
-    @ExceptionHandler({TeachersIsBusyException.class})
-    public ResponseEntity<ApiError> handleTeachersIsBusyException(TeachersIsBusyException ex, Locale locale) {
-        Collection<TemplateScheduleDto> invalidSchedulesDto = ex.getInvalidTemplatesScheduleDto();
-        String errorMessage = messageSource
-                .getMessage("GenerateScheduleTeacherIsBusyException", null, locale);
+    @ExceptionHandler({TeacherIsBusyException.class})
+    public ResponseEntity<ApiError> handleTeachersIsBusyException(TeacherIsBusyException ex, Locale locale) {
+        TemplateScheduleDto invalidTemplateDto = ex.getInvalidTemplateScheduleDto();
+        Object[] args = {
+                invalidTemplateDto.getTeachersSubject().getTeacher().getFirstName(),
+                invalidTemplateDto.getTeachersSubject().getTeacher().getSecondName(),
+                invalidTemplateDto.getDayOfWeek(),
+                invalidTemplateDto.getLessonNumber(),
+        };
+        String errorMessage = messageSource.getMessage("TeacherIsBusyException", args, locale);
 
         ApiError apiError = ApiError.builder()
                 .message(errorMessage)
                 .status(HttpStatus.BAD_REQUEST)
                 .errors(Collections.singletonList(errorMessage))
-                .payload(invalidSchedulesDto)
                 .build();
-        log.error("Teachers is busy, thrown:", ex);
+        log.error("Teacher is busy, thrown:", ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 

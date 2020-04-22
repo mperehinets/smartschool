@@ -13,6 +13,7 @@ import lombok.ToString;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -39,6 +40,8 @@ public class SchoolClassDto extends BaseDto {
 
     private Integer pupilsCount;
 
+    private LocalDate lastScheduleDate;
+
     public SchoolClassDto() {
     }
 
@@ -47,11 +50,13 @@ public class SchoolClassDto extends BaseDto {
                           Integer number,
                           SchoolClassInitial initial,
                           TeacherDto classTeacher,
-                          Integer pupilsCount) {
+                          Integer pupilsCount,
+                          LocalDate lastScheduleDate) {
         super(id);
         this.number = number;
         this.initial = initial;
         this.classTeacher = classTeacher;
         this.pupilsCount = pupilsCount;
+        this.lastScheduleDate = lastScheduleDate;
     }
 }

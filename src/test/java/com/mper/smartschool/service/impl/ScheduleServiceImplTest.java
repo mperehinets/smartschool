@@ -2,12 +2,11 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.DtoDirector;
 import com.mper.smartschool.dto.ScheduleDto;
-import com.mper.smartschool.dto.mapper.*;
+import com.mper.smartschool.dto.mapper.ScheduleMapper;
+import com.mper.smartschool.dto.mapper.ScheduleMapperImpl;
 import com.mper.smartschool.entity.Schedule;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.ScheduleRepo;
-import com.mper.smartschool.service.SchoolClassService;
-import com.mper.smartschool.service.TeachersSubjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,17 +28,7 @@ public class ScheduleServiceImplTest {
     @Mock
     private ScheduleRepo scheduleRepo;
 
-    @Mock
-    private SchoolClassService schoolClassService;
-
-    @Mock
-    private TeachersSubjectService teachersSubjectService;
-
     private ScheduleMapper scheduleMapper = new ScheduleMapperImpl();
-
-    private TeachersSubjectMapper teachersSubjectMapper = new TeachersSubjectMapperImpl();
-
-    private SchoolClassMapper schoolClassMapper = new SchoolClassMapperImpl();
 
     private ScheduleServiceImpl scheduleService;
 
@@ -47,12 +36,7 @@ public class ScheduleServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        scheduleService = new ScheduleServiceImpl(scheduleRepo,
-                scheduleMapper,
-                teachersSubjectMapper,
-                schoolClassMapper,
-                schoolClassService,
-                teachersSubjectService);
+        scheduleService = new ScheduleServiceImpl(scheduleRepo, scheduleMapper);
         scheduleDto = DtoDirector.makeTestScheduleDtoById(1L);
     }
 

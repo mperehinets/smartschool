@@ -4,11 +4,13 @@ import com.mper.smartschool.DtoDirector;
 import com.mper.smartschool.dto.SchoolClassDto;
 import com.mper.smartschool.dto.mapper.SchoolClassMapper;
 import com.mper.smartschool.dto.mapper.SchoolClassMapperImpl;
+import com.mper.smartschool.entity.Schedule;
 import com.mper.smartschool.entity.SchoolClass;
 import com.mper.smartschool.entity.modelsEnum.SchoolClassInitial;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.exception.SchoolFilledByClassesException;
 import com.mper.smartschool.repository.PupilRepo;
+import com.mper.smartschool.repository.ScheduleRepo;
 import com.mper.smartschool.repository.SchoolClassRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,9 @@ public class SchoolClassServiceImplTest {
     @Mock
     private PupilRepo pupilRepo;
 
+    @Mock
+    private ScheduleRepo scheduleRepo;
+
     private SchoolClassMapper schoolClassMapper = new SchoolClassMapperImpl();
 
     private SchoolClassServiceImpl schoolClassService;
@@ -43,7 +48,7 @@ public class SchoolClassServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        schoolClassService = new SchoolClassServiceImpl(schoolClassRepo, schoolClassMapper, pupilRepo);
+        schoolClassService = new SchoolClassServiceImpl(schoolClassRepo, schoolClassMapper, pupilRepo, scheduleRepo);
         schoolClassDto = DtoDirector.makeTestSchoolClassDtoById(1L);
     }
 
@@ -121,11 +126,18 @@ public class SchoolClassServiceImplTest {
         Mockito.when(schoolClassRepo.findAll())
                 .thenReturn(schoolClassesDto.stream().map(schoolClassMapper::toEntity).collect(Collectors.toList()));
 
+        for (SchoolClassDto schoolClassDto : schoolClassesDto) {
+            Mockito.when(scheduleRepo.findFirstBySchoolClassIdOrderByDateDesc(schoolClassDto.getId()))
+                    .thenReturn(new Schedule());
+        }
+
         Collection<SchoolClassDto> result = schoolClassService.findAll();
 
         assertEquals(result, schoolClassesDto
                 .stream()
-                .peek(item -> item.setPupilsCount(0)).collect(Collectors.toList()));
+                .peek(item -> item.setPupilsCount(0))
+                .peek(item -> item.setLastScheduleDate(null))
+                .collect(Collectors.toList()));
     }
 
     @Test
