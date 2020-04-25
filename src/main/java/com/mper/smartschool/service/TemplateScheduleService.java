@@ -21,5 +21,5 @@ public interface TemplateScheduleService {
 
     Long getCount();
 
-    Collection<TemplateScheduleDto> update(Collection<TemplateScheduleDto> templatesScheduleDto);
+    Collection<TemplateScheduleDto> updateAll(Collection<TemplateScheduleDto> templatesScheduleDto);
 }

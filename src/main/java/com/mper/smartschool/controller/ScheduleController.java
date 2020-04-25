@@ -5,12 +5,16 @@ import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
 import com.mper.smartschool.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.Collection;
 
+@Validated({OnUpdate.class})
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/smartschool/schedules")
@@ -48,5 +52,24 @@ public class ScheduleController {
     @GetMapping("/last-by-class/{classId}")
     public ScheduleDto findLastByClassId(@PathVariable Long classId) {
         return scheduleService.findLastByClassId(classId);
+    }
+
+    @PutMapping
+    public Collection<ScheduleDto> updateAll(@RequestBody Collection<@Valid ScheduleDto> schedulesDto) {
+        return scheduleService.updateAll(schedulesDto);
+    }
+
+    @GetMapping("/by-class/{classId}/and-date/{date}")
+    public Collection<ScheduleDto> findByClassIdAndDate(@PathVariable Long classId,
+                                                        @PathVariable
+                                                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return scheduleService.findByClassIdAndDate(classId, date);
+    }
+
+    @GetMapping("/can-teacher-hold-lesson")
+    public Boolean canTeacherHoldLesson(@RequestParam Long teacherId,
+                                        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                        @RequestParam Integer lessonNumber) {
+        return scheduleService.canTeacherHoldLesson(teacherId, date, lessonNumber);
     }
 }

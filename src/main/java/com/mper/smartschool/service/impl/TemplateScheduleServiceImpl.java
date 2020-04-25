@@ -92,7 +92,7 @@ public class TemplateScheduleServiceImpl implements TemplateScheduleService {
     }
 
     @Override
-    public Collection<TemplateScheduleDto> update(Collection<TemplateScheduleDto> templatesScheduleDto) {
+    public Collection<TemplateScheduleDto> updateAll(Collection<TemplateScheduleDto> templatesScheduleDto) {
         templatesScheduleDto.forEach(item -> findById(item.getId()));
         Collection<TemplateSchedule> templatesSchedule = templatesScheduleDto
                 .stream()
@@ -102,7 +102,7 @@ public class TemplateScheduleServiceImpl implements TemplateScheduleService {
                 .stream()
                 .map(templateScheduleMapper::toDto)
                 .collect(Collectors.toList());
-        log.info("IN update - templateSchedule: {} successfully updated", result);
+        log.info("IN updateAll - templateSchedule: {} successfully updated", result);
         return result;
     }
 }

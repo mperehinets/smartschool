@@ -77,13 +77,13 @@ public class SchoolClassServiceImpl implements SchoolClassService {
         Collection<SchoolClassDto> result = schoolClassRepo.findAll()
                 .stream()
                 .map(schoolClassMapper::toDto)
-                .peek(item -> item.setPupilsCount(pupilRepo.countBySchoolClass(schoolClassMapper.toEntity(item))))
-                .peek(item -> {
-                    Schedule lastSchedule = scheduleRepo.findFirstBySchoolClassIdOrderByDateDesc(item.getId());
+                .peek(SchoolClass -> SchoolClass.setPupilsCount(pupilRepo.countBySchoolClassId(SchoolClass.getId())))
+                .peek(SchoolClass -> {
+                    Schedule lastSchedule = scheduleRepo.findFirstBySchoolClassIdOrderByDateDesc(SchoolClass.getId());
                     if (lastSchedule == null) {
-                        item.setLastScheduleDate(null);
+                        SchoolClass.setLastScheduleDate(null);
                     } else {
-                        item.setLastScheduleDate(lastSchedule.getDate());
+                        SchoolClass.setLastScheduleDate(lastSchedule.getDate());
                     }
                 })
                 .collect(Collectors.toList());

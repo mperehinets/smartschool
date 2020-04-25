@@ -1,6 +1,5 @@
 package com.mper.smartschool.exception.hendler;
 
-import com.mper.smartschool.dto.TemplateScheduleDto;
 import com.mper.smartschool.exception.*;
 import lombok.Builder;
 import lombok.Data;
@@ -151,12 +150,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({TeacherIsBusyException.class})
     public ResponseEntity<ApiError> handleTeachersIsBusyException(TeacherIsBusyException ex, Locale locale) {
-        TemplateScheduleDto invalidTemplateDto = ex.getInvalidTemplateScheduleDto();
         Object[] args = {
-                invalidTemplateDto.getTeachersSubject().getTeacher().getFirstName(),
-                invalidTemplateDto.getTeachersSubject().getTeacher().getSecondName(),
-                invalidTemplateDto.getDayOfWeek(),
-                invalidTemplateDto.getLessonNumber(),
+                ex.getTeacherDto().getFirstName(),
+                ex.getTeacherDto().getSecondName(),
+                ex.getDate() == null ? "" : ex.getDate(),
+                ex.getDayOfWeek() == null ? "" : ex.getDayOfWeek(),
+                ex.getLessonNumber()
         };
         String errorMessage = messageSource.getMessage("TeacherIsBusyException", args, locale);
 
@@ -174,7 +173,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ApiError apiError = ApiError.builder()
                 .message(ex.getLocalizedMessage())
                 .status(HttpStatus.BAD_REQUEST)
-                .errors(Collections.singletonList("Something went wrong :("))
+                .errors(Collections.singletonList(ex.getMessage()))
                 .build();
         log.error("Something went wrong, thrown:", ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());

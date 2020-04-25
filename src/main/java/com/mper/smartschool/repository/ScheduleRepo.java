@@ -23,4 +23,8 @@ public interface ScheduleRepo extends JpaRepository<Schedule, Long> {
             @Param("dayOfWeek") Integer dayOfWeek);
 
     Schedule findFirstBySchoolClassIdOrderByDateDesc(Long id);
+
+    Collection<Schedule> findBySchoolClassIdAndDate(Long schoolClassId, LocalDate date);
+
+    Schedule findByTeachersSubjectTeacherIdAndDateAndLessonNumber(Long teacherId, LocalDate date, Integer lessonNumber);
 }

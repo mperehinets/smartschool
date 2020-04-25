@@ -64,8 +64,9 @@ public class AvatarStorageServiceImpl implements AvatarStorageService {
     @SneakyThrows
     @Override
     public Resource load(String fileName) {
-        Resource resource = new UrlResource(fileStorageLocation.resolve(fileName).normalize().toUri());
-        if (resource.exists()) {
+        String correctFileName = fileName.trim();
+        Resource resource = new UrlResource(fileStorageLocation.resolve(correctFileName).normalize().toUri());
+        if (correctFileName.length() != 0 && resource.exists()) {
             log.info("IN load - avatar found by name: {}", fileName);
             return resource;
         } else {

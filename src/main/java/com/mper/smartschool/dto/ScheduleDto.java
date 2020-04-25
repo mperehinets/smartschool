@@ -1,6 +1,5 @@
 package com.mper.smartschool.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
 import lombok.Builder;
@@ -8,7 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.validation.constraints.Future;
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -19,8 +18,7 @@ import java.time.LocalDate;
 @ToString(callSuper = true)
 public class ScheduleDto extends BaseDto {
 
-    @Future(groups = {OnCreate.class}, message = "{scheduleDto.date.future}")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @FutureOrPresent(groups = {OnCreate.class}, message = "{scheduleDto.date.future}")
     private LocalDate date;
 
     @Min(groups = {OnCreate.class, OnUpdate.class},

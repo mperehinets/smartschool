@@ -60,8 +60,8 @@ public class TemplateScheduleController {
     }
 
     @PutMapping
-    public Collection<TemplateScheduleDto> update(@RequestBody
-                                                          Collection<@Valid TemplateScheduleDto> templatesScheduleDto) {
-        return templateScheduleService.update(templatesScheduleDto);
+    public Collection<TemplateScheduleDto> updateAll(@RequestBody Collection<@Valid TemplateScheduleDto>
+                                                             templatesScheduleDto) {
+        return templateScheduleService.updateAll(templatesScheduleDto);
     }
 }

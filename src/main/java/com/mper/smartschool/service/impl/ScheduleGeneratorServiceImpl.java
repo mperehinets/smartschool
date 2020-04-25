@@ -68,14 +68,18 @@ public class ScheduleGeneratorServiceImpl implements ScheduleGeneratorService {
     }
 
     @Override
-    public Boolean canTeacherHoldLesson(TemplateScheduleDto templateScheduleDto, LocalDate startDate, LocalDate endDate) {
-        Collection<Schedule> schedule = this.scheduleRepo.findByStartDateAndEndDateAndTeacherIdAndLessonNumberAndDayOfWeek(
-                startDate,
-                endDate,
-                templateScheduleDto.getTeachersSubject().getTeacher().getId(),
-                templateScheduleDto.getLessonNumber(),
-                templateScheduleDto.getDayOfWeek().getValue() + 1);
-        return schedule.isEmpty();
+    public Boolean canTeacherHoldLesson(TemplateScheduleDto templateScheduleDto,
+                                        LocalDate startDate,
+                                        LocalDate endDate) {
+        Collection<Schedule> schedule =
+                this.scheduleRepo.findByStartDateAndEndDateAndTeacherIdAndLessonNumberAndDayOfWeek(startDate,
+                        endDate,
+                        templateScheduleDto.getTeachersSubject().getTeacher().getId(),
+                        templateScheduleDto.getLessonNumber(),
+                        templateScheduleDto.getDayOfWeek().getValue() + 1);
+        Boolean result = schedule.isEmpty();
+        log.info("IN canTeacherHoldLesson - result: {}", result);
+        return result;
     }
 
     private void validateGenerateScheduleDto(GenerateScheduleDto generateScheduleDto) {
@@ -91,10 +95,13 @@ public class ScheduleGeneratorServiceImpl implements ScheduleGeneratorService {
         for (TemplateScheduleDto template : generateScheduleDto.getTemplatesSchedule()) {
             teachersSubjectService.findById(template.getTeachersSubject().getId());
             //Check if teacher can hold lesson
-            if (!this.canTeacherHoldLesson(template,
+            if (!canTeacherHoldLesson(template,
                     generateScheduleDto.getStartDate(),
                     generateScheduleDto.getEndDate())) {
-                throw new TeacherIsBusyException(template);
+                throw new TeacherIsBusyException(template.getTeachersSubject().getTeacher(),
+                        null,
+                        template.getDayOfWeek(),
+                        template.getLessonNumber());
             }
         }
     }
