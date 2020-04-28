@@ -22,4 +22,6 @@ public interface SchoolClassService extends FieldValueExistsService {
     SchoolClassDto findByTeacherId(Long teacherId);
 
     Long getCount();
+
+    void moveOnToNewSchoolYear(boolean ignoreSchedule);
 }

@@ -4,7 +4,9 @@ import com.mper.smartschool.dto.SchoolClassDto;
 import com.mper.smartschool.dto.TeacherDto;
 import com.mper.smartschool.dto.mapper.SchoolClassMapper;
 import com.mper.smartschool.entity.Schedule;
+import com.mper.smartschool.entity.SchoolClass;
 import com.mper.smartschool.entity.modelsEnum.SchoolClassInitial;
+import com.mper.smartschool.exception.ClassHasUnfinishedLessonsException;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.exception.SchoolFilledByClassesException;
 import com.mper.smartschool.repository.PupilRepo;
@@ -16,13 +18,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class SchoolClassServiceImpl implements SchoolClassService {
+
+    private static final int YEARS_OF_HISTORY_PRESERVATION = 5;
 
     private final SchoolClassRepo schoolClassRepo;
     private final SchoolClassMapper schoolClassMapper;
@@ -77,6 +84,7 @@ public class SchoolClassServiceImpl implements SchoolClassService {
         Collection<SchoolClassDto> result = schoolClassRepo.findAll()
                 .stream()
                 .map(schoolClassMapper::toDto)
+                .filter(schoolClassDto -> schoolClassDto.getNumber() <= 11)
                 .peek(SchoolClass -> SchoolClass.setPupilsCount(pupilRepo.countBySchoolClassId(SchoolClass.getId())))
                 .peek(SchoolClass -> {
                     Schedule lastSchedule = scheduleRepo.findFirstBySchoolClassIdOrderByDateDesc(SchoolClass.getId());
@@ -130,5 +138,48 @@ public class SchoolClassServiceImpl implements SchoolClassService {
         Long result = schoolClassRepo.count();
         log.info("IN count - count of schoolClasses: {}", result);
         return result;
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public void moveOnToNewSchoolYear(boolean ignoreSchedule) {
+        List<SchoolClass> resultToUpdate = new ArrayList<>();
+        List<SchoolClass> resultToDelete = new ArrayList<>();
+        // Classes initials which have unfinished lessons
+        StringBuilder invalidClassesInitials = new StringBuilder();
+        schoolClassRepo.findAll().stream()
+                .map(schoolClassMapper::toDto)
+                .forEach(schoolClassDto -> {
+                    // Check if class has unfinished lessons
+                    if (!ignoreSchedule && scheduleRepo
+                            .findFirstBySchoolClassIdOrderByDateDesc(schoolClassDto.getId()).getDate()
+                            .isAfter(LocalDate.now())) {
+                        invalidClassesInitials
+                                .append(schoolClassDto.getNumber())
+                                .append("-")
+                                .append(schoolClassDto.getInitial())
+                                .append(" ");
+                    }
+                    // Set new class number
+                    schoolClassDto.setNumber(schoolClassDto.getNumber() + 1);
+                    // If history about schoolCass hes been kept for 5 years, then mark for removal
+                    if (schoolClassDto.getNumber() > YEARS_OF_HISTORY_PRESERVATION + 11) {
+                        resultToDelete.add(schoolClassMapper.toEntity(schoolClassDto));
+                    } else {
+                        resultToUpdate.add(schoolClassMapper.toEntity(schoolClassDto));
+                    }
+                });
+        if (invalidClassesInitials.length() != 0) {
+            throw new ClassHasUnfinishedLessonsException(invalidClassesInitials.toString());
+        }
+        schoolClassRepo.deleteAll(resultToDelete);
+        resultToUpdate.forEach(schoolClass -> {
+            // Delete unfinished lessons
+            if (schoolClass.getNumber() > 11) {
+                schoolClass.setClassTeacher(null);
+            }
+            scheduleRepo.deleteByDateAfterAndSchoolClassId(LocalDate.now(), schoolClass.getId());
+            schoolClassRepo.save(schoolClass);
+        });
     }
 }

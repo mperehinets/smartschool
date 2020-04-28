@@ -22,7 +22,7 @@ public class SchoolClass extends BaseEntity {
     @Column(name = "initial")
     private SchoolClassInitial initial;
 
-    @OneToOne
+    @OneToOne()
     @JoinColumn(name = "class_teacher", referencedColumnName = "user")
     private Teacher classTeacher;
 

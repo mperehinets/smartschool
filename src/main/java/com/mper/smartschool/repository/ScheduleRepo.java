@@ -2,8 +2,10 @@ package com.mper.smartschool.repository;
 
 import com.mper.smartschool.entity.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -27,4 +29,8 @@ public interface ScheduleRepo extends JpaRepository<Schedule, Long> {
     Collection<Schedule> findBySchoolClassIdAndDate(Long schoolClassId, LocalDate date);
 
     Schedule findByTeachersSubjectTeacherIdAndDateAndLessonNumber(Long teacherId, LocalDate date, Integer lessonNumber);
+
+    @Modifying
+    @Transactional
+    void deleteByDateAfterAndSchoolClassId(LocalDate date, Long schoolClassId);
 }

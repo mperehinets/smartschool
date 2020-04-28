@@ -135,8 +135,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Object> handle(ConstraintViolationException constraintViolationException) {
-        Set<ConstraintViolation<?>> violations = constraintViolationException.getConstraintViolations();
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex) {
+        Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
 
         List<String> errors = new ArrayList<>();
         violations.forEach(violation -> errors.add(violation.getMessage()));
@@ -146,6 +146,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .errors(errors)
                 .build();
         return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
+    @ExceptionHandler(ClassHasUnfinishedLessonsException.class)
+    public ResponseEntity<Object> handleClassHasUnfinishedLessonsException(ClassHasUnfinishedLessonsException ex,
+                                                                           Locale locale) {
+        Object[] args = {
+                ex.getInvalidClassesInitials()
+        };
+
+        String errorMessage = messageSource.getMessage("ClassHasUnfinishedLessonsException", args, locale);
+
+        ApiError apiError = ApiError.builder()
+                .message(errorMessage)
+                .status(HttpStatus.BAD_REQUEST)
+                .errors(Collections.singletonList(errorMessage))
+                .build();
+        log.error("Some classes have unfinished lessons, thrown:", ex);
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     @ExceptionHandler({TeacherIsBusyException.class})

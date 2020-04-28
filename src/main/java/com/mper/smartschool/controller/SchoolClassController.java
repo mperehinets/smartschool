@@ -55,4 +55,9 @@ public class SchoolClassController {
     public Long getCount() {
         return schoolClassService.getCount();
     }
+
+    @PutMapping("/move-on-to-new-school-year/{ignoreSchedule}")
+    public void moveOnToNewSchoolYear(@PathVariable boolean ignoreSchedule) {
+        this.schoolClassService.moveOnToNewSchoolYear(ignoreSchedule);
+    }
 }
