@@ -1,7 +1,6 @@
 package com.mper.smartschool.controller;
 
 import com.mper.smartschool.dto.ChangeStatusDto;
-import com.mper.smartschool.dto.ResetPasswordDto;
 import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
@@ -11,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 
 @RestController
@@ -64,12 +64,6 @@ public class UserController {
     }
 
     //Following methods without tests
-    @PutMapping("/reset-password/{id}")
-    public void resetPassword(@PathVariable Long id, @Validated @RequestBody ResetPasswordDto resetPasswordDto) {
-        resetPasswordDto.setId(id);
-        userService.resetPassword(resetPasswordDto);
-    }
-
     @PutMapping("/current/update-avatar")
     public void updateAvatarForCurrent(@RequestBody String avatarName) {
         userService.updateAvatarForCurrent(avatarName);
@@ -83,5 +77,10 @@ public class UserController {
     @GetMapping("/current")
     public UserDto findCurrent() {
         return userService.findCurrent();
+    }
+
+    @PostMapping("/forgot-password")
+    public void forgotPassword(HttpServletRequest req) {
+
     }
 }

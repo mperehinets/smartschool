@@ -1,7 +1,6 @@
 package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.ChangeStatusDto;
-import com.mper.smartschool.dto.ResetPasswordDto;
 import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.dto.mapper.UserMapper;
 import com.mper.smartschool.entity.User;
@@ -88,7 +87,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or authentication.principal.id == #id")
     public UserDto findById(Long id) {
         UserDto result = userMapper.toDto(userRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("UserNotFoundException.byId", id)));
@@ -141,15 +140,6 @@ public class UserServiceImpl implements UserService {
 
         log.info("IN takeAdminAwayById - user: {} successfully lost role ADMIN", result);
         return result;
-    }
-
-    @Override
-    @PreAuthorize("hasRole('ADMIN') and authentication.principal.id != #resetPasswordDto.id")
-    public void resetPassword(ResetPasswordDto resetPasswordDto) {
-        findById(resetPasswordDto.getId());
-        userRepo.updatePasswordById(resetPasswordDto.getId(),
-                passwordEncoder.encode(resetPasswordDto.getNewPassword()));
-        log.info("IN resetPasswordByAdmin - user with id: {} got new password", resetPasswordDto.getId());
     }
 
     @Override

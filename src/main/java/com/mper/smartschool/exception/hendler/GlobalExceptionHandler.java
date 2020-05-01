@@ -116,6 +116,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+    @ExceptionHandler({InvalidPasswordResetTokenException.class})
+    public ResponseEntity<ApiError> handleInvalidPasswordResetTokenException(InvalidPasswordResetTokenException ex,
+                                                                             Locale locale) {
+        String errorMessage = messageSource.getMessage(ex.getMessage(), null, locale);
+
+        ApiError apiError = ApiError.builder()
+                .message(errorMessage)
+                .status(HttpStatus.BAD_REQUEST)
+                .errors(Collections.singletonList(errorMessage))
+                .build();
+        log.error("Invalid password reset token, thrown:", ex);
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers,

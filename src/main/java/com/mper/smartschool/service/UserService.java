@@ -1,7 +1,6 @@
 package com.mper.smartschool.service;
 
 import com.mper.smartschool.dto.ChangeStatusDto;
-import com.mper.smartschool.dto.ResetPasswordDto;
 import com.mper.smartschool.dto.UserDto;
 
 import java.util.Collection;
@@ -23,8 +22,6 @@ public interface UserService extends FieldValueExistsService {
     UserDto takeAdminAwayById(Long id);
 
     UserDto findByEmail(String email);
-
-    void resetPassword(ResetPasswordDto resetPasswordDto);
 
     //Following methods without tests
     void updateAvatarForCurrent(String avatarName);

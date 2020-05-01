@@ -3,7 +3,6 @@ package com.mper.smartschool.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mper.smartschool.DtoDirector;
 import com.mper.smartschool.dto.ChangeStatusDto;
-import com.mper.smartschool.dto.ResetPasswordDto;
 import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.entity.Role;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
@@ -334,56 +333,6 @@ class UserControllerTest {
         Mockito.doThrow(new NotFoundException("", null)).when(userService).takeAdminAwayById(Long.MAX_VALUE);
         mockMvc.perform(put("/smartschool/users/take-admin-away/{id}", Long.MAX_VALUE)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void resetPasswordById_return200_ifInputsIsValid() throws Exception {
-        ResetPasswordDto resetPasswordDto = ResetPasswordDto.builder()
-                .id(1L)
-                .newPassword("newPassword")
-                .build();
-        mockMvc.perform(put("/smartschool/users/reset-password/{id}", resetPasswordDto.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(resetPasswordDto)))
-                .andExpect(status().isOk());
-        Mockito.verify(userService, Mockito.times(1)).resetPassword(resetPasswordDto);
-    }
-
-    @Test
-    public void resetPasswordById_return400_ifPasswordIsNullOrEmpty() throws Exception {
-        ResetPasswordDto resetPasswordDto = ResetPasswordDto.builder()
-                .id(1L)
-                .newPassword("")
-                .build();
-        mockMvc.perform(put("/smartschool/users/reset-password/{id}", resetPasswordDto.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(resetPasswordDto)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void resetPasswordById_return400_ifPasswordNotMatchLength() throws Exception {
-        ResetPasswordDto resetPasswordDto = ResetPasswordDto.builder()
-                .id(1L)
-                .newPassword("length")
-                .build();
-        mockMvc.perform(put("/smartschool/users/reset-password/{id}", resetPasswordDto.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(resetPasswordDto)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void resetPasswordById_return404_ifIdNotExist() throws Exception {
-        ResetPasswordDto resetPasswordDto = ResetPasswordDto.builder()
-                .id(Long.MAX_VALUE)
-                .newPassword("newPassword")
-                .build();
-        Mockito.doThrow(new NotFoundException("", null)).when(userService).resetPassword(resetPasswordDto);
-        mockMvc.perform(put("/smartschool/users/reset-password/{id}", resetPasswordDto.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(resetPasswordDto)))
                 .andExpect(status().isNotFound());
     }
 }

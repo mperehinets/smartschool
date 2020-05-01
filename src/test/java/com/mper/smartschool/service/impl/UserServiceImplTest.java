@@ -2,7 +2,6 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.DtoDirector;
 import com.mper.smartschool.dto.ChangeStatusDto;
-import com.mper.smartschool.dto.ResetPasswordDto;
 import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.dto.mapper.UserMapper;
 import com.mper.smartschool.dto.mapper.UserMapperImpl;
@@ -240,35 +239,6 @@ public class UserServiceImplTest {
         userDto.setId(Long.MAX_VALUE);
         Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> userService.takeAdminAwayById(userDto.getId()));
-    }
-
-    @Test
-    public void resetPasswordByAdmin_success() {
-        ResetPasswordDto resetPasswordDto = ResetPasswordDto.builder()
-                .id(1L)
-                .newPassword("newPassword")
-                .build();
-
-        User user = userMapper.toEntity(userDto);
-        Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
-
-        String encodedPassword = "encodedPassword";
-        Mockito.when(passwordEncoder.encode(resetPasswordDto.getNewPassword())).thenReturn(encodedPassword);
-
-        Mockito.doNothing()
-                .when(userRepo).updatePasswordById(resetPasswordDto.getId(), encodedPassword);
-
-        assertDoesNotThrow(() -> userService.resetPassword(resetPasswordDto));
-    }
-
-    @Test
-    public void resetPasswordByAdmin_throwNotFoundException_ifUserNotFound() {
-        ResetPasswordDto resetPasswordDto = ResetPasswordDto.builder()
-                .id(Long.MAX_VALUE)
-                .newPassword("newPassword")
-                .build();
-        Mockito.when(userRepo.findById(resetPasswordDto.getId())).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> userService.resetPassword(resetPasswordDto));
     }
 
     private Collection<UserDto> getCollectionOfUsersDto() {

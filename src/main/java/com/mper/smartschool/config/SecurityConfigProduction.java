@@ -29,7 +29,9 @@ public class SecurityConfigProduction extends WebSecurityConfigurerAdapter {
     public final static String HEADER_NAME = "Authorization";
     private static final String[] WHITELIST = {
             "/smartschool/auth/login",
-            "/smartschool/avatars/download/**"
+            "/smartschool/avatars/download/**",
+            "/smartschool/passwords/send-reset-token",
+            "/smartschool/passwords/reset-with-checking"
     };
 
     private final MessageSource messageSource;
