@@ -30,6 +30,9 @@ public class UniqueValidator implements ConstraintValidator<Unique, Object> {
 
     @Override
     public boolean isValid(Object o, ConstraintValidatorContext constraintValidatorContext) {
+        if (o == null) {
+            return true;
+        }
         return !this.service.fieldValueExists(o, fieldName);
     }
 }

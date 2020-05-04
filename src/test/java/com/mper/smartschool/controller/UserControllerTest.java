@@ -47,7 +47,7 @@ class UserControllerTest {
     @Test
     public void create_return201_ifInputsIsValid() throws Exception {
         userDto.setId(null);
-        userDto.setPassword("somePassword");
+        userDto.setPassword("somePassword1");
         mockMvc.perform(post("/smartschool/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userDto)))

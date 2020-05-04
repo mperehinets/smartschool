@@ -2,6 +2,7 @@ package com.mper.smartschool.dto;
 
 import com.mper.smartschool.dto.transfer.OnCreate;
 import com.mper.smartschool.dto.transfer.OnUpdate;
+import com.mper.smartschool.dto.validator.password.Password;
 import com.mper.smartschool.dto.validator.unique.Unique;
 import com.mper.smartschool.entity.Role;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
@@ -47,9 +48,7 @@ public class UserDto extends BaseDto {
 
     @NotNull(groups = {OnCreate.class},
             message = "{userDto.password.notnull}")
-    @Size(groups = {OnCreate.class},
-            min = 8, max = 32,
-            message = "{userDto.password.size}")
+    @Password(groups = {OnCreate.class})
     private String password;
 
     @Past(groups = {OnCreate.class, OnUpdate.class}, message = "{userDto.dateBirth.past}")

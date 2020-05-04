@@ -49,7 +49,7 @@ public final class DtoDirector {
                 .secondName("Pupil")
                 .dateBirth(LocalDate.of(2000, 12, 17))
                 .email("pupil" + id + "@gmail.com")
-                .password("pupilPassword")
+                .password("pupilPassword1")
                 .schoolClass(null)
                 .signedPersons(new HashSet<>())
                 .avatarName("some-avatar.png")

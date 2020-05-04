@@ -1,12 +1,12 @@
 package com.mper.smartschool.dto;
 
+import com.mper.smartschool.dto.validator.password.Password;
 import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Data
 public class ResetPasswordDto {
@@ -16,7 +16,7 @@ public class ResetPasswordDto {
     private String userEmail;
 
     @NotNull(message = "{userDto.password.notnull}")
-    @Size(min = 8, max = 32, message = "{userDto.password.size}")
+    @Password
     private String newPassword;
 
     private String resetToken;

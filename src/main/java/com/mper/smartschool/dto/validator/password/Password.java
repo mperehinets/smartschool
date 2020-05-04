@@ -1,6 +1,4 @@
-package com.mper.smartschool.dto.validator.unique;
-
-import com.mper.smartschool.service.FieldValueExistsService;
+package com.mper.smartschool.dto.validator.password;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -12,19 +10,14 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Documented
-@Constraint(validatedBy = UniqueValidator.class)
-@Target({METHOD, FIELD, ANNOTATION_TYPE})
+@Constraint(validatedBy = PasswordConstraintValidator.class)
+@Target({TYPE, FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-public @interface Unique {
-    String message() default "Field must be unique";
+public @interface Password {
+
+    String message() default "Invalid Password";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
-    Class<? extends FieldValueExistsService> service();
-
-    String serviceQualifier() default "";
-
-    String fieldName();
 }
