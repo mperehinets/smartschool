@@ -12,6 +12,8 @@ import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.RoleRepo;
 import com.mper.smartschool.repository.UserRepo;
 import com.mper.smartschool.service.AvatarStorageService;
+import com.mper.smartschool.service.EmailService;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,19 +47,26 @@ public class UserServiceImplTest {
     @Mock
     private AvatarStorageService avatarStorageService;
 
-    private UserMapper userMapper = new UserMapperImpl();
+    private final UserMapper userMapper = new UserMapperImpl();
+    @Mock
+    private EmailService emailService;
 
     private UserServiceImpl userService;
 
     private UserDto userDto;
 
-
     @BeforeEach
     public void setUp() {
-        userService = new UserServiceImpl(userRepo, userMapper, roleRepo, passwordEncoder, avatarStorageService);
+        userService = new UserServiceImpl(userRepo,
+                userMapper,
+                roleRepo,
+                passwordEncoder,
+                avatarStorageService,
+                emailService);
         userDto = DtoDirector.makeTestUserDtoById(1L);
     }
 
+    @SneakyThrows
     @Test
     public void createUser_success() {
         Role roleUser = Role.builder()

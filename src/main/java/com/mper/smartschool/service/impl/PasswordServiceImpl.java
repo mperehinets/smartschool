@@ -1,6 +1,5 @@
 package com.mper.smartschool.service.impl;
 
-import com.mper.smartschool.dto.MailDto;
 import com.mper.smartschool.dto.ResetPasswordDto;
 import com.mper.smartschool.entity.PasswordResetToken;
 import com.mper.smartschool.entity.User;
@@ -17,8 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -65,16 +62,7 @@ public class PasswordServiceImpl implements PasswordService {
                 .expiryDate(LocalDateTime.now().plusMinutes(PasswordResetToken.EXPIRATION))
                 .build();
         passwordResetTokenRepo.save(passwordResetToken);
-
-        Map<String, Object> props = new HashMap<>();
-        props.put("token", passwordResetToken.getToken());
-
-        emailService.sendHtmlMessage(MailDto.builder()
-                .mailTo(email)
-                .subject("Reset password")
-                .props(props)
-                .build(), "reset-password-letter");
-        log.info("IN sendResetToken - reset token successfully sent to email: {}", email);
+        emailService.sendResetToken(passwordResetToken);
     }
 
     private User findUserByEmail(String email) {

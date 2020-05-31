@@ -2,12 +2,14 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.TeacherDto;
 import com.mper.smartschool.dto.mapper.TeacherMapper;
+import com.mper.smartschool.entity.Teacher;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.RoleRepo;
 import com.mper.smartschool.repository.TeacherRepo;
 import com.mper.smartschool.repository.TeachersSubjectRepo;
 import com.mper.smartschool.service.AvatarStorageService;
+import com.mper.smartschool.service.EmailService;
 import com.mper.smartschool.service.TeacherService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,16 +32,20 @@ public class TeacherServiceImpl implements TeacherService {
     private final TeachersSubjectRepo teachersSubjectRepo;
     private final PasswordEncoder passwordEncoder;
     private final AvatarStorageService avatarStorageService;
+    private final EmailService emailService;
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public TeacherDto create(TeacherDto teacherDto) {
-        teacherDto.setRoles(Collections.singleton(roleRepo.findTeacherRole()));
-        teacherDto.setStatus(EntityStatus.ACTIVE);
-        teacherDto.setPassword(passwordEncoder.encode(teacherDto.getPassword()));
+        Teacher teacher = teacherMapper.toEntity(teacherDto);
+        teacher.setRoles(Collections.singleton(roleRepo.findTeacherRole()));
+        teacher.setStatus(EntityStatus.ACTIVE);
+        teacher.setPassword(passwordEncoder.encode(teacherDto.getPassword()));
         avatarStorageService.resolveAvatar(teacherDto);
 
-        TeacherDto result = teacherMapper.toDto(teacherRepo.save(teacherMapper.toEntity(teacherDto)));
+        TeacherDto result = teacherMapper.toDto(teacherRepo.save(teacher));
+
+        emailService.sendLoginDetails(teacherDto);
 
         log.info("IN create - teacher: {} successfully created", result);
 

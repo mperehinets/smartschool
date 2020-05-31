@@ -10,6 +10,7 @@ import com.mper.smartschool.repository.RoleRepo;
 import com.mper.smartschool.repository.UserRepo;
 import com.mper.smartschool.security.UserPrincipal;
 import com.mper.smartschool.service.AvatarStorageService;
+import com.mper.smartschool.service.EmailService;
 import com.mper.smartschool.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepo roleRepo;
     private final PasswordEncoder passwordEncoder;
     private final AvatarStorageService avatarStorageService;
+    private final EmailService emailService;
 
     @Override
     public boolean fieldValueExists(Object value, String fieldName) {
@@ -49,12 +51,15 @@ public class UserServiceImpl implements UserService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public UserDto create(UserDto userDto) {
-        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        userDto.setRoles(Collections.singleton(roleRepo.findUserRole()));
-        userDto.setStatus(EntityStatus.ACTIVE);
+        User user = userMapper.toEntity(userDto);
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setRoles(Collections.singleton(roleRepo.findUserRole()));
+        user.setStatus(EntityStatus.ACTIVE);
         avatarStorageService.resolveAvatar(userDto);
 
-        UserDto result = userMapper.toDto(userRepo.save(userMapper.toEntity(userDto)));
+        UserDto result = userMapper.toDto(userRepo.save(user));
+
+        emailService.sendLoginDetails(userDto);
 
         log.info("IN create - user: {} successfully created", result);
 
@@ -162,7 +167,6 @@ public class UserServiceImpl implements UserService {
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
-
         UserDto result = findById(userPrincipal.getId());
         log.info("IN findCurrent - current user: {} found", result);
         return result;

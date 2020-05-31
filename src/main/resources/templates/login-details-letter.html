@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Reset password</title>
+    <title>Login details</title>
 </head>
 <body style="font-family: 'Roboto', sans-serif; margin: 0">
 <header style="border-bottom: .0625rem solid #e0e0e0">
@@ -16,15 +16,21 @@
     <img style="height: 50px" th:src="|cid:avatar|">
 </div>
 <div style="opacity: 0.7; text-align: center" th:text="${firstName} + ' ' + ${secondName}"></div>
-<h3 style="text-align: center; margin: 25px 0 0 0">Reset password token</h3>
+<h3 style="text-align: center; margin: 25px 0 0 0">Login details</h3>
 <div>
     <p style="border: solid 3px #e0e0e0;
             border-radius: 7px;
             padding: 8px;
             width: 50%;
             margin: 5px auto;
-            text-align: center" th:text="${token}"></p>
-    <p style="text-align: center">Copy this token. Token is valid for 7 minutes.</p>
+            text-align: center" th:text="'Email: ' + ${email}"></p>
+    <p style="border: solid 3px #e0e0e0;
+            border-radius: 7px;
+            padding: 8px;
+            width: 50%;
+            margin: 5px auto;
+            text-align: center" th:text="'Password: ' + ${password}"></p>
 </div>
 </body>
 </html>
+

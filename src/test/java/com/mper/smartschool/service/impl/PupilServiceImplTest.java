@@ -12,6 +12,7 @@ import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.PupilRepo;
 import com.mper.smartschool.repository.RoleRepo;
 import com.mper.smartschool.service.AvatarStorageService;
+import com.mper.smartschool.service.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,7 +46,9 @@ public class PupilServiceImplTest {
     @Mock
     private AvatarStorageService avatarStorageService;
 
-    private PupilMapper pupilMapper = new PupilMapperImpl();
+    private final PupilMapper pupilMapper = new PupilMapperImpl();
+    @Mock
+    private EmailService emailService;
 
     private PupilServiceImpl pupilService;
 
@@ -53,7 +56,12 @@ public class PupilServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        pupilService = new PupilServiceImpl(pupilRepo, pupilMapper, roleRepo, passwordEncoder, avatarStorageService);
+        pupilService = new PupilServiceImpl(pupilRepo,
+                pupilMapper,
+                roleRepo,
+                passwordEncoder,
+                avatarStorageService,
+                emailService);
         pupilDto = DtoDirector.makeTestPupilDtoById(1L);
     }
 
@@ -93,7 +101,8 @@ public class PupilServiceImplTest {
         assertThat(result).isEqualToIgnoringGivenFields(pupilDto,
                 "id",
                 "roles",
-                "status");
+                "status",
+                "password");
     }
 
     @Test

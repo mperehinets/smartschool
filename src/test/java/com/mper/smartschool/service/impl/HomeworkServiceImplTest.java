@@ -28,7 +28,7 @@ public class HomeworkServiceImplTest {
     @Mock
     private HomeworkRepo homeworkRepo;
 
-    private HomeworkMapper homeworkMapper = new HomeworkMapperImpl();
+    private final HomeworkMapper homeworkMapper = new HomeworkMapperImpl();
 
     private HomeworkServiceImpl homeworkService;
 
