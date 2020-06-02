@@ -2,7 +2,6 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.DtoDirector;
 import com.mper.smartschool.dto.PupilDto;
-import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.dto.mapper.PupilMapper;
 import com.mper.smartschool.dto.mapper.PupilMapperImpl;
 import com.mper.smartschool.entity.Pupil;
@@ -46,9 +45,10 @@ public class PupilServiceImplTest {
     @Mock
     private AvatarStorageService avatarStorageService;
 
-    private final PupilMapper pupilMapper = new PupilMapperImpl();
     @Mock
     private EmailService emailService;
+
+    private final PupilMapper pupilMapper = new PupilMapperImpl();
 
     private PupilServiceImpl pupilService;
 
@@ -67,7 +67,7 @@ public class PupilServiceImplTest {
 
     @Test
     public void create_success() {
-        Role rolePupil = Role.builder()
+        var rolePupil = Role.builder()
                 .id(1L)
                 .name("ROLE_PUPIL")
                 .status(EntityStatus.ACTIVE)
@@ -80,7 +80,7 @@ public class PupilServiceImplTest {
 
         pupilDto.setId(null);
         pupilDto.setStatus(null);
-        Pupil pupil = pupilMapper.toEntity(pupilDto);
+        var pupil = pupilMapper.toEntity(pupilDto);
         pupil.setRoles(Collections.singleton(rolePupil));
         pupil.setStatus(EntityStatus.ACTIVE);
         pupil.setPassword(encodedPassword);
@@ -90,7 +90,7 @@ public class PupilServiceImplTest {
             return returnedPupil;
         });
 
-        PupilDto result = pupilService.create(pupilDto);
+        var result = pupilService.create(pupilDto);
 
         assertNotNull(result.getId());
 
@@ -107,12 +107,12 @@ public class PupilServiceImplTest {
 
     @Test
     public void update_success() {
-        Pupil pupil = pupilMapper.toEntity(pupilDto);
+        var pupil = pupilMapper.toEntity(pupilDto);
         Mockito.when(pupilRepo.findById(pupilDto.getId())).thenReturn(Optional.of(pupil));
 
         Mockito.when(pupilRepo.save(pupil)).thenReturn(pupil);
 
-        PupilDto result = pupilService.update(pupilDto);
+        var result = pupilService.update(pupilDto);
 
         assertThat(result).isEqualToIgnoringGivenFields(pupilDto, "email", "password");
     }
@@ -126,21 +126,21 @@ public class PupilServiceImplTest {
 
     @Test
     public void findAll_success() {
-        Collection<PupilDto> pupilsDto = getCollectionOfPupilsDto();
+        var pupilsDto = getCollectionOfPupilsDto();
         Mockito.when(pupilRepo.findAll())
                 .thenReturn(pupilsDto.stream().map(pupilMapper::toEntity).collect(Collectors.toList()));
 
-        Collection<PupilDto> result = pupilService.findAll();
+        var result = pupilService.findAll();
 
         assertEquals(result, pupilsDto);
     }
 
     @Test
     public void findById_success() {
-        Pupil pupil = pupilMapper.toEntity(pupilDto);
+        var pupil = pupilMapper.toEntity(pupilDto);
         Mockito.when(pupilRepo.findById(pupilDto.getId())).thenReturn(Optional.of(pupil));
 
-        UserDto result = pupilService.findById(pupilDto.getId());
+        var result = pupilService.findById(pupilDto.getId());
 
         assertEquals(result, pupilDto);
     }
@@ -153,7 +153,7 @@ public class PupilServiceImplTest {
 
     @Test
     public void deleteById_success() {
-        Pupil pupil = pupilMapper.toEntity(pupilDto);
+        var pupil = pupilMapper.toEntity(pupilDto);
         Mockito.when(pupilRepo.findById(pupilDto.getId())).thenReturn(Optional.of(pupil));
 
         pupil.setStatus(EntityStatus.DELETED);
@@ -169,8 +169,8 @@ public class PupilServiceImplTest {
     }
 
     private Collection<PupilDto> getCollectionOfPupilsDto() {
-        PupilDto pupilDto2 = DtoDirector.makeTestPupilDtoById(2L);
-        PupilDto pupilDto3 = DtoDirector.makeTestPupilDtoById(3L);
+        var pupilDto2 = DtoDirector.makeTestPupilDtoById(2L);
+        var pupilDto3 = DtoDirector.makeTestPupilDtoById(3L);
         return Arrays.asList(pupilDto, pupilDto2, pupilDto3);
     }
 }

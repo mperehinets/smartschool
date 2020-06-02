@@ -2,7 +2,6 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.ScheduleDto;
 import com.mper.smartschool.dto.mapper.ScheduleMapper;
-import com.mper.smartschool.entity.Schedule;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.exception.TeacherIsBusyException;
 import com.mper.smartschool.repository.ScheduleRepo;
@@ -28,7 +27,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @PreAuthorize("hasRole('ADMIN')")
     public ScheduleDto create(ScheduleDto scheduleDto) {
         canTeacherHoldLesson(scheduleDto);
-        ScheduleDto result = scheduleMapper.toDto(scheduleRepo.save(scheduleMapper.toEntity(scheduleDto)));
+        var result = scheduleMapper.toDto(scheduleRepo.save(scheduleMapper.toEntity(scheduleDto)));
         log.info("IN create - schedule: {} successfully created", result);
         return result;
     }
@@ -38,14 +37,14 @@ public class ScheduleServiceImpl implements ScheduleService {
     public ScheduleDto update(ScheduleDto scheduleDto) {
         findById(scheduleDto.getId());
         canTeacherHoldLesson(scheduleDto);
-        ScheduleDto result = scheduleMapper.toDto(scheduleRepo.save(scheduleMapper.toEntity(scheduleDto)));
+        var result = scheduleMapper.toDto(scheduleRepo.save(scheduleMapper.toEntity(scheduleDto)));
         log.info("IN update - schedule: {} successfully updated", result);
         return result;
     }
 
     @Override
     public Collection<ScheduleDto> findAll() {
-        Collection<ScheduleDto> result = scheduleRepo.findAll()
+        var result = scheduleRepo.findAll()
                 .stream()
                 .map(scheduleMapper::toDto)
                 .collect(Collectors.toList());
@@ -55,7 +54,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public ScheduleDto findById(Long id) {
-        ScheduleDto result = scheduleMapper.toDto(scheduleRepo.findById(id)
+        var result = scheduleMapper.toDto(scheduleRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("ScheduleNotFoundException.byId", id)));
         log.info("IN findById - schedule: {} found by id: {}", result, id);
         return result;
@@ -71,7 +70,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public ScheduleDto findLastByClassId(Long classId) {
-        ScheduleDto result = scheduleMapper.toDto(scheduleRepo.findFirstBySchoolClassIdOrderByDateDesc(classId));
+        var result = scheduleMapper.toDto(scheduleRepo.findLastByClassId(classId));
         log.info("IN findLastByClassId - schedule: {} found", result);
         return result;
     }
@@ -79,17 +78,17 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public Collection<ScheduleDto> updateAll(Collection<ScheduleDto> schedulesDto) {
-        schedulesDto.forEach(schedule -> {
-            ScheduleDto foundScheduleDto = findById(schedule.getId());
-            if (!foundScheduleDto.equals(schedule)) {
-                canTeacherHoldLesson(schedule);
+        schedulesDto.forEach(scheduleDto -> {
+            var foundScheduleDto = findById(scheduleDto.getId());
+            if (!foundScheduleDto.equals(scheduleDto)) {
+                canTeacherHoldLesson(scheduleDto);
             }
         });
-        Collection<Schedule> schedules = schedulesDto
+        var schedules = schedulesDto
                 .stream()
                 .map(scheduleMapper::toEntity)
                 .collect(Collectors.toList());
-        Collection<ScheduleDto> result = scheduleRepo.saveAll(schedules)
+        var result = scheduleRepo.saveAll(schedules)
                 .stream()
                 .map(scheduleMapper::toDto)
                 .collect(Collectors.toList());
@@ -99,7 +98,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Collection<ScheduleDto> findByClassIdAndDate(Long classId, LocalDate date) {
-        Collection<ScheduleDto> result = scheduleRepo.findBySchoolClassIdAndDate(classId, date)
+        var result = scheduleRepo.findBySchoolClassIdAndDate(classId, date)
                 .stream()
                 .map(scheduleMapper::toDto)
                 .collect(Collectors.toList());
@@ -109,7 +108,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Boolean canTeacherHoldLesson(Long teacherId, LocalDate date, Integer lessonNumber) {
-        Schedule schedule = scheduleRepo.findByTeachersSubjectTeacherIdAndDateAndLessonNumber(teacherId,
+        var schedule = scheduleRepo.findByTeacherIdAndDateAndLessonNumber(teacherId,
                 date,
                 lessonNumber);
         Boolean result = schedule == null;

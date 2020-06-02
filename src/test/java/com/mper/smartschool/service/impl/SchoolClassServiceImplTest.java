@@ -19,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -40,7 +39,7 @@ public class SchoolClassServiceImplTest {
     @Mock
     private ScheduleRepo scheduleRepo;
 
-    private SchoolClassMapper schoolClassMapper = new SchoolClassMapperImpl();
+    private final SchoolClassMapper schoolClassMapper = new SchoolClassMapperImpl();
 
     private SchoolClassServiceImpl schoolClassService;
 
@@ -57,17 +56,14 @@ public class SchoolClassServiceImplTest {
         schoolClassDto.setId(null);
         schoolClassDto.setInitial(null);
 
-        LocalDate now = LocalDate.now();
-        String currentSeason = now.getYear() + "-" + (now.getYear() + 1);
-
-        SchoolClass lastSchoolClass = schoolClassMapper.toEntity(schoolClassDto);
+        var lastSchoolClass = schoolClassMapper.toEntity(schoolClassDto);
         lastSchoolClass.setInitial(SchoolClassInitial.A);
         lastSchoolClass.setId(5L);
         Mockito.when(schoolClassRepo
-                .findTop1ByNumberOrderByInitialDesc(schoolClassDto.getNumber()))
+                .findLastByNumber(schoolClassDto.getNumber()))
                 .thenReturn(lastSchoolClass);
 
-        SchoolClass schoolClass = schoolClassMapper.toEntity(schoolClassDto);
+        var schoolClass = schoolClassMapper.toEntity(schoolClassDto);
         schoolClass.setInitial(SchoolClassInitial.B);
         Mockito.when(schoolClassRepo.save(schoolClass)).thenAnswer(invocationOnMock -> {
             SchoolClass returnedSchoolClass = invocationOnMock.getArgument(0);
@@ -75,7 +71,7 @@ public class SchoolClassServiceImplTest {
             return returnedSchoolClass;
         });
 
-        SchoolClassDto result = schoolClassService.create(schoolClassDto);
+        var result = schoolClassService.create(schoolClassDto);
 
         assertNotNull(result.getId());
 
@@ -89,13 +85,11 @@ public class SchoolClassServiceImplTest {
     public void create_throwSchoolFilledByClassesException_ifSchoolFilledByClasses() {
         schoolClassDto.setId(null);
 
-        LocalDate now = LocalDate.now();
-
-        SchoolClass lastSchoolClass = schoolClassMapper.toEntity(schoolClassDto);
+        var lastSchoolClass = schoolClassMapper.toEntity(schoolClassDto);
         lastSchoolClass.setInitial(SchoolClassInitial.F);
         lastSchoolClass.setId(5L);
         Mockito.when(schoolClassRepo
-                .findTop1ByNumberOrderByInitialDesc(schoolClassDto.getNumber()))
+                .findLastByNumber(schoolClassDto.getNumber()))
                 .thenReturn(lastSchoolClass);
 
         assertThrows(SchoolFilledByClassesException.class, () -> schoolClassService.create(schoolClassDto));
@@ -103,12 +97,12 @@ public class SchoolClassServiceImplTest {
 
     @Test
     public void update_success() {
-        SchoolClass schoolClass = schoolClassMapper.toEntity(schoolClassDto);
+        var schoolClass = schoolClassMapper.toEntity(schoolClassDto);
         Mockito.when(schoolClassRepo.findById(schoolClassDto.getId())).thenReturn(Optional.of(schoolClass));
 
         Mockito.when(schoolClassRepo.save(schoolClass)).thenReturn(schoolClass);
 
-        SchoolClassDto result = schoolClassService.update(schoolClassDto);
+        var result = schoolClassService.update(schoolClassDto);
 
         assertEquals(result, schoolClassDto);
     }
@@ -122,16 +116,16 @@ public class SchoolClassServiceImplTest {
 
     @Test
     public void findAll_success() {
-        Collection<SchoolClassDto> schoolClassesDto = getCollectionOfSchoolClassesDto();
+        var schoolClassesDto = getCollectionOfSchoolClassesDto();
         Mockito.when(schoolClassRepo.findAll())
                 .thenReturn(schoolClassesDto.stream().map(schoolClassMapper::toEntity).collect(Collectors.toList()));
 
-        for (SchoolClassDto schoolClassDto : schoolClassesDto) {
-            Mockito.when(scheduleRepo.findFirstBySchoolClassIdOrderByDateDesc(schoolClassDto.getId()))
+        for (var schoolClassDto : schoolClassesDto) {
+            Mockito.when(scheduleRepo.findLastByClassId(schoolClassDto.getId()))
                     .thenReturn(new Schedule());
         }
 
-        Collection<SchoolClassDto> result = schoolClassService.findAll();
+        var result = schoolClassService.findAll();
 
         assertEquals(result, schoolClassesDto
                 .stream()
@@ -142,10 +136,10 @@ public class SchoolClassServiceImplTest {
 
     @Test
     public void findById_success() {
-        SchoolClass schoolClass = schoolClassMapper.toEntity(schoolClassDto);
+        var schoolClass = schoolClassMapper.toEntity(schoolClassDto);
         Mockito.when(schoolClassRepo.findById(schoolClassDto.getId())).thenReturn(Optional.of(schoolClass));
 
-        SchoolClassDto result = schoolClassService.findById(schoolClassDto.getId());
+        var result = schoolClassService.findById(schoolClassDto.getId());
 
         assertEquals(result, schoolClassDto);
     }
@@ -158,7 +152,7 @@ public class SchoolClassServiceImplTest {
 
     @Test
     public void deleteById_success() {
-        SchoolClass schoolClass = schoolClassMapper.toEntity(schoolClassDto);
+        var schoolClass = schoolClassMapper.toEntity(schoolClassDto);
         Mockito.when(schoolClassRepo.findById(schoolClassDto.getId())).thenReturn(Optional.of(schoolClass));
 
         Mockito.doNothing().when(schoolClassRepo).deleteById(schoolClass.getId());
@@ -173,8 +167,8 @@ public class SchoolClassServiceImplTest {
     }
 
     private Collection<SchoolClassDto> getCollectionOfSchoolClassesDto() {
-        SchoolClassDto schoolClassDto2 = DtoDirector.makeTestSchoolClassDtoById(2L);
-        SchoolClassDto schoolClassDto3 = DtoDirector.makeTestSchoolClassDtoById(3L);
+        var schoolClassDto2 = DtoDirector.makeTestSchoolClassDtoById(2L);
+        var schoolClassDto3 = DtoDirector.makeTestSchoolClassDtoById(3L);
         return Arrays.asList(schoolClassDto, schoolClassDto2, schoolClassDto3);
     }
 }

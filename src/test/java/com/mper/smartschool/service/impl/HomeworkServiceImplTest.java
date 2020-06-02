@@ -43,14 +43,14 @@ public class HomeworkServiceImplTest {
     @Test
     public void create_success() {
         homeworkDto.setId(null);
-        Homework homework = homeworkMapper.toEntity(homeworkDto);
+        var homework = homeworkMapper.toEntity(homeworkDto);
         Mockito.when(homeworkRepo.save(homework)).thenAnswer(invocationOnMock -> {
             Homework returnedHomework = invocationOnMock.getArgument(0);
             returnedHomework.setId(1L);
             return returnedHomework;
         });
 
-        HomeworkDto result = homeworkService.create(homeworkDto);
+        var result = homeworkService.create(homeworkDto);
 
         assertNotNull(result.getId());
 
@@ -59,12 +59,12 @@ public class HomeworkServiceImplTest {
 
     @Test
     public void update_success() {
-        Homework homework = homeworkMapper.toEntity(homeworkDto);
+        var homework = homeworkMapper.toEntity(homeworkDto);
         Mockito.when(homeworkRepo.findById(homeworkDto.getId())).thenReturn(Optional.of(homework));
 
         Mockito.when(homeworkRepo.save(homework)).thenReturn(homework);
 
-        HomeworkDto result = homeworkService.update(homeworkDto);
+        var result = homeworkService.update(homeworkDto);
 
         assertEquals(result, homeworkDto);
     }
@@ -78,21 +78,21 @@ public class HomeworkServiceImplTest {
 
     @Test
     public void findAll_success() {
-        Collection<HomeworkDto> homeworksDto = getCollectionOfHomeworksDto();
+        var homeworksDto = getCollectionOfHomeworksDto();
         Mockito.when(homeworkRepo.findAll())
                 .thenReturn(homeworksDto.stream().map(homeworkMapper::toEntity).collect(Collectors.toList()));
 
-        Collection<HomeworkDto> result = homeworkService.findAll();
+        var result = homeworkService.findAll();
 
         assertEquals(result, homeworksDto);
     }
 
     @Test
     public void findById_success() {
-        Homework homework = homeworkMapper.toEntity(homeworkDto);
+        var homework = homeworkMapper.toEntity(homeworkDto);
         Mockito.when(homeworkRepo.findById(homeworkDto.getId())).thenReturn(Optional.of(homework));
 
-        HomeworkDto result = homeworkService.findById(homeworkDto.getId());
+        var result = homeworkService.findById(homeworkDto.getId());
 
         assertEquals(result, homeworkDto);
     }
@@ -105,7 +105,7 @@ public class HomeworkServiceImplTest {
 
     @Test
     public void deleteById_success() {
-        Homework homework = homeworkMapper.toEntity(homeworkDto);
+        var homework = homeworkMapper.toEntity(homeworkDto);
         Mockito.when(homeworkRepo.findById(homeworkDto.getId())).thenReturn(Optional.of(homework));
         Mockito.doNothing().when(homeworkRepo).deleteById(homeworkDto.getId());
         assertDoesNotThrow(() -> homeworkService.deleteById(homeworkDto.getId()));
@@ -118,8 +118,8 @@ public class HomeworkServiceImplTest {
     }
 
     private Collection<HomeworkDto> getCollectionOfHomeworksDto() {
-        HomeworkDto homeworkDto2 = DtoDirector.makeTestHomeworkDtoById(2L);
-        HomeworkDto homeworkDto3 = DtoDirector.makeTestHomeworkDtoById(3L);
+        var homeworkDto2 = DtoDirector.makeTestHomeworkDtoById(2L);
+        var homeworkDto3 = DtoDirector.makeTestHomeworkDtoById(3L);
         return Arrays.asList(homeworkDto, homeworkDto2, homeworkDto3);
     }
 }

@@ -5,7 +5,6 @@ import lombok.SneakyThrows;
 import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -40,13 +39,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     messageSource.getMessage("JWT.missing", null, MessageConfig.resolveLocale(req)));
             return;
         }
-        UserPrincipal parsedUser = jwtTokenProvider.parseToken(token);
+        var parsedUser = jwtTokenProvider.parseToken(token);
         if (parsedUser == null) {
             res.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                     messageSource.getMessage("JWT.invalid", null, MessageConfig.resolveLocale(req)));
             return;
         }
-        Authentication authentication = new UsernamePasswordAuthenticationToken(parsedUser,
+        var authentication = new UsernamePasswordAuthenticationToken(parsedUser,
                 null,
                 parsedUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);

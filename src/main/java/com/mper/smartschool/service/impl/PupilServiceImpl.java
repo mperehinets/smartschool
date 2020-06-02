@@ -2,7 +2,6 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.PupilDto;
 import com.mper.smartschool.dto.mapper.PupilMapper;
-import com.mper.smartschool.entity.Pupil;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.PupilRepo;
@@ -35,37 +34,39 @@ public class PupilServiceImpl implements PupilService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public PupilDto create(PupilDto pupilDto) {
-        Pupil pupil = pupilMapper.toEntity(pupilDto);
+        var pupil = pupilMapper.toEntity(pupilDto);
         pupil.setRoles(Collections.singleton(roleRepo.findPupilRole()));
         pupil.setStatus(EntityStatus.ACTIVE);
         pupil.setPassword(passwordEncoder.encode(pupilDto.getPassword()));
-        avatarStorageService.resolveAvatar(pupilDto);
+        pupil.setAvatarName(avatarStorageService.resolveAvatar(pupil.getAvatarName()));
 
-        PupilDto result = pupilMapper.toDto(pupilRepo.save(pupil));
+        var result = pupilMapper.toDto(pupilRepo.save(pupil));
 
         emailService.sendLoginDetails(pupilDto);
 
         log.info("IN create - pupil: {} successfully created", result);
-
         return result;
     }
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public PupilDto update(PupilDto pupilDto) {
-        PupilDto foundPupil = findById(pupilDto.getId());
-        pupilDto.setEmail(foundPupil.getEmail());
-        pupilDto.setRoles(foundPupil.getRoles());
-        pupilDto.setStatus(foundPupil.getStatus());
-        avatarStorageService.resolveAvatar(pupilDto);
-        PupilDto result = pupilMapper.toDto(pupilRepo.save(pupilMapper.toEntity(pupilDto)));
+        var foundPupilDto = findById(pupilDto.getId());
+        var pupil = pupilMapper.toEntity(pupilDto);
+        pupil.setEmail(foundPupilDto.getEmail());
+        pupil.setRoles(foundPupilDto.getRoles());
+        pupil.setStatus(foundPupilDto.getStatus());
+        pupil.setAvatarName(avatarStorageService.resolveAvatar(pupil.getAvatarName()));
+
+        var result = pupilMapper.toDto(pupilRepo.save(pupil));
+
         log.info("IN update - pupil: {} successfully updated", result);
         return result;
     }
 
     @Override
     public Collection<PupilDto> findAll() {
-        Collection<PupilDto> result = pupilRepo.findAll()
+        var result = pupilRepo.findAll()
                 .stream()
                 .map(pupilMapper::toDto)
                 .collect(Collectors.toList());
@@ -75,7 +76,7 @@ public class PupilServiceImpl implements PupilService {
 
     @Override
     public PupilDto findById(Long id) {
-        PupilDto result = pupilMapper.toDto(pupilRepo.findById(id)
+        var result = pupilMapper.toDto(pupilRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("PupilNotFoundException.byId", id)));
         log.info("IN findById - pupil: {} found by id: {}", result, id);
         return result;
@@ -84,7 +85,7 @@ public class PupilServiceImpl implements PupilService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteById(Long id) {
-        PupilDto pupilDto = findById(id);
+        var pupilDto = findById(id);
         pupilDto.setStatus(EntityStatus.DELETED);
         pupilRepo.save(pupilMapper.toEntity(pupilDto));
         log.info("IN deleteById - pupil with id: {} successfully deleted", id);

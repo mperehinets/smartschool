@@ -47,9 +47,10 @@ public class UserServiceImplTest {
     @Mock
     private AvatarStorageService avatarStorageService;
 
-    private final UserMapper userMapper = new UserMapperImpl();
     @Mock
     private EmailService emailService;
+
+    private final UserMapper userMapper = new UserMapperImpl();
 
     private UserServiceImpl userService;
 
@@ -69,7 +70,7 @@ public class UserServiceImplTest {
     @SneakyThrows
     @Test
     public void createUser_success() {
-        Role roleUser = Role.builder()
+        var roleUser = Role.builder()
                 .id(1L)
                 .name("ROLE_USER")
                 .status(EntityStatus.ACTIVE)
@@ -82,7 +83,7 @@ public class UserServiceImplTest {
 
         userDto.setId(null);
         userDto.setStatus(null);
-        User user = userMapper.toEntity(userDto);
+        var user = userMapper.toEntity(userDto);
         user.setRoles(Collections.singleton(roleUser));
         user.setStatus(EntityStatus.ACTIVE);
         user.setPassword(encodedPassword);
@@ -92,7 +93,7 @@ public class UserServiceImplTest {
             return returnedUser;
         });
 
-        UserDto result = userService.create(userDto);
+        var result = userService.create(userDto);
 
         assertNotNull(result.getId());
 
@@ -110,14 +111,14 @@ public class UserServiceImplTest {
 
     @Test
     public void update_success() {
-        User user = userMapper.toEntity(userDto);
+        var user = userMapper.toEntity(userDto);
         Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
 
         Mockito.when(userRepo.save(user)).thenReturn(user);
 
         Mockito.when(avatarStorageService.resolveAvatar(userDto.getAvatarName())).thenReturn(userDto.getAvatarName());
 
-        UserDto result = userService.update(userDto);
+        var result = userService.update(userDto);
 
         assertThat(result).isEqualToIgnoringGivenFields(userDto, "email", "password");
     }
@@ -131,22 +132,22 @@ public class UserServiceImplTest {
 
     @Test
     public void findAll_success() {
-        Collection<UserDto> usersDto = getCollectionOfUsersDto();
+        var usersDto = getCollectionOfUsersDto();
         System.out.println(usersDto.toString());
         Mockito.when(userRepo.findAll())
                 .thenReturn(usersDto.stream().map(userMapper::toEntity).collect(Collectors.toList()));
 
-        Collection<UserDto> result = userService.findAll();
+        var result = userService.findAll();
 
         assertEquals(result, usersDto);
     }
 
     @Test
     public void findById_success() {
-        User user = userMapper.toEntity(userDto);
+        var user = userMapper.toEntity(userDto);
         Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
 
-        UserDto result = userService.findById(userDto.getId());
+        var result = userService.findById(userDto.getId());
 
         assertEquals(result, userDto);
     }
@@ -159,10 +160,10 @@ public class UserServiceImplTest {
 
     @Test
     public void changeStatusById_success() {
-        User user = userMapper.toEntity(userDto);
+        var user = userMapper.toEntity(userDto);
         Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
 
-        ChangeStatusDto changeStatusDto = ChangeStatusDto.builder()
+        var changeStatusDto = ChangeStatusDto.builder()
                 .id(user.getId())
                 .newStatus(EntityStatus.EXCLUDED)
                 .build();
@@ -173,7 +174,7 @@ public class UserServiceImplTest {
 
     @Test
     public void changeStatusById_throwNotFoundException_ifUserNotFound() {
-        ChangeStatusDto changeStatusDto = ChangeStatusDto.builder()
+        var changeStatusDto = ChangeStatusDto.builder()
                 .id(Long.MAX_VALUE)
                 .newStatus(EntityStatus.EXCLUDED)
                 .build();
@@ -183,10 +184,10 @@ public class UserServiceImplTest {
 
     @Test
     public void findByEmail_success() {
-        User user = userMapper.toEntity(userDto);
+        var user = userMapper.toEntity(userDto);
         Mockito.when(userRepo.findByEmail(userDto.getEmail())).thenReturn(Optional.of(user));
 
-        UserDto result = userService.findByEmail(userDto.getEmail());
+        var result = userService.findByEmail(userDto.getEmail());
 
         assertEquals(result, userDto);
     }
@@ -200,7 +201,7 @@ public class UserServiceImplTest {
 
     @Test
     public void giveAdminById_success() {
-        Role roleAdmin = Role.builder()
+        var roleAdmin = Role.builder()
                 .id(1L)
                 .name("ROLE_ADMIN")
                 .status(EntityStatus.ACTIVE)
@@ -208,11 +209,11 @@ public class UserServiceImplTest {
         Mockito.when(roleRepo.findAdminRole()).thenReturn(roleAdmin);
 
         userDto.getRoles().add(roleAdmin);
-        User user = userMapper.toEntity(userDto);
+        var user = userMapper.toEntity(userDto);
         Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
         Mockito.when(userRepo.save(user)).thenReturn(user);
 
-        UserDto result = userService.giveAdminById(userDto.getId());
+        var result = userService.giveAdminById(userDto.getId());
 
         assertEquals(userDto, result);
     }
@@ -226,7 +227,7 @@ public class UserServiceImplTest {
 
     @Test
     public void takeAdminAwayById_success() {
-        Role roleAdmin = Role.builder()
+        var roleAdmin = Role.builder()
                 .id(1L)
                 .name("ROLE_ADMIN")
                 .status(EntityStatus.ACTIVE)
@@ -234,11 +235,11 @@ public class UserServiceImplTest {
         Mockito.when(roleRepo.findAdminRole()).thenReturn(roleAdmin);
 
         userDto.getRoles().remove(roleAdmin);
-        User user = userMapper.toEntity(userDto);
+        var user = userMapper.toEntity(userDto);
         Mockito.when(userRepo.findById(userDto.getId())).thenReturn(Optional.of(user));
         Mockito.when(userRepo.save(user)).thenReturn(user);
 
-        UserDto result = userService.takeAdminAwayById(userDto.getId());
+        var result = userService.takeAdminAwayById(userDto.getId());
         System.out.println(result);
         assertEquals(userDto, result);
     }
@@ -251,8 +252,8 @@ public class UserServiceImplTest {
     }
 
     private Collection<UserDto> getCollectionOfUsersDto() {
-        UserDto userDto2 = DtoDirector.makeTestUserDtoById(2L);
-        UserDto userDto3 = DtoDirector.makeTestUserDtoById(3L);
+        var userDto2 = DtoDirector.makeTestUserDtoById(2L);
+        var userDto3 = DtoDirector.makeTestUserDtoById(3L);
         return Arrays.asList(userDto, userDto2, userDto3);
     }
 }

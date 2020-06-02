@@ -28,7 +28,7 @@ public class SignedPersonServiceImplTest {
     @Mock
     private SignedPersonRepo signedPersonRepo;
 
-    private SignedPersonMapper signedPersonMapper = new SignedPersonMapperImpl();
+    private final SignedPersonMapper signedPersonMapper = new SignedPersonMapperImpl();
 
     private SignedPersonServiceImpl signedPersonService;
 
@@ -43,7 +43,7 @@ public class SignedPersonServiceImplTest {
     @Test
     public void create_success() {
         signedPersonDto.setId(null);
-        SignedPerson signedPerson = signedPersonMapper.toEntity(signedPersonDto);
+        var signedPerson = signedPersonMapper.toEntity(signedPersonDto);
         Mockito.when(signedPersonRepo.save(signedPerson)).thenAnswer(invocationOnMock -> {
             SignedPerson returnedSignedPerson = invocationOnMock.getArgument(0);
             returnedSignedPerson.setId(1L);
@@ -59,7 +59,7 @@ public class SignedPersonServiceImplTest {
 
     @Test
     public void update_success() {
-        SignedPerson signedPerson = signedPersonMapper.toEntity(signedPersonDto);
+        var signedPerson = signedPersonMapper.toEntity(signedPersonDto);
         Mockito.when(signedPersonRepo.findById(signedPersonDto.getId())).thenReturn(Optional.of(signedPerson));
 
         Mockito.when(signedPersonRepo.save(signedPerson)).thenReturn(signedPerson);
@@ -78,21 +78,21 @@ public class SignedPersonServiceImplTest {
 
     @Test
     public void findAll_success() {
-        Collection<SignedPersonDto> signedPersonsDto = getCollectionOfSignedPersonsDto();
+        var signedPersonsDto = getCollectionOfSignedPersonsDto();
         Mockito.when(signedPersonRepo.findAll())
                 .thenReturn(signedPersonsDto.stream().map(signedPersonMapper::toEntity).collect(Collectors.toList()));
 
-        Collection<SignedPersonDto> result = signedPersonService.findAll();
+        var result = signedPersonService.findAll();
 
         assertEquals(result, signedPersonsDto);
     }
 
     @Test
     public void findById_success() {
-        SignedPerson signedPerson = signedPersonMapper.toEntity(signedPersonDto);
+        var signedPerson = signedPersonMapper.toEntity(signedPersonDto);
         Mockito.when(signedPersonRepo.findById(signedPersonDto.getId())).thenReturn(Optional.of(signedPerson));
 
-        SignedPersonDto result = signedPersonService.findById(signedPersonDto.getId());
+        var result = signedPersonService.findById(signedPersonDto.getId());
 
         assertEquals(result, signedPersonDto);
     }
@@ -105,7 +105,7 @@ public class SignedPersonServiceImplTest {
 
     @Test
     public void deleteById_success() {
-        SignedPerson signedPerson = signedPersonMapper.toEntity(signedPersonDto);
+        var signedPerson = signedPersonMapper.toEntity(signedPersonDto);
         Mockito.when(signedPersonRepo.findById(signedPersonDto.getId())).thenReturn(Optional.of(signedPerson));
         Mockito.doNothing().when(signedPersonRepo).deleteById(signedPersonDto.getId());
         assertDoesNotThrow(() -> signedPersonService.deleteById(signedPersonDto.getId()));
@@ -118,8 +118,8 @@ public class SignedPersonServiceImplTest {
     }
 
     private Collection<SignedPersonDto> getCollectionOfSignedPersonsDto() {
-        SignedPersonDto signedPersonDto2 = DtoDirector.makeTestSignedPersonDtoById(2L);
-        SignedPersonDto signedPersonDto3 = DtoDirector.makeTestSignedPersonDtoById(3L);
-        return Arrays.asList(signedPersonDto, signedPersonDto2);
+        var signedPersonDto2 = DtoDirector.makeTestSignedPersonDtoById(2L);
+        var signedPersonDto3 = DtoDirector.makeTestSignedPersonDtoById(3L);
+        return Arrays.asList(signedPersonDto, signedPersonDto2, signedPersonDto3);
     }
 }

@@ -24,7 +24,7 @@ public class SignedPersonServiceImpl implements SignedPersonService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public SignedPersonDto create(SignedPersonDto signedPersonDto) {
-        SignedPersonDto result = signedPersonMapper.toDto(signedPersonRepo
+        var result = signedPersonMapper.toDto(signedPersonRepo
                 .save(signedPersonMapper.toEntity(signedPersonDto)));
         log.info("IN create - signedPerson: {} successfully created", result);
         return result;
@@ -34,7 +34,7 @@ public class SignedPersonServiceImpl implements SignedPersonService {
     @PreAuthorize("hasRole('ADMIN')")
     public SignedPersonDto update(SignedPersonDto signedPersonDto) {
         findById(signedPersonDto.getId());
-        SignedPersonDto result = signedPersonMapper.toDto(signedPersonRepo
+        var result = signedPersonMapper.toDto(signedPersonRepo
                 .save(signedPersonMapper.toEntity(signedPersonDto)));
         log.info("IN update - signedPerson: {} successfully updated", result);
         return result;
@@ -42,7 +42,7 @@ public class SignedPersonServiceImpl implements SignedPersonService {
 
     @Override
     public Collection<SignedPersonDto> findAll() {
-        Collection<SignedPersonDto> result = signedPersonRepo.findAll()
+        var result = signedPersonRepo.findAll()
                 .stream()
                 .map(signedPersonMapper::toDto)
                 .collect(Collectors.toList());
@@ -52,7 +52,7 @@ public class SignedPersonServiceImpl implements SignedPersonService {
 
     @Override
     public SignedPersonDto findById(Long id) {
-        SignedPersonDto result = signedPersonMapper.toDto(signedPersonRepo.findById(id)
+        var result = signedPersonMapper.toDto(signedPersonRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("SignedPersonNotFoundException.byId", id)));
         log.info("IN findById - signedPerson: {} found by id: {}", result, id);
         return result;

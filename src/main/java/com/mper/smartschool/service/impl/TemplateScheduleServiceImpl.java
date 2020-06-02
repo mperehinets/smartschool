@@ -2,7 +2,6 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.TemplateScheduleDto;
 import com.mper.smartschool.dto.mapper.TemplateScheduleMapper;
-import com.mper.smartschool.entity.TemplateSchedule;
 import com.mper.smartschool.exception.DayFilledByLessonsException;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.TemplateScheduleRepo;
@@ -12,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -27,14 +25,13 @@ public class TemplateScheduleServiceImpl implements TemplateScheduleService {
 
     @Override
     public TemplateScheduleDto create(TemplateScheduleDto templateScheduleDto) {
-        int classNumber = templateScheduleDto.getClassNumber();
-        DayOfWeek dayOfWeek = templateScheduleDto.getDayOfWeek();
-        int countLessons = templateScheduleRepo.countByClassNumberAndDayOfWeek(classNumber, dayOfWeek);
+        int countLessons = templateScheduleRepo.countByClassNumberAndDayOfWeek(templateScheduleDto.getClassNumber(),
+                templateScheduleDto.getDayOfWeek());
         if (countLessons >= 10) {
-            throw new DayFilledByLessonsException(dayOfWeek);
+            throw new DayFilledByLessonsException(templateScheduleDto.getDayOfWeek());
         }
 
-        TemplateScheduleDto result = templateScheduleMapper.toDto(templateScheduleRepo
+        var result = templateScheduleMapper.toDto(templateScheduleRepo
                 .save(templateScheduleMapper.toEntity(templateScheduleDto)));
         log.info("IN create - templateSchedule: {} successfully created", result);
         return result;
@@ -43,7 +40,7 @@ public class TemplateScheduleServiceImpl implements TemplateScheduleService {
     @Override
     public TemplateScheduleDto update(TemplateScheduleDto templateScheduleDto) {
         findById(templateScheduleDto.getId());
-        TemplateScheduleDto result = templateScheduleMapper.toDto(templateScheduleRepo
+        var result = templateScheduleMapper.toDto(templateScheduleRepo
                 .save(templateScheduleMapper.toEntity(templateScheduleDto)));
         log.info("IN update - templateSchedule: {} successfully updated", result);
         return result;
@@ -51,7 +48,7 @@ public class TemplateScheduleServiceImpl implements TemplateScheduleService {
 
     @Override
     public Collection<TemplateScheduleDto> findAll() {
-        Collection<TemplateScheduleDto> result = templateScheduleRepo.findAll()
+        var result = templateScheduleRepo.findAll()
                 .stream()
                 .map(templateScheduleMapper::toDto)
                 .collect(Collectors.toList());
@@ -61,7 +58,7 @@ public class TemplateScheduleServiceImpl implements TemplateScheduleService {
 
     @Override
     public TemplateScheduleDto findById(Long id) {
-        TemplateScheduleDto result = templateScheduleMapper.toDto(templateScheduleRepo.findById(id)
+        var result = templateScheduleMapper.toDto(templateScheduleRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("TemplateScheduleNotFoundException.byId", id)));
         log.info("IN findById - templateSchedule: {} found by id: {}", result, id);
         return result;
@@ -76,7 +73,7 @@ public class TemplateScheduleServiceImpl implements TemplateScheduleService {
 
     @Override
     public Collection<TemplateScheduleDto> findByClassNumber(Integer classNumber) {
-        Collection<TemplateScheduleDto> result = templateScheduleRepo.findByClassNumber(classNumber)
+        var result = templateScheduleRepo.findByClassNumber(classNumber)
                 .stream()
                 .map(templateScheduleMapper::toDto)
                 .collect(Collectors.toList());
@@ -94,11 +91,11 @@ public class TemplateScheduleServiceImpl implements TemplateScheduleService {
     @Override
     public Collection<TemplateScheduleDto> updateAll(Collection<TemplateScheduleDto> templatesScheduleDto) {
         templatesScheduleDto.forEach(item -> findById(item.getId()));
-        Collection<TemplateSchedule> templatesSchedule = templatesScheduleDto
+        var templatesSchedule = templatesScheduleDto
                 .stream()
                 .map(templateScheduleMapper::toEntity)
                 .collect(Collectors.toList());
-        Collection<TemplateScheduleDto> result = templateScheduleRepo.saveAll(templatesSchedule)
+        var result = templateScheduleRepo.saveAll(templatesSchedule)
                 .stream()
                 .map(templateScheduleMapper::toDto)
                 .collect(Collectors.toList());

@@ -39,7 +39,7 @@ public class PasswordServiceImpl implements PasswordService {
 
     @Override
     public void resetPasswordWithChecking(ResetPasswordDto resetPasswordDto) {
-        PasswordResetToken passwordResetToken = passwordResetTokenRepo.findByToken(resetPasswordDto.getResetToken())
+        var passwordResetToken = passwordResetTokenRepo.findByToken(resetPasswordDto.getResetToken())
                 .orElseThrow(() -> new NotFoundException("PasswordResetTokenNotFound.byToken",
                         resetPasswordDto.getResetToken()));
         if (passwordResetToken.getExpiryDate().isAfter(LocalDateTime.now())) {
@@ -55,8 +55,8 @@ public class PasswordServiceImpl implements PasswordService {
 
     @Override
     public void sendResetToken(String email) {
-        User user = findUserByEmail(email);
-        PasswordResetToken passwordResetToken = PasswordResetToken.builder()
+        var user = findUserByEmail(email);
+        var passwordResetToken = PasswordResetToken.builder()
                 .token(UUID.randomUUID().toString())
                 .user(user)
                 .expiryDate(LocalDateTime.now().plusMinutes(PasswordResetToken.EXPIRATION))

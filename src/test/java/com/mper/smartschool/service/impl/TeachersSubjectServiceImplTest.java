@@ -29,7 +29,7 @@ public class TeachersSubjectServiceImplTest {
     @Mock
     private TeachersSubjectRepo teachersSubjectRepo;
 
-    private TeachersSubjectMapper teachersSubjectMapper = new TeachersSubjectMapperImpl();
+    private final TeachersSubjectMapper teachersSubjectMapper = new TeachersSubjectMapperImpl();
 
     private TeachersSubjectServiceImpl teachersSubjectService;
 
@@ -44,7 +44,7 @@ public class TeachersSubjectServiceImplTest {
     @Test
     public void create_success() {
         teachersSubjectDto.setId(null);
-        TeachersSubject teachersSubject = teachersSubjectMapper.toEntity(teachersSubjectDto);
+        var teachersSubject = teachersSubjectMapper.toEntity(teachersSubjectDto);
 
         Mockito.when(teachersSubjectRepo.findByTeacherIdAndSubjectIdAndStatuses(teachersSubject.getTeacher().getId(),
                 teachersSubject.getSubject().getId(),
@@ -58,7 +58,7 @@ public class TeachersSubjectServiceImplTest {
             return returnedTeachersSubject;
         });
 
-        TeachersSubjectDto result = teachersSubjectService.create(teachersSubjectDto);
+        var result = teachersSubjectService.create(teachersSubjectDto);
 
         assertNotNull(result.getId());
 
@@ -68,22 +68,22 @@ public class TeachersSubjectServiceImplTest {
 
     @Test
     public void findAll_success() {
-        Collection<TeachersSubjectDto> teachersSubjectsDto = getCollectionOfTeachersSubjectsDto();
+        var teachersSubjectsDto = getCollectionOfTeachersSubjectsDto();
         Mockito.when(teachersSubjectRepo.findAll())
                 .thenReturn(teachersSubjectsDto.stream()
                         .map(teachersSubjectMapper::toEntity).collect(Collectors.toList()));
 
-        Collection<TeachersSubjectDto> result = teachersSubjectService.findAll();
+        var result = teachersSubjectService.findAll();
 
         assertEquals(result, teachersSubjectsDto);
     }
 
     @Test
     public void findById_success() {
-        TeachersSubject teachersSubject = teachersSubjectMapper.toEntity(teachersSubjectDto);
+        var teachersSubject = teachersSubjectMapper.toEntity(teachersSubjectDto);
         Mockito.when(teachersSubjectRepo.findById(teachersSubjectDto.getId())).thenReturn(Optional.of(teachersSubject));
 
-        TeachersSubjectDto result = teachersSubjectService.findById(teachersSubjectDto.getId());
+        var result = teachersSubjectService.findById(teachersSubjectDto.getId());
 
         assertEquals(result, teachersSubjectDto);
     }
@@ -96,7 +96,7 @@ public class TeachersSubjectServiceImplTest {
 
     @Test
     public void delete_success() {
-        TeachersSubject teachersSubject = teachersSubjectMapper.toEntity(teachersSubjectDto);
+        var teachersSubject = teachersSubjectMapper.toEntity(teachersSubjectDto);
         Long teacherId = teachersSubjectDto.getTeacher().getId();
         Long subjectId = teachersSubjectDto.getSubject().getId();
         Mockito.when(teachersSubjectRepo.findByTeacherIdAndSubjectIdAndStatuses(teacherId,
@@ -108,7 +108,7 @@ public class TeachersSubjectServiceImplTest {
 
         Mockito.when(teachersSubjectRepo.save(teachersSubject)).thenReturn(teachersSubject);
 
-        TeachersSubjectDto result = teachersSubjectService.delete(teacherId, subjectId);
+        var result = teachersSubjectService.delete(teacherId, subjectId);
 
         assertEquals(result.getStatus(), EntityStatus.DELETED);
 
@@ -129,8 +129,8 @@ public class TeachersSubjectServiceImplTest {
     }
 
     private Collection<TeachersSubjectDto> getCollectionOfTeachersSubjectsDto() {
-        TeachersSubjectDto teachersSubjectDto2 = DtoDirector.makeTestTeachersSubjectDtoById(2L);
-        TeachersSubjectDto teachersSubjectDto3 = DtoDirector.makeTestTeachersSubjectDtoById(3L);
+        var teachersSubjectDto2 = DtoDirector.makeTestTeachersSubjectDtoById(2L);
+        var teachersSubjectDto3 = DtoDirector.makeTestTeachersSubjectDtoById(3L);
         return Arrays.asList(teachersSubjectDto, teachersSubjectDto2, teachersSubjectDto3);
     }
 }

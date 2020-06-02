@@ -24,7 +24,7 @@ public class HomeworkServiceImpl implements HomeworkService {
     @Override
     @PreAuthorize("hasRole('TEACHER')")
     public HomeworkDto create(HomeworkDto homeworkDto) {
-        HomeworkDto result = homeworkMapper.toDto(homeworkRepo.save(homeworkMapper.toEntity(homeworkDto)));
+        var result = homeworkMapper.toDto(homeworkRepo.save(homeworkMapper.toEntity(homeworkDto)));
         log.info("IN create - homework: {} successfully created", result);
         return result;
     }
@@ -33,7 +33,7 @@ public class HomeworkServiceImpl implements HomeworkService {
     @PreAuthorize("hasRole('TEACHER')")
     public HomeworkDto update(HomeworkDto homeworkDto) {
         findById(homeworkDto.getId());
-        HomeworkDto result = homeworkMapper.toDto(homeworkRepo.save(homeworkMapper.toEntity(homeworkDto)));
+        var result = homeworkMapper.toDto(homeworkRepo.save(homeworkMapper.toEntity(homeworkDto)));
         log.info("IN update - homework: {} successfully updated", result);
         return result;
     }
@@ -41,7 +41,7 @@ public class HomeworkServiceImpl implements HomeworkService {
 
     @Override
     public Collection<HomeworkDto> findAll() {
-        Collection<HomeworkDto> result = homeworkRepo.findAll()
+        var result = homeworkRepo.findAll()
                 .stream()
                 .map(homeworkMapper::toDto)
                 .collect(Collectors.toList());
@@ -51,7 +51,7 @@ public class HomeworkServiceImpl implements HomeworkService {
 
     @Override
     public HomeworkDto findById(Long id) {
-        HomeworkDto result = homeworkMapper.toDto(homeworkRepo.findById(id)
+        var result = homeworkMapper.toDto(homeworkRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("HomeworkNotFoundException.byId", id)));
         log.info("IN findById - homework: {} found by id: {}", result, id);
         return result;

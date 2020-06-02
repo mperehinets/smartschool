@@ -30,7 +30,7 @@ public class SubjectServiceImplTest {
     @Mock
     private SubjectRepo subjectRepo;
 
-    private SubjectMapper subjectMapper = new SubjectMapperImpl();
+    private final SubjectMapper subjectMapper = new SubjectMapperImpl();
 
     private SubjectServiceImpl subjectService;
 
@@ -46,7 +46,7 @@ public class SubjectServiceImplTest {
     public void create_success() {
         subjectDto.setId(null);
         subjectDto.setStatus(null);
-        Subject subject = subjectMapper.toEntity(subjectDto);
+        var subject = subjectMapper.toEntity(subjectDto);
         subject.setStatus(EntityStatus.ACTIVE);
         Mockito.when(subjectRepo.save(subject)).thenAnswer(invocationOnMock -> {
             Subject returnedSubject = invocationOnMock.getArgument(0);
@@ -54,7 +54,7 @@ public class SubjectServiceImplTest {
             return returnedSubject;
         });
 
-        SubjectDto result = subjectService.create(subjectDto);
+        var result = subjectService.create(subjectDto);
 
         assertNotNull(result.getId());
 
@@ -65,12 +65,12 @@ public class SubjectServiceImplTest {
 
     @Test
     public void update_success() {
-        Subject subject = subjectMapper.toEntity(subjectDto);
+        var subject = subjectMapper.toEntity(subjectDto);
         Mockito.when(subjectRepo.findById(subjectDto.getId())).thenReturn(Optional.of(subject));
 
         Mockito.when(subjectRepo.save(subject)).thenReturn(subject);
 
-        SubjectDto result = subjectService.update(subjectDto);
+        var result = subjectService.update(subjectDto);
 
         assertEquals(result, subjectDto);
     }
@@ -84,21 +84,21 @@ public class SubjectServiceImplTest {
 
     @Test
     public void findAll_success() {
-        Collection<SubjectDto> subjectsDto = getCollectionOfSubjectsDto();
+        var subjectsDto = getCollectionOfSubjectsDto();
         Mockito.when(subjectRepo.findAll())
                 .thenReturn(subjectsDto.stream().map(subjectMapper::toEntity).collect(Collectors.toList()));
 
-        Collection<SubjectDto> result = subjectService.findAll();
+        var result = subjectService.findAll();
 
         assertEquals(result, subjectsDto);
     }
 
     @Test
     public void findById_success() {
-        Subject subject = subjectMapper.toEntity(subjectDto);
+        var subject = subjectMapper.toEntity(subjectDto);
         Mockito.when(subjectRepo.findById(subjectDto.getId())).thenReturn(Optional.of(subject));
 
-        SubjectDto result = subjectService.findById(subjectDto.getId());
+        var result = subjectService.findById(subjectDto.getId());
 
         assertEquals(result, subjectDto);
     }
@@ -111,10 +111,10 @@ public class SubjectServiceImplTest {
 
     @Test
     public void changeStatusById_success() {
-        Subject subject = subjectMapper.toEntity(subjectDto);
+        var subject = subjectMapper.toEntity(subjectDto);
         Mockito.when(subjectRepo.findById(subjectDto.getId())).thenReturn(Optional.of(subject));
 
-        ChangeStatusDto changeStatusDto = ChangeStatusDto.builder()
+        var changeStatusDto = ChangeStatusDto.builder()
                 .id(subject.getId())
                 .newStatus(EntityStatus.EXCLUDED)
                 .build();
@@ -127,7 +127,7 @@ public class SubjectServiceImplTest {
 
     @Test
     public void changeStatusById_throwNotFoundException_ifSubjectNotFound() {
-        ChangeStatusDto changeStatusDto = ChangeStatusDto.builder()
+        var changeStatusDto = ChangeStatusDto.builder()
                 .id(Long.MAX_VALUE)
                 .newStatus(EntityStatus.EXCLUDED)
                 .build();
@@ -137,8 +137,8 @@ public class SubjectServiceImplTest {
     }
 
     private Collection<SubjectDto> getCollectionOfSubjectsDto() {
-        SubjectDto subjectDto2 = DtoDirector.makeTestSubjectDtoById(2L);
-        SubjectDto subjectDto3 = DtoDirector.makeTestSubjectDtoById(3L);
+        var subjectDto2 = DtoDirector.makeTestSubjectDtoById(2L);
+        var subjectDto3 = DtoDirector.makeTestSubjectDtoById(3L);
         return Arrays.asList(subjectDto, subjectDto2, subjectDto3);
     }
 }

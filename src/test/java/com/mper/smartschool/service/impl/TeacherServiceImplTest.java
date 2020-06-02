@@ -2,7 +2,6 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.DtoDirector;
 import com.mper.smartschool.dto.TeacherDto;
-import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.dto.mapper.TeacherMapper;
 import com.mper.smartschool.dto.mapper.TeacherMapperImpl;
 import com.mper.smartschool.entity.Role;
@@ -49,9 +48,10 @@ public class TeacherServiceImplTest {
     @Mock
     private AvatarStorageService avatarStorageService;
 
-    private final TeacherMapper teacherMapper = new TeacherMapperImpl();
     @Mock
     private EmailService emailService;
+
+    private final TeacherMapper teacherMapper = new TeacherMapperImpl();
 
     private TeacherServiceImpl teacherService;
 
@@ -71,7 +71,7 @@ public class TeacherServiceImplTest {
 
     @Test
     public void create_success() {
-        Role roleTeacher = Role.builder()
+        var roleTeacher = Role.builder()
                 .id(1L)
                 .name("ROLE_TEACHER")
                 .status(EntityStatus.ACTIVE)
@@ -84,7 +84,7 @@ public class TeacherServiceImplTest {
 
         teacherDto.setId(null);
         teacherDto.setStatus(null);
-        Teacher teacher = teacherMapper.toEntity(teacherDto);
+        var teacher = teacherMapper.toEntity(teacherDto);
         teacher.setRoles(Collections.singleton(roleTeacher));
         teacher.setStatus(EntityStatus.ACTIVE);
         teacher.setPassword(encodedPassword);
@@ -94,7 +94,7 @@ public class TeacherServiceImplTest {
             return returnedTeacher;
         });
 
-        TeacherDto result = teacherService.create(teacherDto);
+        var result = teacherService.create(teacherDto);
 
         assertNotNull(result.getId());
 
@@ -109,12 +109,12 @@ public class TeacherServiceImplTest {
 
     @Test
     public void update_success() {
-        Teacher teacher = teacherMapper.toEntity(teacherDto);
+        var teacher = teacherMapper.toEntity(teacherDto);
         Mockito.when(teacherRepo.findById(teacherDto.getId())).thenReturn(Optional.of(teacher));
 
         Mockito.when(teacherRepo.save(teacher)).thenReturn(teacher);
 
-        TeacherDto result = teacherService.update(teacherDto);
+        var result = teacherService.update(teacherDto);
 
         assertEquals(result, teacherDto);
     }
@@ -128,11 +128,11 @@ public class TeacherServiceImplTest {
 
     @Test
     public void findAll_success() {
-        Collection<TeacherDto> teachersDto = getCollectionOfTeachersDto();
+        var teachersDto = getCollectionOfTeachersDto();
         Mockito.when(teacherRepo.findAll())
                 .thenReturn(teachersDto.stream().map(teacherMapper::toEntity).collect(Collectors.toList()));
 
-        Collection<TeacherDto> result = teacherService.findAll();
+        var result = teacherService.findAll();
 
         assertEquals(result, teachersDto
                 .stream()
@@ -142,10 +142,10 @@ public class TeacherServiceImplTest {
 
     @Test
     public void findById_success() {
-        Teacher teacher = teacherMapper.toEntity(teacherDto);
+        var teacher = teacherMapper.toEntity(teacherDto);
         Mockito.when(teacherRepo.findById(teacherDto.getId())).thenReturn(Optional.of(teacher));
 
-        UserDto result = teacherService.findById(teacherDto.getId());
+        var result = teacherService.findById(teacherDto.getId());
 
         assertEquals(result, teacherDto);
     }
@@ -157,8 +157,8 @@ public class TeacherServiceImplTest {
     }
 
     private Collection<TeacherDto> getCollectionOfTeachersDto() {
-        TeacherDto teacherDto2 = DtoDirector.makeTestTeacherDtoById(2L);
-        TeacherDto teacherDto3 = DtoDirector.makeTestTeacherDtoById(3L);
+        var teacherDto2 = DtoDirector.makeTestTeacherDtoById(2L);
+        var teacherDto3 = DtoDirector.makeTestTeacherDtoById(3L);
         return Arrays.asList(teacherDto, teacherDto2, teacherDto3);
     }
 }

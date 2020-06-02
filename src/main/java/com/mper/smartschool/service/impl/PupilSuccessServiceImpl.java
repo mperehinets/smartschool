@@ -29,7 +29,7 @@ public class PupilSuccessServiceImpl implements PupilSuccessService {
     @Override
     @PreAuthorize("hasRole('TEACHER')")
     public PupilSuccessDto create(PupilSuccessDto pupilSuccessDto) {
-        PupilSuccessDto result = pupilSuccessMapper.toDto(pupilSuccessRepo
+        var result = pupilSuccessMapper.toDto(pupilSuccessRepo
                 .save(pupilSuccessMapper.toEntity(pupilSuccessDto)));
         log.info("IN create - pupilSuccess: {} successfully created", result);
         return result;
@@ -39,7 +39,7 @@ public class PupilSuccessServiceImpl implements PupilSuccessService {
     @PreAuthorize("hasRole('TEACHER')")
     public PupilSuccessDto update(PupilSuccessDto pupilSuccessDto) {
         findById(pupilSuccessDto.getId());
-        PupilSuccessDto result = pupilSuccessMapper.toDto(pupilSuccessRepo
+        var result = pupilSuccessMapper.toDto(pupilSuccessRepo
                 .save(pupilSuccessMapper.toEntity(pupilSuccessDto)));
         log.info("IN update - pupilSuccess: {} successfully updated", result);
         return result;
@@ -47,7 +47,7 @@ public class PupilSuccessServiceImpl implements PupilSuccessService {
 
     @Override
     public Collection<PupilSuccessDto> findAll() {
-        Collection<PupilSuccessDto> result = pupilSuccessRepo.findAll()
+        var result = pupilSuccessRepo.findAll()
                 .stream()
                 .map(pupilSuccessMapper::toDto)
                 .collect(Collectors.toList());
@@ -57,7 +57,7 @@ public class PupilSuccessServiceImpl implements PupilSuccessService {
 
     @Override
     public PupilSuccessDto findById(Long id) {
-        PupilSuccessDto result = pupilSuccessMapper.toDto(pupilSuccessRepo.findById(id)
+        var result = pupilSuccessMapper.toDto(pupilSuccessRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("PupilSuccessNotFoundException.byId", id)));
         log.info("IN findById - pupilSuccess: {} found by id: {}", result, id);
         return result;

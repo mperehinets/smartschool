@@ -11,6 +11,10 @@ public interface SchoolClassRepo extends JpaRepository<SchoolClass, Long> {
 
     SchoolClass findTop1ByNumberOrderByInitialDesc(Integer number);
 
+    default SchoolClass findLastByNumber(Integer number) {
+        return findTop1ByNumberOrderByInitialDesc(number);
+    }
+
     Collection<SchoolClass> findByNumber(Integer number);
 
     @Query("select c from SchoolClass c where c.classTeacher.id = :teacherId")

@@ -27,7 +27,7 @@ public class MessageConfig implements WebMvcConfigurer {
 
     @Bean
     public MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        var messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:messages");
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setDefaultLocale(new Locale(DEFAULT_LANGUAGE));
@@ -36,20 +36,20 @@ public class MessageConfig implements WebMvcConfigurer {
 
     @Bean
     public LocalValidatorFactoryBean getValidator() {
-        LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
+        var bean = new LocalValidatorFactoryBean();
         bean.setValidationMessageSource(messageSource());
         return bean;
     }
 
     @Bean
     public LocaleResolver localeResolver() {
-        SessionLocaleResolver localeResolver = new SessionLocaleResolver();
+        var localeResolver = new SessionLocaleResolver();
         localeResolver.setDefaultLocale(new Locale(DEFAULT_LANGUAGE));
         return localeResolver;
     }
 
     public LocaleChangeInterceptor localeChangeInterceptor() {
-        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+        var localeChangeInterceptor = new LocaleChangeInterceptor();
         localeChangeInterceptor.setParamName(REQUEST_PARAM_LANGUAGE_NAME);
         return localeChangeInterceptor;
     }

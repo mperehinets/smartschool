@@ -1,6 +1,5 @@
 package com.mper.smartschool.security;
 
-import com.mper.smartschool.entity.User;
 import com.mper.smartschool.repository.UserRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ public class UserPrincipalDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepo.findByEmail(username)
+        var user = userRepo.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found by username: " + username));
         log.info("IN loadByUsername - user with username: {} successfully loaded", username);
 

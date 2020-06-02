@@ -9,7 +9,6 @@ import org.springframework.context.support.MessageSourceResourceBundle;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.Arrays;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class PasswordConstraintValidator implements ConstraintValidator<Password, String> {
@@ -26,7 +25,7 @@ public class PasswordConstraintValidator implements ConstraintValidator<Password
         if (password == null) {
             return true;
         }
-        PasswordValidator validator = new PasswordValidator(
+        var validator = new PasswordValidator(
                 new ResourceBundleMessageResolver(new MessageSourceResourceBundle(messageSource,
                         LocaleContextHolder.getLocale())),
                 Arrays.asList(
@@ -45,11 +44,11 @@ public class PasswordConstraintValidator implements ConstraintValidator<Password
                         // no whitespace
                         new WhitespaceRule()));
 
-        RuleResult result = validator.validate(new PasswordData(password));
+        var result = validator.validate(new PasswordData(password));
         if (result.isValid()) {
             return true;
         }
-        List<String> messages = validator.getMessages(result);
+        var messages = validator.getMessages(result);
         String messageTemplate = String.join("; ", messages);
         context.buildConstraintViolationWithTemplate(messageTemplate)
                 .addConstraintViolation()

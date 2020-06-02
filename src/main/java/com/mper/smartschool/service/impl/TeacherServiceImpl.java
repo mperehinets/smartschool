@@ -2,7 +2,6 @@ package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.TeacherDto;
 import com.mper.smartschool.dto.mapper.TeacherMapper;
-import com.mper.smartschool.entity.Teacher;
 import com.mper.smartschool.entity.modelsEnum.EntityStatus;
 import com.mper.smartschool.exception.NotFoundException;
 import com.mper.smartschool.repository.RoleRepo;
@@ -37,37 +36,39 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public TeacherDto create(TeacherDto teacherDto) {
-        Teacher teacher = teacherMapper.toEntity(teacherDto);
+        var teacher = teacherMapper.toEntity(teacherDto);
         teacher.setRoles(Collections.singleton(roleRepo.findTeacherRole()));
         teacher.setStatus(EntityStatus.ACTIVE);
         teacher.setPassword(passwordEncoder.encode(teacherDto.getPassword()));
-        avatarStorageService.resolveAvatar(teacherDto);
+        teacher.setAvatarName(avatarStorageService.resolveAvatar(teacherDto.getAvatarName()));
 
-        TeacherDto result = teacherMapper.toDto(teacherRepo.save(teacher));
+        var result = teacherMapper.toDto(teacherRepo.save(teacher));
 
         emailService.sendLoginDetails(teacherDto);
 
         log.info("IN create - teacher: {} successfully created", result);
-
         return result;
     }
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public TeacherDto update(TeacherDto teacherDto) {
-        TeacherDto foundTeacher = findById(teacherDto.getId());
-        teacherDto.setEmail(foundTeacher.getEmail());
-        teacherDto.setRoles(foundTeacher.getRoles());
-        teacherDto.setStatus(foundTeacher.getStatus());
-        avatarStorageService.resolveAvatar(teacherDto);
-        TeacherDto result = teacherMapper.toDto(teacherRepo.save(teacherMapper.toEntity(teacherDto)));
+        var foundTeacherDto = findById(teacherDto.getId());
+        var teacher = teacherMapper.toEntity(teacherDto);
+        teacher.setEmail(foundTeacherDto.getEmail());
+        teacher.setRoles(foundTeacherDto.getRoles());
+        teacher.setStatus(foundTeacherDto.getStatus());
+        teacher.setAvatarName(avatarStorageService.resolveAvatar(teacherDto.getAvatarName()));
+
+        var result = teacherMapper.toDto(teacherRepo.save(teacher));
+
         log.info("IN update - teacher: {} successfully updated", result);
         return result;
     }
 
     @Override
     public Collection<TeacherDto> findAll() {
-        Collection<TeacherDto> result = teacherRepo.findAll()
+        var result = teacherRepo.findAll()
                 .stream()
                 .map(teacherMapper::toDto)
                 .peek(item -> item.setSubjectsCount(teachersSubjectRepo
@@ -79,7 +80,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public TeacherDto findById(Long id) {
-        TeacherDto result = teacherMapper.toDto(teacherRepo.findById(id)
+        var result = teacherMapper.toDto(teacherRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("TeacherNotFoundException.byId", id)));
         log.info("IN findById - teacher: {} found by id: {}", result, id);
         return result;
@@ -94,7 +95,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public Collection<TeacherDto> findFree() {
-        Collection<TeacherDto> result = teacherRepo.findFree()
+        var result = teacherRepo.findFree()
                 .stream()
                 .map(teacherMapper::toDto)
                 .collect(Collectors.toList());
@@ -104,7 +105,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public Collection<TeacherDto> findBySubjectId(Long subjectId) {
-        Collection<TeacherDto> result = teacherRepo.findBySubjectId(subjectId)
+        var result = teacherRepo.findBySubjectId(subjectId)
                 .stream()
                 .map(teacherMapper::toDto)
                 .collect(Collectors.toList());

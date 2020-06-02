@@ -28,7 +28,7 @@ public class PupilSuccessServiceImplTest {
     @Mock
     private PupilSuccessRepo pupilSuccessRepo;
 
-    private PupilSuccessMapper pupilSuccessMapper = new PupilSuccessMapperImpl();
+    private final PupilSuccessMapper pupilSuccessMapper = new PupilSuccessMapperImpl();
 
     private PupilSuccessServiceImpl pupilSuccessService;
 
@@ -43,14 +43,14 @@ public class PupilSuccessServiceImplTest {
     @Test
     public void create_success() {
         pupilSuccessDto.setId(null);
-        PupilSuccess pupilSuccess = pupilSuccessMapper.toEntity(pupilSuccessDto);
+        var pupilSuccess = pupilSuccessMapper.toEntity(pupilSuccessDto);
         Mockito.when(pupilSuccessRepo.save(pupilSuccess)).thenAnswer(invocationOnMock -> {
             PupilSuccess returnedPupilSuccess = invocationOnMock.getArgument(0);
             returnedPupilSuccess.setId(1L);
             return returnedPupilSuccess;
         });
 
-        PupilSuccessDto result = pupilSuccessService.create(pupilSuccessDto);
+        var result = pupilSuccessService.create(pupilSuccessDto);
 
         assertNotNull(result.getId());
 
@@ -59,12 +59,12 @@ public class PupilSuccessServiceImplTest {
 
     @Test
     public void update_success() {
-        PupilSuccess pupilSuccess = pupilSuccessMapper.toEntity(pupilSuccessDto);
+        var pupilSuccess = pupilSuccessMapper.toEntity(pupilSuccessDto);
         Mockito.when(pupilSuccessRepo.findById(pupilSuccessDto.getId())).thenReturn(Optional.of(pupilSuccess));
 
         Mockito.when(pupilSuccessRepo.save(pupilSuccess)).thenReturn(pupilSuccess);
 
-        PupilSuccessDto result = pupilSuccessService.update(pupilSuccessDto);
+        var result = pupilSuccessService.update(pupilSuccessDto);
 
         assertEquals(result, pupilSuccessDto);
     }
@@ -78,21 +78,21 @@ public class PupilSuccessServiceImplTest {
 
     @Test
     public void findAll_success() {
-        Collection<PupilSuccessDto> pupilSuccessesDto = getCollectionOfPupilSuccessesDto();
+        var pupilSuccessesDto = getCollectionOfPupilSuccessesDto();
         Mockito.when(pupilSuccessRepo.findAll())
                 .thenReturn(pupilSuccessesDto.stream().map(pupilSuccessMapper::toEntity).collect(Collectors.toList()));
 
-        Collection<PupilSuccessDto> result = pupilSuccessService.findAll();
+        var result = pupilSuccessService.findAll();
 
         assertEquals(result, pupilSuccessesDto);
     }
 
     @Test
     public void findById_success() {
-        PupilSuccess pupilSuccess = pupilSuccessMapper.toEntity(pupilSuccessDto);
+        var pupilSuccess = pupilSuccessMapper.toEntity(pupilSuccessDto);
         Mockito.when(pupilSuccessRepo.findById(pupilSuccessDto.getId())).thenReturn(Optional.of(pupilSuccess));
 
-        PupilSuccessDto result = pupilSuccessService.findById(pupilSuccessDto.getId());
+        var result = pupilSuccessService.findById(pupilSuccessDto.getId());
 
         assertEquals(result, pupilSuccessDto);
     }
@@ -105,7 +105,7 @@ public class PupilSuccessServiceImplTest {
 
     @Test
     public void deleteById_success() {
-        PupilSuccess pupilSuccess = pupilSuccessMapper.toEntity(pupilSuccessDto);
+        var pupilSuccess = pupilSuccessMapper.toEntity(pupilSuccessDto);
         Mockito.when(pupilSuccessRepo.findById(pupilSuccessDto.getId())).thenReturn(Optional.of(pupilSuccess));
         Mockito.doNothing().when(pupilSuccessRepo).deleteById(pupilSuccessDto.getId());
         assertDoesNotThrow(() -> pupilSuccessService.deleteById(pupilSuccessDto.getId()));
@@ -118,8 +118,8 @@ public class PupilSuccessServiceImplTest {
     }
 
     private Collection<PupilSuccessDto> getCollectionOfPupilSuccessesDto() {
-        PupilSuccessDto pupilSuccessDto2 = DtoDirector.makeTestPupilSuccessDtoById(2L);
-        PupilSuccessDto pupilSuccessDto3 = DtoDirector.makeTestPupilSuccessDtoById(3L);
+        var pupilSuccessDto2 = DtoDirector.makeTestPupilSuccessDtoById(2L);
+        var pupilSuccessDto3 = DtoDirector.makeTestPupilSuccessDtoById(3L);
         return Arrays.asList(pupilSuccessDto, pupilSuccessDto2, pupilSuccessDto3);
     }
 }

@@ -30,7 +30,7 @@ public class JwtTokenProvider {
     }
 
     public String generateToken(UserPrincipal user) {
-        Claims claims = Jwts.claims().setSubject(user.getUsername());
+        var claims = Jwts.claims().setSubject(user.getUsername());
 
         claims.put("id", user.getId());
 

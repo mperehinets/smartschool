@@ -29,7 +29,7 @@ public class TemplateScheduleServiceImplTest {
     @Mock
     private TemplateScheduleRepo templateScheduleRepo;
 
-    private TemplateScheduleMapper templateScheduleMapper = new TemplateScheduleMapperImpl();
+    private final TemplateScheduleMapper templateScheduleMapper = new TemplateScheduleMapperImpl();
 
     private TemplateScheduleServiceImpl templateScheduleService;
 
@@ -44,14 +44,14 @@ public class TemplateScheduleServiceImplTest {
     @Test
     public void create_success() {
         templateScheduleDto.setId(null);
-        TemplateSchedule templateSchedule = templateScheduleMapper.toEntity(templateScheduleDto);
+        var templateSchedule = templateScheduleMapper.toEntity(templateScheduleDto);
         Mockito.when(templateScheduleRepo.save(templateSchedule)).thenAnswer(invocationOnMock -> {
             TemplateSchedule returnedTemplateSchedule = invocationOnMock.getArgument(0);
             returnedTemplateSchedule.setId(1L);
             return returnedTemplateSchedule;
         });
 
-        TemplateScheduleDto result = templateScheduleService.create(templateScheduleDto);
+        var result = templateScheduleService.create(templateScheduleDto);
 
         assertNotNull(result.getId());
 
@@ -69,13 +69,13 @@ public class TemplateScheduleServiceImplTest {
 
     @Test
     public void update_success() {
-        TemplateSchedule templateSchedule = templateScheduleMapper.toEntity(templateScheduleDto);
+        var templateSchedule = templateScheduleMapper.toEntity(templateScheduleDto);
         Mockito.when(templateScheduleRepo.findById(templateScheduleDto.getId()))
                 .thenReturn(Optional.of(templateSchedule));
 
         Mockito.when(templateScheduleRepo.save(templateSchedule)).thenReturn(templateSchedule);
 
-        TemplateScheduleDto result = templateScheduleService.update(templateScheduleDto);
+        var result = templateScheduleService.update(templateScheduleDto);
 
         assertEquals(result, templateScheduleDto);
     }
@@ -89,23 +89,23 @@ public class TemplateScheduleServiceImplTest {
 
     @Test
     public void findAll_success() {
-        Collection<TemplateScheduleDto> templateSchedulesDto = getCollectionOfTemplateSchedulesDto();
+        var templateSchedulesDto = getCollectionOfTemplateSchedulesDto();
         Mockito.when(templateScheduleRepo.findAll())
                 .thenReturn(templateSchedulesDto.stream()
                         .map(templateScheduleMapper::toEntity).collect(Collectors.toList()));
 
-        Collection<TemplateScheduleDto> result = templateScheduleService.findAll();
+        var result = templateScheduleService.findAll();
 
         assertEquals(result, templateSchedulesDto);
     }
 
     @Test
     public void findById_success() {
-        TemplateSchedule templateSchedule = templateScheduleMapper.toEntity(templateScheduleDto);
+        var templateSchedule = templateScheduleMapper.toEntity(templateScheduleDto);
         Mockito.when(templateScheduleRepo.findById(templateScheduleDto.getId()))
                 .thenReturn(Optional.of(templateSchedule));
 
-        TemplateScheduleDto result = templateScheduleService.findById(templateScheduleDto.getId());
+        var result = templateScheduleService.findById(templateScheduleDto.getId());
 
         assertEquals(result, templateScheduleDto);
     }
@@ -118,7 +118,7 @@ public class TemplateScheduleServiceImplTest {
 
     @Test
     public void deleteById_success() {
-        TemplateSchedule templateSchedule = templateScheduleMapper.toEntity(templateScheduleDto);
+        var templateSchedule = templateScheduleMapper.toEntity(templateScheduleDto);
         Mockito.when(templateScheduleRepo.findById(templateScheduleDto.getId()))
                 .thenReturn(Optional.of(templateSchedule));
         Mockito.doNothing().when(templateScheduleRepo).deleteById(templateScheduleDto.getId());
@@ -132,8 +132,8 @@ public class TemplateScheduleServiceImplTest {
     }
 
     private Collection<TemplateScheduleDto> getCollectionOfTemplateSchedulesDto() {
-        TemplateScheduleDto templateScheduleDto2 = DtoDirector.makeTestTemplateScheduleDtoById(2L);
-        TemplateScheduleDto templateScheduleDto3 = DtoDirector.makeTestTemplateScheduleDtoById(3L);
+        var templateScheduleDto2 = DtoDirector.makeTestTemplateScheduleDtoById(2L);
+        var templateScheduleDto3 = DtoDirector.makeTestTemplateScheduleDtoById(3L);
         return Arrays.asList(templateScheduleDto, templateScheduleDto2, templateScheduleDto3);
     }
 }

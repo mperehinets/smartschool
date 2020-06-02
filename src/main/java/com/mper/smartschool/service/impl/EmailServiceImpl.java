@@ -1,11 +1,9 @@
 package com.mper.smartschool.service.impl;
 
-import com.google.common.io.ByteStreams;
 import com.mper.smartschool.dto.MailDto;
 import com.mper.smartschool.dto.MailInlineImageDto;
 import com.mper.smartschool.dto.UserDto;
 import com.mper.smartschool.entity.PasswordResetToken;
-import com.mper.smartschool.entity.User;
 import com.mper.smartschool.service.AvatarStorageService;
 import com.mper.smartschool.service.EmailService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import javax.mail.internet.MimeMessage;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +37,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendSimpleMessage(MailDto mailDto) {
-        SimpleMailMessage message = new SimpleMailMessage();
+        var message = new SimpleMailMessage();
         message.setTo(mailDto.getMailTo());
         message.setSubject(mailDto.getSubject());
         message.setText(mailDto.getMsg());
@@ -51,13 +48,13 @@ public class EmailServiceImpl implements EmailService {
     @SneakyThrows
     @Override
     public void sendHtmlMessage(MailDto mailDto, String htmlFileName, List<MailInlineImageDto> images) {
-        MimeMessage message = emailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        var message = emailSender.createMimeMessage();
+        var helper = new MimeMessageHelper(message, true, "UTF-8");
         helper.setTo(mailDto.getMailTo());
         helper.setSubject(mailDto.getSubject());
 
         // Prepare the evaluation context
-        Context context = new Context();
+        var context = new Context();
         context.setVariables(mailDto.getProps());
 
         // Create the HTML body using Thymeleaf
@@ -65,7 +62,7 @@ public class EmailServiceImpl implements EmailService {
         helper.setText(html, true);
 
         // Add the inline image, referenced from the HTML code as "cid:${imageResourceName}"
-        for (MailInlineImageDto image : images) {
+        for (var image : images) {
             helper.addInline(image.getName(), new ByteArrayResource(image.getBytes()), image.getContentType());
         }
         emailSender.send(message);
@@ -80,7 +77,7 @@ public class EmailServiceImpl implements EmailService {
         props.put("firstName", userDto.getFirstName());
         props.put("secondName", userDto.getSecondName());
 
-        MailDto mailDto = MailDto.builder()
+        var mailDto = MailDto.builder()
                 .mailTo(userDto.getEmail())
                 .subject("Login details")
                 .props(props)
@@ -96,13 +93,13 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendResetToken(PasswordResetToken passwordResetToken) {
-        User user = passwordResetToken.getUser();
+        var user = passwordResetToken.getUser();
         Map<String, Object> props = new HashMap<>();
         props.put("token", passwordResetToken.getToken());
         props.put("firstName", user.getFirstName());
         props.put("secondName", user.getSecondName());
 
-        MailDto mailDto = MailDto.builder()
+        var mailDto = MailDto.builder()
                 .mailTo(user.getEmail())
                 .subject("Reset password")
                 .props(props)
@@ -121,7 +118,7 @@ public class EmailServiceImpl implements EmailService {
     private MailInlineImageDto getInlineMainLogo() {
         return MailInlineImageDto.builder()
                 .name("mainLogo")
-                .bytes(ByteStreams.toByteArray(resourceLoader.getResource("classpath:mainLogo.png").getInputStream()))
+                .bytes(resourceLoader.getResource("classpath:mainLogo.png").getInputStream().readAllBytes())
                 .contentType(MediaType.IMAGE_PNG_VALUE)
                 .build();
     }

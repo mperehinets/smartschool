@@ -1,7 +1,6 @@
 package com.mper.smartschool.service.impl;
 
 import com.mper.smartschool.dto.GenerateScheduleDto;
-import com.mper.smartschool.dto.ScheduleDto;
 import com.mper.smartschool.dto.TemplateScheduleDto;
 import com.mper.smartschool.dto.mapper.SchoolClassMapper;
 import com.mper.smartschool.dto.mapper.TeachersSubjectMapper;
@@ -9,7 +8,6 @@ import com.mper.smartschool.entity.Schedule;
 import com.mper.smartschool.exception.TeacherIsBusyException;
 import com.mper.smartschool.repository.ScheduleRepo;
 import com.mper.smartschool.service.ScheduleGeneratorService;
-import com.mper.smartschool.service.ScheduleService;
 import com.mper.smartschool.service.SchoolClassService;
 import com.mper.smartschool.service.TeachersSubjectService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +26,6 @@ import java.util.Collection;
 public class ScheduleGeneratorServiceImpl implements ScheduleGeneratorService {
 
     private final ScheduleRepo scheduleRepo;
-    private final ScheduleService scheduleService;
     private final SchoolClassService schoolClassService;
     private final TeachersSubjectService teachersSubjectService;
     private final TeachersSubjectMapper teachersSubjectMapper;
@@ -40,13 +37,13 @@ public class ScheduleGeneratorServiceImpl implements ScheduleGeneratorService {
         validateGenerateScheduleDto(generateScheduleDto);
         Collection<Schedule> result = new ArrayList<>();
         //Loop from start date to end date
-        for (LocalDate date = generateScheduleDto.getStartDate();
+        for (var date = generateScheduleDto.getStartDate();
              date.isBefore(generateScheduleDto.getEndDate().plusDays(1));
              date = date.plusDays(1)) {
             //Check if weekday
             if (date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY) {
                 //Make finalDate for lambda expression
-                final LocalDate finalDate = date;
+                final var finalDate = date;
                 //Template schedule for current date
                 generateScheduleDto.getTemplatesSchedule()
                         .stream()
@@ -71,7 +68,7 @@ public class ScheduleGeneratorServiceImpl implements ScheduleGeneratorService {
     public Boolean canTeacherHoldLesson(TemplateScheduleDto templateScheduleDto,
                                         LocalDate startDate,
                                         LocalDate endDate) {
-        Collection<Schedule> schedule =
+        var schedule =
                 this.scheduleRepo.findByStartDateAndEndDateAndTeacherIdAndLessonNumberAndDayOfWeek(startDate,
                         endDate,
                         templateScheduleDto.getTeachersSubject().getTeacher().getId(),
@@ -86,18 +83,15 @@ public class ScheduleGeneratorServiceImpl implements ScheduleGeneratorService {
         //Check if school class exists
         schoolClassService.findById(generateScheduleDto.getSchoolClass().getId());
         //Validate start date
-        ScheduleDto lastScheduleDto = scheduleService.findLastByClassId(generateScheduleDto.getSchoolClass().getId());
-        LocalDate currentDate = LocalDate.now();
-        if (lastScheduleDto == null || generateScheduleDto.getStartDate().isBefore(currentDate)) {
+        var currentDate = LocalDate.now();
+        if (generateScheduleDto.getStartDate().isBefore(currentDate)) {
             generateScheduleDto.setStartDate(currentDate);
         }
         //Loop templatesSchedule
-        for (TemplateScheduleDto template : generateScheduleDto.getTemplatesSchedule()) {
+        for (var template : generateScheduleDto.getTemplatesSchedule()) {
             teachersSubjectService.findById(template.getTeachersSubject().getId());
             //Check if teacher can hold lesson
-            if (!canTeacherHoldLesson(template,
-                    generateScheduleDto.getStartDate(),
-                    generateScheduleDto.getEndDate())) {
+            if (!canTeacherHoldLesson(template, generateScheduleDto.getStartDate(), generateScheduleDto.getEndDate())) {
                 throw new TeacherIsBusyException(template.getTeachersSubject().getTeacher(),
                         null,
                         template.getDayOfWeek(),

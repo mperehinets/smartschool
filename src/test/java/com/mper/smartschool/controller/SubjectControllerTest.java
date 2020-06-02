@@ -149,7 +149,7 @@ class SubjectControllerTest {
 
     @Test
     public void changeStatusById_return200_ifInputsValid() throws Exception {
-        ChangeStatusDto changeStatusDto = ChangeStatusDto.builder()
+        var changeStatusDto = ChangeStatusDto.builder()
                 .id(subjectDto.getId())
                 .newStatus(EntityStatus.EXCLUDED)
                 .build();
@@ -164,7 +164,7 @@ class SubjectControllerTest {
 
     @Test
     public void changeStatusById_return404_ifInputIdNotExist() throws Exception {
-        ChangeStatusDto changeStatusDto = ChangeStatusDto.builder()
+        var changeStatusDto = ChangeStatusDto.builder()
                 .id(Long.MAX_VALUE)
                 .newStatus(EntityStatus.EXCLUDED)
                 .build();

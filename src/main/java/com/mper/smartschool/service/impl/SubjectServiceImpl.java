@@ -40,7 +40,7 @@ public class SubjectServiceImpl implements SubjectService {
     @PreAuthorize("hasRole('ADMIN')")
     public SubjectDto create(SubjectDto subjectDto) {
         subjectDto.setStatus(EntityStatus.ACTIVE);
-        SubjectDto result = subjectMapper.toDto(subjectRepo.save(subjectMapper.toEntity(subjectDto)));
+        var result = subjectMapper.toDto(subjectRepo.save(subjectMapper.toEntity(subjectDto)));
         log.info("IN create - subject: {} successfully created", result);
         return result;
     }
@@ -49,14 +49,14 @@ public class SubjectServiceImpl implements SubjectService {
     @PreAuthorize("hasRole('ADMIN')")
     public SubjectDto update(SubjectDto subjectDto) {
         subjectDto.setStatus(findById(subjectDto.getId()).getStatus());
-        SubjectDto result = subjectMapper.toDto(subjectRepo.save(subjectMapper.toEntity(subjectDto)));
+        var result = subjectMapper.toDto(subjectRepo.save(subjectMapper.toEntity(subjectDto)));
         log.info("IN update - subject: {} successfully updated", result);
         return result;
     }
 
     @Override
     public Collection<SubjectDto> findAll() {
-        Collection<SubjectDto> result = subjectRepo.findAll()
+        var result = subjectRepo.findAll()
                 .stream()
                 .map(subjectMapper::toDto)
                 .collect(Collectors.toList());
@@ -66,7 +66,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public SubjectDto findById(Long id) {
-        SubjectDto result = subjectMapper.toDto(subjectRepo.findById(id)
+        var result = subjectMapper.toDto(subjectRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("SubjectNotFoundException.byId", id)));
         log.info("IN findById - subject: {} found by id: {}", result, id);
         return result;
@@ -84,7 +84,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public SubjectDto findByName(String name) {
-        SubjectDto result = subjectMapper.toDto(subjectRepo.findByName(name)
+        var result = subjectMapper.toDto(subjectRepo.findByName(name)
                 .orElseThrow(() -> new NotFoundException("SubjectNotFoundException.byName", name)));
         log.info("IN findByName - subject: {} found by name: {}", result, name);
         return result;
@@ -99,7 +99,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Collection<SubjectDto> findByStatus(EntityStatus status) {
-        Collection<SubjectDto> result = subjectRepo.findByStatus(status)
+        var result = subjectRepo.findByStatus(status)
                 .stream()
                 .map(subjectMapper::toDto)
                 .collect(Collectors.toList());
@@ -109,7 +109,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Collection<SubjectDto> findByTeacherId(Long teacherId) {
-        Collection<SubjectDto> result = subjectRepo.findByTeacherIdAndStatus(teacherId, EntityStatus.ACTIVE)
+        var result = subjectRepo.findByTeacherIdAndStatus(teacherId, EntityStatus.ACTIVE)
                 .stream()
                 .map(subjectMapper::toDto)
                 .collect(Collectors.toList());
@@ -119,7 +119,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Collection<SubjectDto> findByClassNumber(Integer classNumber) {
-        Collection<SubjectDto> result = subjectRepo.findByClassNumber(classNumber)
+        var result = subjectRepo.findByClassNumber(classNumber)
                 .stream()
                 .map(subjectMapper::toDto)
                 .collect(Collectors.toList());

@@ -28,10 +28,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AvatarStorageServiceImpl implements AvatarStorageService {
 
+    private static final String AVATAR_FOLDER_NAME = "avatar";
     private final Path fileStorageLocation;
 
     public AvatarStorageServiceImpl() {
-        fileStorageLocation = Paths.get("avatar").toAbsolutePath().normalize();
+        fileStorageLocation = Paths.get(AVATAR_FOLDER_NAME).toAbsolutePath().normalize();
     }
 
     @SneakyThrows
@@ -54,7 +55,7 @@ public class AvatarStorageServiceImpl implements AvatarStorageService {
     @SneakyThrows
     @Override
     public List<String> loadAllName() {
-        List<String> result = Arrays.stream(Objects.requireNonNull(fileStorageLocation.toFile().listFiles()))
+        var result = Arrays.stream(Objects.requireNonNull(fileStorageLocation.toFile().listFiles()))
                 .map(File::getName)
                 .collect(Collectors.toList());
         log.info("IN loadAllName - {} avatars found", result.size());
@@ -65,7 +66,7 @@ public class AvatarStorageServiceImpl implements AvatarStorageService {
     @Override
     public Resource load(String fileName) {
         String correctFileName = fileName.trim();
-        Resource resource = new UrlResource(fileStorageLocation.resolve(correctFileName).normalize().toUri());
+        var resource = new UrlResource(fileStorageLocation.resolve(correctFileName).normalize().toUri());
         if (correctFileName.length() != 0 && resource.exists()) {
             log.info("IN load - avatar found by name: {}", fileName);
             return resource;

@@ -22,7 +22,7 @@ public final class DtoDirector {
                 .secondName("User")
                 .dateBirth(LocalDate.of(2000, 12, 17))
                 .email("user" + id + "@gmail.com")
-                .avatarName("some-avatar.png")
+                .avatarName(null)
                 .roles(new HashSet<>())
                 .status(EntityStatus.ACTIVE)
                 .build();
@@ -36,7 +36,7 @@ public final class DtoDirector {
                 .dateBirth(LocalDate.of(2000, 12, 19))
                 .email("teacher" + id + "@gmail.com")
                 .education("Teacher")
-                .avatarName("some-avatar.png")
+                .avatarName(null)
                 .roles(null)
                 .status(EntityStatus.ACTIVE)
                 .build();
@@ -52,7 +52,7 @@ public final class DtoDirector {
                 .password("pupilPassword1")
                 .schoolClass(null)
                 .signedPersons(new HashSet<>())
-                .avatarName("some-avatar.png")
+                .avatarName(null)
                 .roles(null)
                 .status(EntityStatus.ACTIVE)
                 .build();

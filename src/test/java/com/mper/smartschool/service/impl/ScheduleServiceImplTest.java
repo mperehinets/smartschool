@@ -28,7 +28,7 @@ public class ScheduleServiceImplTest {
     @Mock
     private ScheduleRepo scheduleRepo;
 
-    private ScheduleMapper scheduleMapper = new ScheduleMapperImpl();
+    private final ScheduleMapper scheduleMapper = new ScheduleMapperImpl();
 
     private ScheduleServiceImpl scheduleService;
 
@@ -43,14 +43,14 @@ public class ScheduleServiceImplTest {
     @Test
     public void create_success() {
         scheduleDto.setId(null);
-        Schedule schedule = scheduleMapper.toEntity(scheduleDto);
+        var schedule = scheduleMapper.toEntity(scheduleDto);
         Mockito.when(scheduleRepo.save(schedule)).thenAnswer(invocationOnMock -> {
             Schedule returnedSchedule = invocationOnMock.getArgument(0);
             returnedSchedule.setId(1L);
             return returnedSchedule;
         });
 
-        ScheduleDto result = scheduleService.create(scheduleDto);
+        var result = scheduleService.create(scheduleDto);
 
         assertNotNull(result.getId());
 
@@ -59,12 +59,12 @@ public class ScheduleServiceImplTest {
 
     @Test
     public void update_success() {
-        Schedule schedule = scheduleMapper.toEntity(scheduleDto);
+        var schedule = scheduleMapper.toEntity(scheduleDto);
         Mockito.when(scheduleRepo.findById(scheduleDto.getId())).thenReturn(Optional.of(schedule));
 
         Mockito.when(scheduleRepo.save(schedule)).thenReturn(schedule);
 
-        ScheduleDto result = scheduleService.update(scheduleDto);
+        var result = scheduleService.update(scheduleDto);
 
         assertEquals(result, scheduleDto);
     }
@@ -78,21 +78,21 @@ public class ScheduleServiceImplTest {
 
     @Test
     public void findAll_success() {
-        Collection<ScheduleDto> schedulesDto = getCollectionOfSchedulesDto();
+        var schedulesDto = getCollectionOfSchedulesDto();
         Mockito.when(scheduleRepo.findAll())
                 .thenReturn(schedulesDto.stream().map(scheduleMapper::toEntity).collect(Collectors.toList()));
 
-        Collection<ScheduleDto> result = scheduleService.findAll();
+        var result = scheduleService.findAll();
 
         assertEquals(result, schedulesDto);
     }
 
     @Test
     public void findById_success() {
-        Schedule schedule = scheduleMapper.toEntity(scheduleDto);
+        var schedule = scheduleMapper.toEntity(scheduleDto);
         Mockito.when(scheduleRepo.findById(scheduleDto.getId())).thenReturn(Optional.of(schedule));
 
-        ScheduleDto result = scheduleService.findById(scheduleDto.getId());
+        var result = scheduleService.findById(scheduleDto.getId());
 
         assertEquals(result, scheduleDto);
     }
@@ -105,7 +105,7 @@ public class ScheduleServiceImplTest {
 
     @Test
     public void deleteById_success() {
-        Schedule schedule = scheduleMapper.toEntity(scheduleDto);
+        var schedule = scheduleMapper.toEntity(scheduleDto);
         Mockito.when(scheduleRepo.findById(scheduleDto.getId())).thenReturn(Optional.of(schedule));
         Mockito.doNothing().when(scheduleRepo).deleteById(scheduleDto.getId());
         assertDoesNotThrow(() -> scheduleService.deleteById(scheduleDto.getId()));
@@ -118,8 +118,8 @@ public class ScheduleServiceImplTest {
     }
 
     private Collection<ScheduleDto> getCollectionOfSchedulesDto() {
-        ScheduleDto scheduleDto2 = DtoDirector.makeTestScheduleDtoById(2L);
-        ScheduleDto scheduleDto3 = DtoDirector.makeTestScheduleDtoById(3L);
+        var scheduleDto2 = DtoDirector.makeTestScheduleDtoById(2L);
+        var scheduleDto3 = DtoDirector.makeTestScheduleDtoById(3L);
         return Arrays.asList(scheduleDto, scheduleDto2, scheduleDto3);
     }
 }
