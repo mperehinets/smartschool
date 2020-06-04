@@ -64,6 +64,12 @@ public class SubjectController {
         return subjectService.findByTeacherId(teacherId);
     }
 
+    @GetMapping("/by-class-number-from-templates-schedule/{classNumber}")
+    public Collection<SubjectDto> findFromTemplatesScheduleByClassNumber(
+            @PathVariable("classNumber") Integer classNumber) {
+        return subjectService.findFromTemplatesScheduleByClassNumber(classNumber);
+    }
+
     @GetMapping("/by-class-number/{classNumber}")
     public Collection<SubjectDto> findByClassNumber(@PathVariable("classNumber") Integer classNumber) {
         return subjectService.findByClassNumber(classNumber);

@@ -38,6 +38,8 @@ class SubjectControllerTest {
     @BeforeEach
     void setUp() {
         subjectDto = DtoDirector.makeTestSubjectDtoById(1L);
+        subjectDto.setStartClassInterval(1);
+        subjectDto.setEndClassInterval(11);
     }
 
     @Test

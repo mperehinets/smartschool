@@ -18,6 +18,9 @@ public class Subject extends BaseEntity {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "class_interval")
+    private String schoolClassInterval;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private EntityStatus status;
@@ -26,9 +29,10 @@ public class Subject extends BaseEntity {
     }
 
     @Builder
-    public Subject(Long id, String name, EntityStatus status) {
+    public Subject(Long id, String name, String schoolClassInterval, EntityStatus status) {
         super(id);
         this.status = status;
         this.name = name;
+        this.schoolClassInterval = schoolClassInterval;
     }
 }

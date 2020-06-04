@@ -29,5 +29,12 @@ public interface SubjectRepo extends JpaRepository<Subject, Long> {
     @Query("select distinct (s) from Subject s" +
             " join TemplateSchedule ts on ts.subject = s" +
             " where ts.classNumber = :classNumber")
-    Collection<Subject> findByClassNumber(@Param("classNumber") Integer classNumber);
+    Collection<Subject> findFromTemplatesScheduleByClassNumber(@Param("classNumber") Integer classNumber);
+
+    @Query(value = "select * from subjects s" +
+            " where ?1 >= SUBSTRING_INDEX(s.class_interval, '-', 1)" +
+            " and ?1 <= SUBSTRING_INDEX(s.class_interval, '-', -1)" +
+            " and s.status = 'ACTIVE'",
+            nativeQuery = true)
+    Collection<Subject> findByClassNumber(Integer classNumber);
 }

@@ -40,6 +40,8 @@ public class SubjectServiceImplTest {
     public void setUp() {
         subjectService = new SubjectServiceImpl(subjectRepo, subjectMapper);
         subjectDto = DtoDirector.makeTestSubjectDtoById(1L);
+        subjectDto.setStartClassInterval(1);
+        subjectDto.setEndClassInterval(11);
     }
 
     @Test
@@ -66,6 +68,7 @@ public class SubjectServiceImplTest {
     @Test
     public void update_success() {
         var subject = subjectMapper.toEntity(subjectDto);
+        subject.setSchoolClassInterval(subjectDto.getStartClassInterval() + "-" + subjectDto.getEndClassInterval());
         Mockito.when(subjectRepo.findById(subjectDto.getId())).thenReturn(Optional.of(subject));
 
         Mockito.when(subjectRepo.save(subject)).thenReturn(subject);
@@ -86,7 +89,15 @@ public class SubjectServiceImplTest {
     public void findAll_success() {
         var subjectsDto = getCollectionOfSubjectsDto();
         Mockito.when(subjectRepo.findAll())
-                .thenReturn(subjectsDto.stream().map(subjectMapper::toEntity).collect(Collectors.toList()));
+                .thenReturn(subjectsDto.stream()
+                        .map((subjectDto) -> {
+                            var subject = subjectMapper.toEntity(subjectDto);
+                            subject.setSchoolClassInterval(String.format("%d-%d",
+                                    subjectDto.getStartClassInterval(),
+                                    subjectDto.getEndClassInterval()));
+                            return subject;
+                        })
+                        .collect(Collectors.toList()));
 
         var result = subjectService.findAll();
 
@@ -96,6 +107,7 @@ public class SubjectServiceImplTest {
     @Test
     public void findById_success() {
         var subject = subjectMapper.toEntity(subjectDto);
+        subject.setSchoolClassInterval(subjectDto.getStartClassInterval() + "-" + subjectDto.getEndClassInterval());
         Mockito.when(subjectRepo.findById(subjectDto.getId())).thenReturn(Optional.of(subject));
 
         var result = subjectService.findById(subjectDto.getId());
@@ -112,6 +124,7 @@ public class SubjectServiceImplTest {
     @Test
     public void changeStatusById_success() {
         var subject = subjectMapper.toEntity(subjectDto);
+        subject.setSchoolClassInterval(subjectDto.getStartClassInterval() + "-" + subjectDto.getEndClassInterval());
         Mockito.when(subjectRepo.findById(subjectDto.getId())).thenReturn(Optional.of(subject));
 
         var changeStatusDto = ChangeStatusDto.builder()
@@ -138,7 +151,11 @@ public class SubjectServiceImplTest {
 
     private Collection<SubjectDto> getCollectionOfSubjectsDto() {
         var subjectDto2 = DtoDirector.makeTestSubjectDtoById(2L);
+        subjectDto2.setStartClassInterval(1);
+        subjectDto2.setEndClassInterval(11);
         var subjectDto3 = DtoDirector.makeTestSubjectDtoById(3L);
+        subjectDto3.setStartClassInterval(1);
+        subjectDto3.setEndClassInterval(11);
         return Arrays.asList(subjectDto, subjectDto2, subjectDto3);
     }
 }

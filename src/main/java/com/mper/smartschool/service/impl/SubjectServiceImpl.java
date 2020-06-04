@@ -39,8 +39,9 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public SubjectDto create(SubjectDto subjectDto) {
-        subjectDto.setStatus(EntityStatus.ACTIVE);
-        var result = subjectMapper.toDto(subjectRepo.save(subjectMapper.toEntity(subjectDto)));
+        var subject = subjectMapper.toEntity(subjectDto);
+        subject.setStatus(EntityStatus.ACTIVE);
+        var result = subjectMapper.toDto(subjectRepo.save(subject));
         log.info("IN create - subject: {} successfully created", result);
         return result;
     }
@@ -48,8 +49,9 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public SubjectDto update(SubjectDto subjectDto) {
-        subjectDto.setStatus(findById(subjectDto.getId()).getStatus());
-        var result = subjectMapper.toDto(subjectRepo.save(subjectMapper.toEntity(subjectDto)));
+        var subject = subjectMapper.toEntity(subjectDto);
+        subject.setStatus(findById(subjectDto.getId()).getStatus());
+        var result = subjectMapper.toDto(subjectRepo.save(subject));
         log.info("IN update - subject: {} successfully updated", result);
         return result;
     }
@@ -118,12 +120,22 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
+    public Collection<SubjectDto> findFromTemplatesScheduleByClassNumber(Integer classNumber) {
+        var result = subjectRepo.findFromTemplatesScheduleByClassNumber(classNumber)
+                .stream()
+                .map(subjectMapper::toDto)
+                .collect(Collectors.toList());
+        log.info("IN findByClassNumber - {} subjects found", result.size());
+        return result;
+    }
+
+    @Override
     public Collection<SubjectDto> findByClassNumber(Integer classNumber) {
         var result = subjectRepo.findByClassNumber(classNumber)
                 .stream()
                 .map(subjectMapper::toDto)
                 .collect(Collectors.toList());
-        log.info("IN findByClassNumber - {} subjects found", result.size());
+        log.info("IN findAll - {} subjects found", result.size());
         return result;
     }
 }

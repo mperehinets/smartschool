@@ -27,5 +27,7 @@ public interface SubjectService extends FieldValueExistsService {
 
     Collection<SubjectDto> findByTeacherId(Long teacherId);
 
+    Collection<SubjectDto> findFromTemplatesScheduleByClassNumber(Integer classNumber);
+
     Collection<SubjectDto> findByClassNumber(Integer classNumber);
 }
